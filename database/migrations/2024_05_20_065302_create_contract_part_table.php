@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('contract_part', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId("contract_id");
+            $table->string("description");
+            $table->foreignId("contract_parent_id");
+
         });
     }
 
