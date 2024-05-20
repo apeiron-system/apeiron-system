@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date("date_modified");
             $table->foreignId("contract_id");
             $table->foreignId("contract_part_id");
-            $table->foreignId("contract_sub_part_id");
             $table->integer("quantity");
             $table->decimal("unit_bid_cost");
             $table->decimal("actual_bid_cost");
