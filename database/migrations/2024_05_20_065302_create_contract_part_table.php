@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId("contract_id");
             $table->string("description");
             $table->foreignId("contract_parent_id");
-
         });
     }
 

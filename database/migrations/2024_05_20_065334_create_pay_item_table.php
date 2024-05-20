@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('pay_item', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->date("date_modified");
+            $table->string("description");
+            $table->string("unit");
+            $table->decimal("unit_bid_cost");
         });
     }
 
