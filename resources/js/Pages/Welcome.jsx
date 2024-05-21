@@ -1,3 +1,4 @@
+import ApplicationLogo from "@/Components/ApplicationLogo";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -18,13 +19,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 <Card className="w-[300px] absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                     <CardHeader>
                         <CardTitle>
-                            <div>
-                                <img
-                                    src="/icon-100.png"
-                                    className="rounded-lg mx-auto"
-                                />
+                            <div className="flex justify-center">
+                                <ApplicationLogo />
                             </div>
-                            <div className="text-center mt-4">Apeiron Construction Solutions</div>
+                            <div className="text-center mt-4">
+                                Apeiron Construction Solutions
+                            </div>
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
