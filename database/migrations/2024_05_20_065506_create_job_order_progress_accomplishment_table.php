@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('reviewed_by_employee_id');
             $table->foreignId('recommend_approval_employee_id');
             $table->foreignId('approved_by_employee_id');
-            $table->int('bill_no');
+            $table->integer('bill_no');
             $table->date('date');
             $table->string('type');
             $table->string('period_covered');
