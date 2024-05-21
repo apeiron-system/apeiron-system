@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ProgressAccomplishmentModel extends Model
 {
     use HasFactory;
+
+    protected $table = 'progress_accomplishment';
 }

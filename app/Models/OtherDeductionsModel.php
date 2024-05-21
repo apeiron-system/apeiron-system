@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OtherDeductionsModel extends Model
 {
     use HasFactory;
+
+    protected $table = 'other_deductions';
 }

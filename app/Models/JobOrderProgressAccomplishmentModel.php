@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class JobOrderProgressAccomplishmentModel extends Model
 {
     use HasFactory;
+
+    protected $table = 'job_order_progress_accomplishment';
 }
