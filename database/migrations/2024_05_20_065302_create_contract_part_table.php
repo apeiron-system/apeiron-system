@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId("contract_id");
             $table->string("description");
-            $table->foreignId("contract_parent_id");
+            $table->foreignId("parent_id");
         });
     }
 

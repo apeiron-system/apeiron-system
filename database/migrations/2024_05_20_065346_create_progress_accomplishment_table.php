@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('progress_accomplishment', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->date('accomplishment_date');
+            $table->foreignId('contract_id');
+            $table->foreignId('prepared_by_employee_id');
+            $table->foreignId('approved_by_employee_id');
+            $table->foreignId('reviewed_by_employee_id');
+            $table->foreignId('checked_by_employee_id');
         });
     }
 

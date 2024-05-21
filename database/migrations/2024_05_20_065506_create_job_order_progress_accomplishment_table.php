@@ -14,6 +14,17 @@ return new class extends Migration
         Schema::create('job_order_progress_accomplishment', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('job_order_no');
+            $table->foreignId('checked_by_employee_id');
+            $table->foreignId('reviewed_by_employee_id');
+            $table->foreignId('recommend_approval_employee_id');
+            $table->foreignId('approved_by_employee_id');
+            $table->int('bill_no');
+            $table->date('date');
+            $table->string('type');
+            $table->string('period_covered');
+            $table->string('progress_billing');
+            $table->double('total_partial_payments');
         });
     }
 
