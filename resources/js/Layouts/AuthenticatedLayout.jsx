@@ -88,18 +88,18 @@ export default function Authenticated({ user, header, children }) {
                                 <DropdownMenuItem>
                                     <Link
                                         href={route("profile.edit")}
-                                        className="w-full"
+                                        className="w-full flex gap-2 items-center"
                                     >
-                                        <User className="mr-2" /> Profile
+                                        <User /> Profile
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Link
-                                        className="w-full"
+                                        className="w-full flex gap-2 items-center"
                                         method="post"
                                         href={route("logout")}
                                     >
-                                        <LogOut className="mr-2" /> Log Out
+                                        <LogOut /> Log Out
                                     </Link>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
