@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('other_deductions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('job_accomplishment_report_id');
+            $table->string('cv_number');
+            $table->date('date');
+            $table->string('particulars');
+            $table->double('released');
+            $table->double('deductions');
         });
     }
 
