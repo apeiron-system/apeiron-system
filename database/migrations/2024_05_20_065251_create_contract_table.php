@@ -24,7 +24,14 @@ return new class extends Migration
             $table->decimal("amount", 15, 2);
             $table->date("date");
 
-            $table->foreignId("authorized_representative_employee_id")->nullable();
+            //define foreign id columns
+            $table->foreignId("submitted_by_employee_id");
+            $table->foreignId("signing_authority_employee_id");
+            $table->foreignId("authorized_representative_employee_id");
+
+            //syntax to connect foreign keys
+            $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
+            $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
             $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
         });
     }
