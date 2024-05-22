@@ -14,26 +14,16 @@ return new class extends Migration
         Schema::create('project_contract', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            // description
-            // contractName
-            // location
-            // designation
-            // date
-            // submittedByEmployeeID (FK)
-            // signingAuthorityEmployeeID (FK)
-            // authorizedRepresentativeEmployeeID (FK)
+
 
             $table->string("description");
             $table->string("contract_name");
-
-
-            //columns for address, in the philippines
             $table->string("location");
             $table->string("designation");
             $table->date("date");
-            $table->foreignId("submitted_by_employee_id");
-            $table->foreignId("signing_authority_employee_id");
-            $table->foreignId("authorized_representative_employee_id");
+            $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
+            $table->foreignId("signing_authority_employee_id")->references("id")->on("employee");
+            $table->foreignId("authorized_representative_employee_id")->references("id")->on("employee");
         });
     }
 
