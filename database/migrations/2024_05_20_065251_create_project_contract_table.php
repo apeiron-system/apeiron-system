@@ -15,12 +15,16 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-
             $table->string("description");
             $table->string("contract_name");
             $table->string("location");
             $table->string("designation");
             $table->date("date");
+
+            $table->foreignId("submitted_by_employee_id");
+            $table->foreignId("signing_authority_employee_id");
+            $table->foreignId("authorized_representative_employee_id");
+
             $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
             $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
             $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
