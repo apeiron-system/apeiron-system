@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign("contract_id")->references("id")->on("project_contract");
             $table->string("description");
-            $table->foreignId("parent_id")->references("id")->on("contract_part");
+            $table->foreign("parent_id")->references("id")->on("contract_part");
         });
     }
 

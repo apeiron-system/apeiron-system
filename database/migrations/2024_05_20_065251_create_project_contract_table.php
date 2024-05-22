@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string("designation");
             $table->date("date");
             $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
-            $table->foreignId("signing_authority_employee_id")->references("id")->on("employee");
-            $table->foreignId("authorized_representative_employee_id")->references("id")->on("employee");
+            $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
+            $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
         });
     }
 

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign("pay_item_no")->references("id")->on("pay_item");
             $table->date("date_modified");
-            $table->foreignId("contract_id")->references("id")->on("project_contract");
-            $table->foreignId("contract_part_id")->references("id")->on("contract_part");
+            $table->foreign("contract_id")->references("id")->on("project_contract");
+            $table->foreign("contract_part_id")->references("id")->on("contract_part");
             $table->integer("quantity");
             $table->decimal("unit_bid_cost");
             $table->decimal("actual_bid_cost");
