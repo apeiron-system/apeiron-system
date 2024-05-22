@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('contract_part', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId("contract_id");
+            $table->foreign("contract_id")->references("id")->on("project_contract");
             $table->string("description");
-            $table->foreignId("parent_id");
+            $table->foreignId("parent_id")->references("id")->on("contract_part");
         });
     }
 
