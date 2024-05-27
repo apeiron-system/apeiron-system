@@ -20,6 +20,7 @@ import {
     ScrollText,
     ShoppingBasket,
     User,
+    Users,
 } from "lucide-react";
 
 export default function Authenticated({ user, header, children }) {
@@ -66,6 +67,12 @@ export default function Authenticated({ user, header, children }) {
                             active={route().current("progress-report")}
                         >
                             <LineChart className="mr-2" /> Progress Report
+                        </NavLink>
+                        <NavLink
+                            href={route("employees")}
+                            active={route().current("employees")}
+                        >
+                            <Users className="mr-2" /> Employees
                         </NavLink>
 
                         {/* Add more NavLinks here */}
