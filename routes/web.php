@@ -38,6 +38,10 @@ Route::get('/employees', function () {
     return Inertia::render('Employee/EmployeePage');
 })->middleware(['auth', 'verified'])->name('employees');
 
+Route::get('/employees/add', function () {
+    return Inertia::render('Employee/AddEmployeePage');
+})->middleware(['auth', 'verified'])->name('employee.create');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
