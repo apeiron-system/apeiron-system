@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_contract', function (Blueprint $table) {
+        Schema::create('contract', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
@@ -19,15 +19,11 @@ return new class extends Migration
             $table->string("contract_name");
             $table->string("location");
             $table->string("designation");
+            $table->decimal("amount");
             $table->date("date");
 
-            $table->foreignId("submitted_by_employee_id");
-            $table->foreignId("signing_authority_employee_id");
-            $table->foreignId("authorized_representative_employee_id");
-
-            $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
-            $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
-            $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
+            $table->foreignId("employee_id");
+            $table->foreign("employee_id")->references("id")->on("employee");
         });
     }
 
