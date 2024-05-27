@@ -3,7 +3,9 @@ import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
-import CancelJobOrderModal from "@/Components/CancelJobOrderModal"; // 1. Import CancelJobOrderModal
+import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
+import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
+import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
 
 export default function CreateJobOrderPage({ auth }) {
     const [formData, setFormData] = useState({
@@ -18,7 +20,9 @@ export default function CreateJobOrderPage({ auth }) {
     });
 
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // 2. Create state for CancelJobOrderModal
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+    const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -28,7 +32,7 @@ export default function CreateJobOrderPage({ auth }) {
     };
 
     const handleCancel = () => {
-        setIsCancelModalOpen(true); // 3. Set state to show CancelJobOrderModal
+        setIsCancelModalOpen(true);
     };
 
     const handleSave = (e) => {
@@ -36,13 +40,7 @@ export default function CreateJobOrderPage({ auth }) {
         setIsSaveModalOpen(true);
     };
 
-    const closeModal = () => {
-        setIsSaveModalOpen(false);
-        setIsCancelModalOpen(false); // 5. Close both modals
-    };
-
     const handleConfirmCancel = () => {
-        // Reset formData to empty values
         setFormData({
             projectName: "",
             jobOrderNo: "",
@@ -55,6 +53,27 @@ export default function CreateJobOrderPage({ auth }) {
         });
         setIsCancelModalOpen(false);
     };
+
+    const handleSubmit = () => {
+        setIsSubmitModalOpen(true);
+    };
+
+    const handleConfirmSubmit = () => {
+        console.log("Form submitted!");
+        setIsSubmitModalOpen(false);
+        setIsSubmittedModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsSaveModalOpen(false);
+        setIsCancelModalOpen(false);
+        setIsSubmitModalOpen(false);
+        setIsSubmittedModalOpen(false);
+    };
+
+    const isAnyFieldEmpty = Object.values(formData).some(
+        (value) => value === ""
+    );
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -87,6 +106,7 @@ export default function CreateJobOrderPage({ auth }) {
                                     <select
                                         id="projectName"
                                         name="projectName"
+                                        required
                                         value={formData.projectName}
                                         onChange={handleChange}
                                         className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
@@ -253,6 +273,8 @@ export default function CreateJobOrderPage({ auth }) {
                                             </Button>
                                             <Button
                                                 type="submit"
+                                                onClick={handleSubmit}
+                                                disabled={isAnyFieldEmpty}
                                                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                                             >
                                                 Submit
@@ -276,6 +298,19 @@ export default function CreateJobOrderPage({ auth }) {
                     show={isCancelModalOpen}
                     onClose={closeModal}
                     onConfirm={handleConfirmCancel}
+                />
+            )}
+            {isSubmitModalOpen && (
+                <SubmitJobOrderModal
+                    show={isSubmitModalOpen}
+                    onClose={closeModal}
+                    onConfirm={handleConfirmSubmit}
+                />
+            )}
+            {isSubmittedModalOpen && (
+                <JobOrderSubmittedModal
+                    show={isSubmittedModalOpen}
+                    onClose={closeModal}
                 />
             )}
         </AuthenticatedLayout>

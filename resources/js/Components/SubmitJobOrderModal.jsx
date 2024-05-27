@@ -1,6 +1,6 @@
 import React from "react";
 
-const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
+const SubmitJobOrderModal = ({ show, onClose, onConfirm }) => {
     if (!show) return null;
 
     return (
@@ -8,20 +8,18 @@ const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
             <div className="bg-white p-6 rounded shadow-lg text-center">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12 text-red-500 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    className="h-12 w-12 text-green-500 mx-auto"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
                 >
                     <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
+                        fillRule="evenodd"
+                        d="M13 2h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4V0h6v2zM3 4v12h14V4h-2v8H5V4H3z"
+                        clipRule="evenodd"
                     />
                 </svg>
                 <p className="text-lg mt-4">
-                    Do you really want to cancel the form?
+                    Are you sure you want to submit this form?
                 </p>
                 <div className="mt-6 flex justify-center">
                     <button
@@ -42,4 +40,4 @@ const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
     );
 };
 
-export default CancelJobOrderModal;
+export default SubmitJobOrderModal;

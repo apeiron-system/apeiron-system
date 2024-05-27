@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ show, onClose }) => {
+const JobOrderSubmittedModal = ({ show, onClose }) => {
     if (!show) return null;
 
     return (
@@ -21,7 +21,7 @@ const Modal = ({ show, onClose }) => {
                     />
                 </svg>
                 <p className="text-lg mt-4">
-                    Form has been successfully saved!
+                    Job Order has been successfully created!
                 </p>
                 <button
                     onClick={onClose}
@@ -34,4 +34,4 @@ const Modal = ({ show, onClose }) => {
     );
 };
 
-export default Modal;
+export default JobOrderSubmittedModal;
