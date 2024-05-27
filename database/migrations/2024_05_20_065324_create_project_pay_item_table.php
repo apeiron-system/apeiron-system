@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_pay_item', function (Blueprint $table) {
+        Schema::create('project_pay_item', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->date("date_modified");
@@ -21,12 +21,12 @@ return new class extends Migration
             $table->decimal("initial_amount");
             $table->decimal("actual_amount");
 
-            $table->foreignId("contract_id");
-            $table->foreignId("contract_part_id");
+            $table->foreignId("project_id");
+            $table->foreignId("project_part_id");
             $table->foreignId("pay_item_no");
 
-            $table->foreign("contract_id")->references("id")->on("project_contract");
-            $table->foreign("contract_part_id")->references("id")->on("contract_part");
+            $table->foreign("project_id")->references("id")->on("project");
+            $table->foreign("project_part_id")->references("id")->on("project_part");
             $table->foreign("pay_item_no")->references("id")->on("pay_item");
         });
     }

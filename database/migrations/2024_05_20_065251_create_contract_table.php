@@ -22,8 +22,8 @@ return new class extends Migration
             $table->decimal("amount");
             $table->date("date");
 
-            $table->foreignId("employee_id");
-            $table->foreign("employee_id")->references("id")->on("employee");
+            $table->foreignId("authorized_representative_employee_id");
+            $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
         });
     }
 

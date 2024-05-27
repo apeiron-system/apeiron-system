@@ -46,7 +46,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("contract")}
-                            active={route().current("contract")}
+                            active={route().current().startsWith("contract")}
                         >
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
@@ -70,7 +70,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("employees")}
-                            active={route().current("employees")}
+                            active={route().current().startsWith("employee")}
                         >
                             <Users className="mr-2" /> Employees
                         </NavLink>

@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ContractPartModel extends Model
+class ContractPayItemModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'contract_part';
+    protected $table = 'project_pay_item';
 }

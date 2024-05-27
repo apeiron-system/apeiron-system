@@ -29,10 +29,14 @@ return new class extends Migration
             $table->integer("num_of_units");
             $table->decimal("abc_value");
 
+            $table->foreignId("submitted_by_employee_id");
+            $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
+
+            $table->foreignId("signing_authority_employee_id");
+            $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
+
             $table->foreignId("contract_id");
             $table->foreign("contract_id")->references("id")->on("contract");
-
-
         });
     }
 
