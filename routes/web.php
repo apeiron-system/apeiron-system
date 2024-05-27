@@ -35,7 +35,7 @@ Route::get('/progress-report', function () {
 })->middleware(['auth', 'verified'])->name('progress-report');
 
 Route::get('/par-details', function () {
-    return Inertia::render('ParDetails/ParDetailsPage');
+    return Inertia::render('ProgressReport/ParDetailsPage');
 })->middleware(['auth', 'verified'])->name('par-details');
 
 Route::get('/employees', function () {

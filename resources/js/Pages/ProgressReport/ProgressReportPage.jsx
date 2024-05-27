@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link as InertiaLink } from "@inertiajs/react";
 
 export default function ProgressReport({ auth }) {
     return (
@@ -47,7 +47,9 @@ export default function ProgressReport({ auth }) {
                                     <p className="text-gray-700"><strong>Amount:</strong> <span className="text-gray-500">₱1,000,000.00</span></p>
                                 </div>
                                 <div>
-                                    <button className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200">View</button>
+                                    <InertiaLink href={router('par-details')}>
+                                        <button className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200">View</button>
+                                    </InertiaLink>
                                 </div>
                             </div>
 
