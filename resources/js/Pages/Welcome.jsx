@@ -1,12 +1,12 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 
 import { Head, Link } from "@inertiajs/react";
 
