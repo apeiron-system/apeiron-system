@@ -41,21 +41,6 @@ export default function CreateJobOrderPage({ auth }) {
         setIsCancelModalOpen(false); // 5. Close both modals
     };
 
-    const handleConfirmCancel = () => {
-        // Reset formData to empty values
-        setFormData({
-            projectName: "",
-            jobOrderNo: "",
-            contractId: "",
-            location: "",
-            itemsWork: "",
-            periodCovered: "",
-            supplier: "",
-            dateNeeded: "",
-        });
-        setIsCancelModalOpen(false);
-    };
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Job Order" />
@@ -275,9 +260,9 @@ export default function CreateJobOrderPage({ auth }) {
                 <CancelJobOrderModal
                     show={isCancelModalOpen}
                     onClose={closeModal}
-                    onConfirm={handleConfirmCancel}
                 />
-            )}
+            )}{" "}
+            {/* 4. Render CancelJobOrderModal */}
         </AuthenticatedLayout>
     );
 }
