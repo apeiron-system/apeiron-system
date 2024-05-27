@@ -70,7 +70,7 @@ export default function Authenticated({ user, header, children }) {
 
                         {/* Add more NavLinks here */}
                     </div>
-        <div></div>
+                       
                     <div className="mt-3 border-t text-center">
                         <DropdownMenu>
                             <DropdownMenuTrigger className="w-full p-2 hover:bg-slate-100">
