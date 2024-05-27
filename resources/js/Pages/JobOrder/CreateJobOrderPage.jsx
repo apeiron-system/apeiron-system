@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
+import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 
 export default function CreateJobOrderPage({ auth }) {
     const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ export default function CreateJobOrderPage({ auth }) {
         supplier: "",
         dateNeeded: "",
     });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -35,10 +38,13 @@ export default function CreateJobOrderPage({ auth }) {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSave = (e) => {
         e.preventDefault();
-        // Handle form submission
-        console.log("Form submitted", formData);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
     };
 
     return (
@@ -51,8 +57,8 @@ export default function CreateJobOrderPage({ auth }) {
                             <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
                                 Job Order
                             </h1>
-                            <br></br>
-                            <hr></hr>
+                            <br />
+                            <hr />
 
                             <div className="mt-8">
                                 <h2 className="text-xl font-semibold text-gray-800">
@@ -90,7 +96,7 @@ export default function CreateJobOrderPage({ auth }) {
                                     Please provide the required information below:
                                 </p>
 
-                                <form className="mt-6" onSubmit={handleSubmit}>
+                                <form className="mt-6" onSubmit={handleSave}>
                                     <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
                                         <div>
                                             <label
@@ -248,6 +254,22 @@ export default function CreateJobOrderPage({ auth }) {
                     </div>
                 </div>
             </div>
+            {isModalOpen && (
+                <SaveJobOrderModal show={isModalOpen} onClose={closeModal}>
+                    <div className="p-6 text-center">
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            Your job order has been saved successfully.
+                        </h3>
+                        <Button
+                            type="button"
+                            className="text-white bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] focus:ring-4 focus:outline-none focus:ring-[rgb(15,23,42)] dark:focus:ring-[rgb(15,23,42)] font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                            onClick={closeModal}
+                        >
+                            OK
+                        </Button>
+                    </div>
+                </SaveJobOrderModal>
+            )}
         </AuthenticatedLayout>
     );
 }
