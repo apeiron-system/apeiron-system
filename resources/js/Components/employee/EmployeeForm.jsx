@@ -9,6 +9,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -33,27 +34,33 @@ const schema = z.object({
     employee_role: z.string().min(1, { message: "Employee role is required" }),
 });
 
-export default function EmployeeForm() {
+export default function EmployeeForm({ employee }) {
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            first_name: "",
-            middle_name: "",
-            last_name: "",
-            street_address: "",
-            barangay: "",
-            city: "",
-            province: "",
-            zip_code: "",
-            country: "",
-            phone_number: "",
-            email_address: "",
-            employee_role: "",
+            first_name: employee?.first_name ?? "",
+            middle_name: employee?.middle_name ?? "",
+            last_name: employee?.last_name ?? "",
+            street_address: employee?.street_address ?? "",
+            barangay: employee?.barangay ?? "",
+            city: employee?.city ?? "",
+            province: employee?.province ?? "",
+            zip_code: employee?.zip_code ?? "",
+            country: employee?.country ?? "",
+            phone_number: employee?.phone_number ?? "",
+            email_address: employee?.email_address ?? "",
+            employee_role: employee?.employee_role ?? "",
         },
     });
 
     const onSubmit = (values) => {
-        console.log(values);
+        if (employee && employee.id) {
+            // Edit mode
+            router.patch(`/employees/${employee.id}/update`, values);
+        } else {
+            // Add mode
+            router.post("/employees/add", values);
+        }
     };
 
     return (
@@ -268,7 +275,7 @@ export default function EmployeeForm() {
                 />
                 <div className="col-span-1 md:col-span-2 flex justify-end">
                     <Button type="submit" className="mt-4">
-                        Submit
+                        {employee && employee.id ? "Update" : "Add"}
                     </Button>
                 </div>
             </form>

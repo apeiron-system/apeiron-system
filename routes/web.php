@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,13 +38,25 @@ Route::get('/progress-report', function () {
     return Inertia::render('ProgressReport/ProgressReportPage');
 })->middleware(['auth', 'verified'])->name('progress-report');
 
-Route::get('/employees', function () {
-    return Inertia::render('Employee/EmployeePage');
-})->middleware(['auth', 'verified'])->name('employees');
+
+
+//employees
+
+Route::get('/employees', [EmployeeController::class, 'view'])->middleware(['auth', 'verified'])->name('employees');
 
 Route::get('/employees/add', function () {
     return Inertia::render('Employee/AddEmployeePage');
-})->middleware(['auth', 'verified'])->name('employee.create');
+})->middleware(['auth', 'verified'])->name('employee.add');
+
+Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->middleware(['auth', 'verified'])->name('employee.edit');
+
+Route::post('/employees/add', [EmployeeController::class, 'create'])->middleware(['auth', 'verified'])->name('employee.create');
+
+Route::patch('/employees/{id}/update', [EmployeeController::class, 'update'])->middleware(['auth', 'verified'])->name('employee.update');
+
+Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->middleware(['auth', 'verified'])->name('employee.delete');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,4 +64,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
