@@ -24,10 +24,8 @@ Route::get('/contract', function () {
 
 //PROGRESS BILLING MODULE
 Route::get('/job-order', function () {
-    return Inertia::render('JobOrder/JobOrderPage');
+    return Inertia::render('JobOrder/CreateJobOrderPage');
 })->middleware(['auth', 'verified'])->name('job-order');
-
-
 
 Route::get('/item', function () {
     return Inertia::render('Item/ItemPage');
