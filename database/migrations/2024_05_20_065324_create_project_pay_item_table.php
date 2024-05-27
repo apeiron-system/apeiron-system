@@ -23,11 +23,11 @@ return new class extends Migration
 
             $table->foreignId("project_id");
             $table->foreignId("project_part_id");
-            $table->foreignId("pay_item_no");
+            $table->foreignId("pay_item_id");
 
             $table->foreign("project_id")->references("id")->on("project");
             $table->foreign("project_part_id")->references("id")->on("project_part");
-            $table->foreign("pay_item_no")->references("id")->on("pay_item");
+            $table->foreign("pay_item_id")->references("id")->on("pay_item");
         });
     }
 

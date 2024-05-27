@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->string("project_name");
-
+            $table->enum("status", ["pending", "ongoing", "canceled", "completed"])->default("pending");
             //for the location
             $table->string("street_address");
             $table->string("barangay");

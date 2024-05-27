@@ -15,7 +15,7 @@ import { z } from "zod";
 
 const schema = z.object({
     first_name: z.string().min(1, { message: "First name is required" }),
-    middle_name: z.string().min(1, { message: "Middle name is required" }),
+    middle_name: z.string(),
     last_name: z.string().min(1, { message: "Last name is required" }),
     street_address: z
         .string()

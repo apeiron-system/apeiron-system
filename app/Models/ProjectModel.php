@@ -10,4 +10,19 @@ class ProjectModel extends Model
     use HasFactory;
 
     protected $table = "project";
+
+    public function submittedByEmployee()
+    {
+        return $this->belongsTo(EmployeeModel::class, 'submitted_by_employee_id');
+    }
+
+    public function signingAuthorityEmployee()
+    {
+        return $this->belongsTo(EmployeeModel::class, 'signing_authority_employee_id');
+    }
+
+    public function contract()
+    {
+        return $this->belongsTo(ContractModel::class, 'contract_id');
+    }
 }

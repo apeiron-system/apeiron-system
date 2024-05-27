@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string("description");
+            $table->string("description")->nullable();
+            $table->enum("status", ["pending", "ongoing", "canceled", "completed"])->default("pending");
             $table->string("contract_name");
             $table->string("location");
-            $table->string("designation");
+            $table->string("designation")->nullable();
+            $table->integer("duration_in_days");
             $table->decimal("amount");
             $table->date("date");
 
