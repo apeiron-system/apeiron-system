@@ -56,6 +56,7 @@ export default function CreateJobOrderPage({ auth }) {
 
     const handleSubmit = () => {
         setIsSubmitModalOpen(true);
+        setIsSubmittedModalOpen(false);
     };
 
     const handleConfirmSubmit = () => {
@@ -272,7 +273,7 @@ export default function CreateJobOrderPage({ auth }) {
                                                 Save
                                             </Button>
                                             <Button
-                                                type="submit"
+                                                type="button"
                                                 onClick={handleSubmit}
                                                 disabled={isAnyFieldEmpty}
                                                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"

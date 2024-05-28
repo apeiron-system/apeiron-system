@@ -1,23 +1,23 @@
 import React from "react";
+import { FileCheck2 } from "lucide-react";
 
 const SubmitJobOrderModal = ({ show, onClose, onConfirm }) => {
     if (!show) return null;
 
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded shadow-lg text-center">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12 text-green-500 mx-auto"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fillRule="evenodd"
-                        d="M13 2h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h4V0h6v2zM3 4v12h14V4h-2v8H5V4H3z"
-                        clipRule="evenodd"
-                    />
-                </svg>
+            <div
+                className="bg-white p-6 rounded-2xl shadow-lg text-center"
+                style={{ width: "300px", height: "300px" }}
+            >
+                <FileCheck2
+                    className="mx-auto"
+                    style={{
+                        width: "120px",
+                        height: "120px",
+                        color: "rgb(15,23,42)",
+                    }}
+                />
                 <p className="text-lg mt-4">
                     Are you sure you want to submit this form?
                 </p>
