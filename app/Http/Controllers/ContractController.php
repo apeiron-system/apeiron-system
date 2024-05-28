@@ -68,7 +68,10 @@ class ContractController extends Controller
 
         $contract = ContractModel::find($id);
 
-        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract]);
+        $projects = $contract->projects;
+
+
+        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract, 'projects' => $projects]);
     }
 
     public function edit($id)

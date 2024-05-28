@@ -7,7 +7,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Link } from "@inertiajs/react";
 
 export default function PastContractsTable({ contracts }) {
     // $table->id();

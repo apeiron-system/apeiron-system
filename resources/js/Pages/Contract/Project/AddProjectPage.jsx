@@ -1,24 +1,26 @@
 import ContractForm from "@/Componentss/contract/ContractForm";
 import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
+import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import ProjectForm from "./ProjectForm";
 
-export default function EditContractPage({ auth, contract, employees }) {
+export default function AddProjectPage({ auth, id, employees }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Edit Contract - {contract.contract_name}
+                    Add Project
                 </h2>
             }
         >
             <Head title="Contract" />
 
-            <ContractTabNavigation />
+            <ProjectTabNavigation id={id} employees={employees} />
 
             <section>
-                <ContractForm employees={employees} contract={contract} />
+                <ProjectForm id={id} employees={employees} />
             </section>
         </AuthenticatedLayout>
     );

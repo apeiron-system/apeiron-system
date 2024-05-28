@@ -1,4 +1,4 @@
-import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
+import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import {
@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import _ from "lodash";
-import PastContractsTable from "@/Components/contract/PastContractsTable";
-import ContractCard from "@/Components/contract/ContractCard";
+import PastContractsTable from "@/Componentss/contract/PastContractsTable";
+import ContractCard from "@/Componentss/contract/ContractCard";
 
 export default function ContractPage({ auth, contracts }) {
     const [statusFilter, setStatusFilter] = useState("all");

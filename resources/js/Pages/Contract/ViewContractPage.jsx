@@ -1,11 +1,12 @@
-import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
+import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
+import ProjectsTable from "@/Componentss/contract/project/ProjectsTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/components/ui/button";
 import { Head, Link } from "@inertiajs/react";
 import _ from "lodash";
 import { Edit } from "lucide-react";
 
-export default function ViewContractPage({ auth, contract }) {
+export default function ViewContractPage({ auth, contract, projects }) {
     // $table->id();
     //         $table->timestamps();
 
@@ -61,6 +62,11 @@ export default function ViewContractPage({ auth, contract }) {
             <Head title={`View Contract - ${contract.contract_name}`} />
 
             <ProjectTabNavigation id={contract.id} />
+
+            <section className="ml-4 mt-2">
+                <h1 className="font-bold text-lg">Projects</h1>
+                {projects && <ProjectsTable projects={projects} />}
+            </section>
 
             <section></section>
         </AuthenticatedLayout>

@@ -1,5 +1,5 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import NavLink from "@/Components/NavLink";
+import ApplicationLogo from "@/Componentss/ApplicationLogo";
+import NavLink from "@/Componentss/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
