@@ -70,21 +70,26 @@ export default function Authenticated({ user, header, children }) {
 
                         {/* Add more NavLinks here */}
                     </div>
-                       
+
                     <div className="mt-3 border-t text-center">
+
                         <DropdownMenu>
+
                             <DropdownMenuTrigger className="w-full p-2 hover:bg-slate-100">
                                 <div className="font-medium text-base text-gray-800">
                                     {user.name}
                                 </div>
                             </DropdownMenuTrigger>
+
                             <DropdownMenuContent>
                                 <DropdownMenuLabel>
                                     <div className="font-medium text-sm text-gray-500">
                                         {user.email}
                                     </div>
                                 </DropdownMenuLabel>
+
                                 <DropdownMenuSeparator />
+
                                 <DropdownMenuItem>
                                     <Link
                                         href={route("profile.edit")}
@@ -93,6 +98,7 @@ export default function Authenticated({ user, header, children }) {
                                         <User /> Profile
                                     </Link>
                                 </DropdownMenuItem>
+
                                 <DropdownMenuItem>
                                     <Link
                                         className="w-full flex gap-2 items-center"
@@ -102,11 +108,15 @@ export default function Authenticated({ user, header, children }) {
                                         <LogOut /> Log Out
                                     </Link>
                                 </DropdownMenuItem>
+
                             </DropdownMenuContent>
+                            
                         </DropdownMenu>
+
                     </div>
                 </div>
             </nav>
+
 
             <div className="flex-grow">
                 {header && (
