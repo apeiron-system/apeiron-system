@@ -15,12 +15,12 @@ export default function AddProjectPage({ auth, id, employees }) {
                 </h2>
             }
         >
-            <Head title="Contract" />
+            <Head title="Add Project" />
 
             <ProjectTabNavigation id={id} employees={employees} />
 
             <section>
-                <ProjectForm id={id} employees={employees} />
+                <ProjectForm contract_id={id} employees={employees} />
             </section>
         </AuthenticatedLayout>
     );

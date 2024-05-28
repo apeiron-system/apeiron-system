@@ -70,8 +70,10 @@ class ContractController extends Controller
 
         $projects = $contract->projects;
 
+        $signingAuthorityEmployee = $contract->signingAuthorityEmployee;
 
-        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract, 'projects' => $projects]);
+
+        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract, 'projects' => $projects, 'signingAuthorityEmployee' => $signingAuthorityEmployee]);
     }
 
     public function edit($id)

@@ -13,7 +13,6 @@ import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-
 // Function to format the date as yyyy-MM-dd
 const formatDate = (date) => {
     const d = new Date(date);
@@ -39,12 +38,12 @@ const schema = z.object({
     duration_in_days: z.coerce.number(),
     num_of_units: z.coerce.number(),
     abc_value: z.coerce.number(),
-    submitted_by_employee_id: z.number(),
-    signing_authority_employee_id: z.number(),
-    contract_id: z.number(),
+    submitted_by_employee_id: z.coerce.number(),
+    signing_authority_employee_id: z.coerce.number(),
+    contract_id: z.coerce.number(),
 });
 
-export default function ProjectForm({ project, employees, contract }) {
+export default function ProjectForm({ project, employees, contract_id }) {
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -66,25 +65,25 @@ export default function ProjectForm({ project, employees, contract }) {
         },
     });
 
-    const onSubmit = (values) => {
-        const parsedValues = {
-            ...values,
-            duration_in_days: Number(values.duration_in_days),
-            num_of_units: Number(values.num_of_units),
-            abc_value: Number(values.abc_value),
-            submitted_by_employee_id: Number(values.submitted_by_employee_id),
-            signing_authority_employee_id: Number(
-                values.signing_authority_employee_id
-            ),
-            contract_id: Number(values.contract_id),
-        };
-
-        if (project && project.id) {
-            // Edit mode
-            router.patch(`/project/${project.id}/update`, parsedValues);
-        } else {
-            // Add mode
-            router.post("/project/add", parsedValues);
+    const onSubmit = async (values) => {
+        console.log("Submitting form with values:", values);
+        try {
+            if (project && project.id) {
+                // Edit mode
+                await router.patch(
+                    `/project/${contract_id}/project/${project.id}/update`,
+                    values
+                );
+            } else {
+                // Add mode
+                await router.post(
+                    `/contract/${contract_id}/project/add`,
+                    values
+                );
+            }
+            console.log("Form submitted successfully");
+        } catch (error) {
+            console.error("Error submitting form:", error);
         }
     };
 

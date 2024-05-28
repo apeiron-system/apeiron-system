@@ -6,7 +6,12 @@ import { Head, Link } from "@inertiajs/react";
 import _ from "lodash";
 import { Edit } from "lucide-react";
 
-export default function ViewContractPage({ auth, contract, projects }) {
+export default function ViewContractPage({
+    auth,
+    contract,
+    projects,
+    signingAuthorityEmployee,
+}) {
     // $table->id();
     //         $table->timestamps();
 
@@ -37,6 +42,15 @@ export default function ViewContractPage({ auth, contract, projects }) {
                         <h2 className="text-sm text-gray-600 leading-tight mt-2">
                             Status - {_.capitalize(contract.status)}
                         </h2>
+                        <h2 className="text-sm text-gray-600 leading-tight mt-2">
+                            Date - {contract.date}
+                        </h2>
+                        <h2 className="text-sm text-gray-600 leading-tight mt-2">
+                            Authorized Representative -
+                            {signingsigningAuthorityEmployee.first_name +
+                                " " +
+                                signingAuthorityEmployee.last_name}
+                        </h2>
                     </div>
                     <div>
                         <h2 className="text-sm text-gray-600 leading-tight mt-2">
@@ -47,6 +61,10 @@ export default function ViewContractPage({ auth, contract, projects }) {
                         </h2>
                         <h2 className="text-sm text-gray-600 leading-tight mt-2">
                             Amount - {contract.amount}
+                        </h2>
+
+                        <h2 className="text-sm text-gray-600 leading-tight mt-2">
+                            Designation - {contract.designation}
                         </h2>
                     </div>
                     <div className="w-full text-right">

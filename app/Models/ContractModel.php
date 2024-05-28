@@ -15,4 +15,9 @@ class ContractModel extends Model
     {
         return $this->belongsTo(EmployeeModel::class, 'authorized_representative_employee_id');
     }
+
+    public function projects()
+    {
+        return $this->hasMany(ProjectModel::class, 'contract_id');
+    }
 }
