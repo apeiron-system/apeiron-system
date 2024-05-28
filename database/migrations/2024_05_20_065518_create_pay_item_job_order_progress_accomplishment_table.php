@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('job_accomplishment_report_id')
-                ->constrained('job_order_progress_accomplishment', 'jo_pa_item_id')
+                ->constrained('job_order_progress_accomplishment', 'id', 'fk_jo_pa_item_id')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->integer('job_order_no');
