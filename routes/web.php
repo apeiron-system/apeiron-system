@@ -22,9 +22,12 @@ Route::get('/contract', function () {
     return Inertia::render('Contract/ContractPage');
 })->middleware(['auth', 'verified'])->name('contract');
 
+//PROGRESS BILLING MODULE
 Route::get('/job-order', function () {
     return Inertia::render('JobOrder/JobOrderPage');
 })->middleware(['auth', 'verified'])->name('job-order');
+
+
 
 Route::get('/item', function () {
     return Inertia::render('Item/ItemPage');
