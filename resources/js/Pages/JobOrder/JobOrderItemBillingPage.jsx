@@ -2,53 +2,88 @@ import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import { Head, Link } from "@inertiajs/react";
+import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
+import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
+import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
+import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
 import { ChevronLeft } from "lucide-react";
 
-const ConfirmPopup = ({ message, onConfirm, onCancel }) => (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="mb-4">{message}</p>
-            <div className="flex justify-center space-x-4">
-                <button onClick={onCancel} className="bg-gray-200 text-gray-700 py-2 px-4 rounded">No</button>
-                <button onClick={onConfirm} className="bg-blue-600 text-white py-2 px-4 rounded">Yes</button>
-            </div>
-        </div>
-    </div>
-);
-
 export default function JobOrderItemBillingPage({ auth }) {
-    const [showSavePopup, setShowSavePopup] = useState(false);
-    const [showCancelPopup, setShowCancelPopup] = useState(false);
+    const [formData, setFormData] = useState({
+        jobOrderNo: "",
+        quantity: "",
+        jobOrderPart: "",
+        unitPrice: "",
+        dateModified: "",
+        weight: "",
+        payItemNumber: "",
+    });
+
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+    const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleCancel = () => {
+        setIsCancelModalOpen(true);
+    };
 
     const handleSave = (e) => {
         e.preventDefault();
-        setShowSavePopup(true);
-    };
-
-    const handleCancel = (e) => {
-        e.preventDefault();
-        setShowCancelPopup(true);
-    };
-
-    const handleCloseSavePopup = () => {
-        setShowSavePopup(false);
-    };
-
-    const handleCloseCancelPopup = () => {
-        setShowCancelPopup(false);
+        setIsSaveModalOpen(true);
     };
 
     const handleConfirmCancel = () => {
-        setShowCancelPopup(false);
-        // Add logic to handle form cancellation if needed
+        setFormData({
+            jobOrderNo: "",
+            quantity: "",
+            jobOrderPart: "",
+            unitPrice: "",
+            dateModified: "",
+            weight: "",
+            payItemNumber: "",
+        });
+        setIsCancelModalOpen(false);
     };
+
+    const handleSubmit = () => {
+        setIsSubmitModalOpen(true);
+        setIsSubmittedModalOpen(false);
+    };
+
+    const handleConfirmSubmit = () => {
+        console.log("Form submitted!");
+        setIsSubmitModalOpen(false);
+        setIsSubmittedModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsSaveModalOpen(false);
+        setIsCancelModalOpen(false);
+        setIsSubmitModalOpen(false);
+        setIsSubmittedModalOpen(false);
+    };
+
+    const isAnyFieldEmpty = Object.values(formData).some(
+        (value) => value === ""
+    );
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link href={route('contract')} className="text-grey-600 hover:text-grey-900 mr-4">
+                    <Link
+                        href={route("job-order-details")}
+                        className="text-grey-600 hover:text-grey-900 mr-4"
+                    >
                         <button>
                             <ChevronLeft size={25} strokewidth={1.25} />
                         </button>
@@ -63,56 +98,193 @@ export default function JobOrderItemBillingPage({ auth }) {
 
             <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            <div className="max-w-3xl mx-auto">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-bold">New Pay Item</h3>
-                                    <button onClick={handleCancel} className="bg-white text-gray-700 border border-black py-2 px-4 rounded">
-                                        Cancel
-                                    </button>
-                                </div>
-                                <p className="mb-6">Please insert a pay item and its details</p>
-                                <form onSubmit={handleSave}>
-                                    <div className="grid grid-cols-2 gap-6 mb-4">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div className="p-6 bg-white border-b border-gray-200">
+                            <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
+                                New Pay Item
+                            </h1>
+                            <br />
+                            <hr />
+
+                            <div className="mt-8">
+                                <p className="mt-1 text-sm text-gray-600">
+                                    Please insert a pay item and its details
+                                </p>
+                                <form className="mt-6" onSubmit={handleSave}>
+                                    <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
                                         <div>
-                                            <label className="block text-gray-700">Job Order No.</label>
-                                            <select className="w-full mt-1 p-2 border rounded">
-                                                <option>Select</option>
+                                            <label
+                                                htmlFor="jobOrderNo"
+                                                className="block w-full text-sm font-medium text-gray-700"
+                                            >
+                                                Job Order No.
+                                            </label>
+                                            <select
+                                                id="jobOrderNo"
+                                                name="jobOrderNo"
+                                                required
+                                                value={formData.jobOrderNo}
+                                                onChange={handleChange}
+                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                            >
+                                                <option value="">Select</option>
+                                                <option value="JO-001">
+                                                    JO-001
+                                                </option>
+                                                <option value="JO-002">
+                                                    JO-002
+                                                </option>
+                                                <option value="JO-003">
+                                                    JO-003
+                                                </option>
                                                 {/* Add more options here */}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-gray-700">Quantity</label>
-                                            <input type="number" className="w-full mt-1 p-2 border rounded" placeholder="Enter Quantity" />
+                                            <label
+                                                htmlFor="quantity"
+                                                className="block w-full text-sm font-medium text-gray-700"
+                                            >
+                                                Quantity
+                                            </label>
+                                            <input
+                                                id="quantity"
+                                                name="quantity"
+                                                type="number"
+                                                required
+                                                value={formData.quantity}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Quantity"
+                                            />
                                         </div>
                                         <div>
-                                            <label className="block text-gray-700">Job Order Part</label>
-                                            <select className="w-full mt-1 p-2 border rounded">
-                                                <option>Select</option>
+                                            <label
+                                                htmlFor="jobOrderPart"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Job Order Part
+                                            </label>
+                                            <select
+                                                id="jobOrderPart"
+                                                name="jobOrderPart"
+                                                required
+                                                value={formData.jobOrderPart}
+                                                onChange={handleChange}
+                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                            >
+                                                <option value="">Select</option>
+                                                <option value="Part-001">
+                                                    Part-001
+                                                </option>
+                                                <option value="Part-002">
+                                                    Part-002
+                                                </option>
+                                                <option value="Part-003">
+                                                    Part-003
+                                                </option>
                                                 {/* Add more options here */}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-gray-700">Unit Price</label>
-                                            <input type="number" step="0.01" className="w-full mt-1 p-2 border rounded" placeholder="Enter Unit Price" />
+                                            <label
+                                                htmlFor="unitPrice"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Unit Price
+                                            </label>
+                                            <input
+                                                id="unitPrice"
+                                                name="unitPrice"
+                                                type="number"
+                                                step="0.01"
+                                                required
+                                                value={formData.unitPrice}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Unit Price"
+                                            />
                                         </div>
                                         <div>
-                                            <label className="block text-gray-700">Date Modified</label>
-                                            <input type="date" className="w-full mt-1 p-2 border rounded" placeholder="Enter Date Needed" />
+                                            <label
+                                                htmlFor="dateModified"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Date Modified
+                                            </label>
+                                            <input
+                                                id="dateModified"
+                                                name="dateModified"
+                                                type="date"
+                                                required
+                                                value={formData.dateModified}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                            />
                                         </div>
                                         <div>
-                                            <label className="block text-gray-700">Weight</label>
-                                            <input type="number" step="0.01" className="w-full mt-1 p-2 border rounded" placeholder="Enter Weight" />
+                                            <label
+                                                htmlFor="weight"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Weight
+                                            </label>
+                                            <input
+                                                id="weight"
+                                                name="weight"
+                                                type="number"
+                                                step="0.01"
+                                                required
+                                                value={formData.weight}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Weight"
+                                            />
+                                        </div>
+                                        <div className="sm:col-span-2">
+                                            <label
+                                                htmlFor="payItemNumber"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Pay Item Number
+                                            </label>
+                                            <input
+                                                id="payItemNumber"
+                                                name="payItemNumber"
+                                                type="text"
+                                                required
+                                                value={formData.payItemNumber}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Pay Item Number"
+                                            />
                                         </div>
                                     </div>
-                                    <div className="mb-4">
-                                        <label className="block text-gray-700">Pay Item Number</label>
-                                        <input type="text" className="w-full mt-1 p-2 border rounded" placeholder="Enter Pay Item Number" />
-                                    </div>
-                                    <div className="flex justify-end space-x-4">
-                                        <Button type="submit" className="bg-gray-200 text-gray-700">Save</Button>
-                                        <Button className="bg-blue-600 text-white">Submit</Button>
+
+                                    <div className="mt-6 flex items-center justify-between">
+                                        <Button
+                                            type="button"
+                                            onClick={handleCancel}
+                                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <div className="flex space-x-4">
+                                            <Button
+                                                type="submit"
+                                                className="bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] text-white font-bold py-2 px-4 rounded"
+                                            >
+                                                Save
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                onClick={handleSubmit}
+                                                disabled={isAnyFieldEmpty}
+                                                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                                            >
+                                                Submit
+                                            </Button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -120,20 +292,30 @@ export default function JobOrderItemBillingPage({ auth }) {
                     </div>
                 </div>
             </div>
-
-            {showSavePopup && (
-                <ConfirmPopup
-                    message="Form have been successfully saved!"
-                    onConfirm={handleCloseSavePopup}
-                    onCancel={handleCloseSavePopup}
+            {isSaveModalOpen && (
+                <SaveJobOrderModal
+                    show={isSaveModalOpen}
+                    onClose={closeModal}
                 />
             )}
-
-            {showCancelPopup && (
-                <ConfirmPopup
-                    message="Are you sure you want to submit this form? Once submitted, it cannot be modified."
+            {isCancelModalOpen && (
+                <CancelJobOrderModal
+                    show={isCancelModalOpen}
+                    onClose={closeModal}
                     onConfirm={handleConfirmCancel}
-                    onCancel={handleCloseCancelPopup}
+                />
+            )}
+            {isSubmitModalOpen && (
+                <SubmitJobOrderModal
+                    show={isSubmitModalOpen}
+                    onClose={closeModal}
+                    onConfirm={handleConfirmSubmit}
+                />
+            )}
+            {isSubmittedModalOpen && (
+                <JobOrderSubmittedModal
+                    show={isSubmittedModalOpen}
+                    onClose={closeModal}
                 />
             )}
         </AuthenticatedLayout>
