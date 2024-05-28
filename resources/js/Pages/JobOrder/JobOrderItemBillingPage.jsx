@@ -103,10 +103,8 @@ export default function JobOrderItemBillingPage({ auth }) {
                             <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
                                 New Pay Item
                             </h1>
-                            <br />
-                            <hr />
 
-                            <div className="mt-8">
+                            <div className="mt-0">
                                 <p className="mt-1 text-sm text-gray-600">
                                     Please insert a pay item and its details
                                 </p>
@@ -127,7 +125,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 onChange={handleChange}
                                                 className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
                                             >
-                                                <option value="">Select</option>
+                                                <option value="">Select Job Order Number</option>
                                                 <option value="JO-001">
                                                     JO-001
                                                 </option>
@@ -137,7 +135,6 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 <option value="JO-003">
                                                     JO-003
                                                 </option>
-                                                {/* Add more options here */}
                                             </select>
                                         </div>
                                         <div>
@@ -173,17 +170,16 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 onChange={handleChange}
                                                 className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
                                             >
-                                                <option value="">Select</option>
-                                                <option value="Part-001">
-                                                    Part-001
+                                                <option value="">Select Job Order Part</option>
+                                                <option value="Part-A">
+                                                    Part-A
                                                 </option>
-                                                <option value="Part-002">
-                                                    Part-002
+                                                <option value="Part-B">
+                                                    Part-B
                                                 </option>
-                                                <option value="Part-003">
-                                                    Part-003
+                                                <option value="Part-C">
+                                                    Part-C
                                                 </option>
-                                                {/* Add more options here */}
                                             </select>
                                         </div>
                                         <div>
@@ -246,18 +242,27 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 htmlFor="payItemNumber"
                                                 className="block text-sm font-medium text-gray-700"
                                             >
-                                                Pay Item Number
+                                                Pay Item No.
                                             </label>
-                                            <input
+                                            <select
                                                 id="payItemNumber"
                                                 name="payItemNumber"
-                                                type="text"
                                                 required
                                                 value={formData.payItemNumber}
                                                 onChange={handleChange}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Pay Item Number"
-                                            />
+                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                            >
+                                                <option value="">Select Pay Item Number</option>
+                                                <option value="PI-001">
+                                                    PI-001
+                                                </option>
+                                                <option value="PI-002">
+                                                    PI-002
+                                                </option>
+                                                <option value="PI-003">
+                                                    PI-003
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
 
