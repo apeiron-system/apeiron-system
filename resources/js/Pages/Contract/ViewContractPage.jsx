@@ -47,7 +47,7 @@ export default function ViewContractPage({
                         </h2>
                         <h2 className="text-sm text-gray-600 leading-tight mt-2">
                             Authorized Representative -
-                            {signingsigningAuthorityEmployee.first_name +
+                            {signingAuthorityEmployee.first_name +
                                 " " +
                                 signingAuthorityEmployee.last_name}
                         </h2>

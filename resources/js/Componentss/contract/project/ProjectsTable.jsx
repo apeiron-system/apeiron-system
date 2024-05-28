@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import _ from "lodash";
 
 export default function ProjectsTable({ projects }) {
     // $table->id();
@@ -64,7 +65,9 @@ export default function ProjectsTable({ projects }) {
                             </TableCell>
                             <TableCell>{project.num_of_units}</TableCell>
                             <TableCell>{project.abc_value}</TableCell>
-                            <TableCell>{project.status}</TableCell>
+                            <TableCell>
+                                {_.capitalize(project.status)}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
