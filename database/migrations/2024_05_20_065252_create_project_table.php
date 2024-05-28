@@ -27,7 +27,7 @@ return new class extends Migration
 
             $table->integer("duration_in_days");
             $table->integer("num_of_units");
-            $table->decimal("abc_value");
+            $table->decimal("abc_value", 15, 2);
 
             $table->foreignId("submitted_by_employee_id");
             $table->foreign("submitted_by_employee_id")->references("id")->on("employee");

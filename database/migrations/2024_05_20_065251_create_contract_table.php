@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string("location");
             $table->string("designation")->nullable();
             $table->integer("duration_in_days");
-            $table->decimal("amount");
+            $table->decimal("amount", 15, 2);
             $table->date("date");
 
             $table->foreignId("authorized_representative_employee_id")->nullable();

@@ -16,10 +16,10 @@ return new class extends Migration
             $table->timestamps();
             $table->date("date_modified");
             $table->integer("quantity");
-            $table->decimal("unit_bid_cost");
-            $table->decimal("actual_bid_cost");
-            $table->decimal("initial_amount");
-            $table->decimal("actual_amount");
+            $table->decimal("unit_bid_cost", 15, 2);
+            $table->decimal("actual_bid_cost", 15, 2);
+            $table->decimal("initial_amount", 15, 2);
+            $table->decimal("actual_amount", 15, 2);
 
             $table->foreignId("project_id");
             $table->foreignId("project_part_id");
