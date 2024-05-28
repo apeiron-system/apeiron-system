@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -21,10 +22,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/contract', function () {
-    return Inertia::render('Contract/ContractPage');
-})->middleware(['auth', 'verified'])->name('contract');
 
 Route::get('/job-order', function () {
     return Inertia::render('JobOrder/JobOrderPage');
@@ -56,7 +53,14 @@ Route::patch('/employees/{id}/update', [EmployeeController::class, 'update'])->m
 
 Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->middleware(['auth', 'verified'])->name('employees.delete');
 
+//contract
 
+//pass to contract controller
+Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
+
+Route::get("/contract/add", [ContractController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.add');
+
+Route::post("/contract/add", [ContractController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.create');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
