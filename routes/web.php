@@ -36,6 +36,23 @@ Route::get('/progress-report', function () {
     return Inertia::render('ProgressReport/ProgressReportPage');
 })->middleware(['auth', 'verified'])->name('progress-report');
 
+//contract
+
+
+Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
+
+Route::get("/contract/{id}", [ContractController::class, 'viewContract'])->middleware(['auth', 'verified'])->name('contract.view');
+
+Route::get("/contract/add/contract", [ContractController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.add');
+
+Route::get("/contract/{id}/edit", [ContractController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.edit');
+
+Route::post("/contract/add", [ContractController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.create');
+
+Route::patch("/contract/{id}/update", [ContractController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.update');
+
+Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.delete');
+
 
 
 //employees
@@ -56,11 +73,33 @@ Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->
 
 //contract
 
+Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
 
+Route::get("/contract/{id}", [ContractController::class, 'viewContract'])->middleware(['auth', 'verified'])->name('contract.view');
+
+Route::get("/contract/add/contract", [ContractController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.add');
+
+Route::get("/contract/{id}/edit", [ContractController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.edit');
+
+Route::post("/contract/add", [ContractController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.create');
+
+Route::patch("/contract/{id}/update", [ContractController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.update');
+
+Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.delete');
 
 //project
 
+Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
 
+Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.create');
+
+Route::get("/contract/{contract_id}/project/{project_id}/edit", [ProjectController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.project.edit');
+
+Route::delete("/contract/{contract_id}/project/{project_id}/delete", [ProjectController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.delete');
+
+Route::get("/contract/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.view');
+
+Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.project.update');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
