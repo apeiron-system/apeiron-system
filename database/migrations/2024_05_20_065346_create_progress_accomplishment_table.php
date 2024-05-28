@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->date('accomplishment_date');
-            $table->foreignId('contract_id');
-            $table->foreignId('prepared_by_employee_id');
-            $table->foreignId('approved_by_employee_id');
-            $table->foreignId('reviewed_by_employee_id');
-            $table->foreignId('checked_by_employee_id');
+            $table->integer('contract_id');
+            $table->integer('prepared_by_employee_id');
+            $table->integer('approved_by_employee_id');
+            $table->integer('reviewed_by_employee_id');
+            $table->integer('checked_by_employee_id');
         });
     }
 
