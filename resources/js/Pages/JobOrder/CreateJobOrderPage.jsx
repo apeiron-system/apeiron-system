@@ -6,7 +6,7 @@ import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
 import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from "lucide-react";
 
 export default function CreateJobOrderPage({ auth }) {
     const [formData, setFormData] = useState({
@@ -78,13 +78,16 @@ export default function CreateJobOrderPage({ auth }) {
     );
 
     return (
-        <AuthenticatedLayout 
+        <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link href={route('job-order')} className="text-grey-600 hover:text-grey-900 mr-4">
+                    <Link
+                        href={route("job-order")}
+                        className="text-grey-600 hover:text-grey-900 mr-4"
+                    >
                         <button>
-                            <ChevronLeft size={25} strokewidth={1.25} />
+                            <ChevronLeft size={25} strokeWidth={1.25} />
                         </button>
                     </Link>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
@@ -93,20 +96,13 @@ export default function CreateJobOrderPage({ auth }) {
                 </div>
             }
         >
-
             <Head title="Create Job Order" />
 
             <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
-                            <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
-                                Job Order
-                            </h1>
-                            <br />
-                            <hr />
-
-                            <div className="mt-8">
+                            <div className="mt-0">
                                 <h2 className="text-xl font-semibold text-gray-800">
                                     Project Selection
                                 </h2>
@@ -114,26 +110,20 @@ export default function CreateJobOrderPage({ auth }) {
                                     Choose the project you're creating the job
                                     order for.
                                 </p>
-                                <div className="mt-4">
-                                    <label
-                                        htmlFor="projectName"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Project Selection
-                                    </label>
-                                    <select
-                                        id="projectName"
-                                        name="projectName"
-                                        required
-                                        value={formData.projectName}
-                                        onChange={handleChange}
-                                        className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
-                                    >
-                                        <option>Project Name</option>
-                                        <option>Project 1</option>
-                                        <option>Project 2</option>
-                                    </select>
-                                </div>
+                                <select
+                                    id="projectName"
+                                    name="projectName"
+                                    required
+                                    value={formData.projectName}
+                                    onChange={handleChange}
+                                    className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                >
+                                    <option value="">
+                                        Select Project Name
+                                    </option>
+                                    <option value="Project 1">Project 1</option>
+                                    <option value="Project 2">Project 2</option>
+                                </select>
                             </div>
 
                             <div className="mt-8">
@@ -154,16 +144,50 @@ export default function CreateJobOrderPage({ auth }) {
                                             >
                                                 Job Order No.
                                             </label>
-                                            <input
+                                            <select
                                                 id="jobOrderNo"
                                                 name="jobOrderNo"
-                                                type="text"
                                                 required
                                                 value={formData.jobOrderNo}
                                                 onChange={handleChange}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Job Order Number"
-                                            />
+                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                            >
+                                                <option value="">
+                                                    Select Job Order Number
+                                                </option>
+                                                <option value="Order 1">
+                                                    JO-001
+                                                </option>
+                                                <option value="Order 2">
+                                                    JO-002
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label
+                                                htmlFor="contractId"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Contract ID
+                                            </label>
+                                            <select
+                                                id="contractId"
+                                                name="contractId"
+                                                required
+                                                value={formData.contractId}
+                                                onChange={handleChange}
+                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                            >
+                                                <option value="">
+                                                    Select Contract ID
+                                                </option>
+                                                <option value="Contract 1">
+                                                    C-001
+                                                </option>
+                                                <option value="Contract 2">
+                                                    C-002
+                                                </option>
+                                            </select>
                                         </div>
                                         <div>
                                             <label
@@ -181,24 +205,6 @@ export default function CreateJobOrderPage({ auth }) {
                                                 onChange={handleChange}
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
                                                 placeholder="Enter Period Covered"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label
-                                                htmlFor="contractId"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Contract ID
-                                            </label>
-                                            <input
-                                                id="contractId"
-                                                name="contractId"
-                                                type="text"
-                                                required
-                                                value={formData.contractId}
-                                                onChange={handleChange}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Contract ID"
                                             />
                                         </div>
                                         <div>
