@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipment_needed', function (Blueprint $table) {
-            $table->id();
+            $table->id('equipment_id');
+            $table->string('equipment_name');
             $table->timestamps();
+
+            $table->unsignedBigInteger('en_job_order_id');
+            $table->foreign('en_job_order_id')->references('job_order_id')->on('job_order')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unsignedBigInteger('en_contract_id');
+            $table->foreign('en_contract_id')->references('contract_id')->on('contract')->onDelete('cascade')->onUpdate('cascade');
+        
         });
     }
 
