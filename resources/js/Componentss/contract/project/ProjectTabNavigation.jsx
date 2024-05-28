@@ -1,20 +1,17 @@
 import TabNavigation from "../../TabbedNavigation";
 
-export default function ProjectTabNavigation({ contract_id, project_id }) {
+export default function ProjectTabNavigation({ id }) {
     return (
         <TabNavigation
             routeObject={[
                 {
-                    routeName: "Project Overview",
-                    route: route("contract.project.view", [
-                        contract_id,
-                        project_id,
-                    ]),
+                    routeName: "View Projects",
+                    route: route("contract.view", id),
                 },
-                // {
-                //     routeName: "Add Part",
-                //     route: route("contract.project.add", id),
-                // },
+                {
+                    routeName: "Add Project",
+                    route: route("contract.project.add", id),
+                },
             ]}
         />
     );

@@ -123,6 +123,6 @@ class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('contract.project.view', $contract_id);
+        return redirect()->route('contract.view', $contract_id);
     }
 }

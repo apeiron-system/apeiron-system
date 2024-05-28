@@ -38,7 +38,7 @@ export default function ViewContractPage({
         >
             <Head title={`View Contract - ${contract.contract_name}`} />
 
-            <ProjectTabNavigation />
+            <ProjectTabNavigation  id={contract.id}/>
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Projects</h1>

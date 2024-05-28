@@ -2,6 +2,7 @@ import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavig
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ProjectForm from "../../../Componentss/contract/project/ProjectForm";
+import ContractHeader from "@/Componentss/contract/ContractHeader";
 
 export default function AddProjectPage({
     auth,
@@ -21,10 +22,7 @@ export default function AddProjectPage({
         >
             <Head title="Add Project" />
 
-            <ProjectTabNavigation
-                contract_id={contract.id}
-                project_id={project.id}
-            />
+            <ProjectTabNavigation id={contract.id} />
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Add Project</h1>

@@ -66,7 +66,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
     });
 
     const onSubmit = async (values) => {
-
         try {
             if (project && project.id) {
                 // Edit mode
@@ -296,7 +295,9 @@ export default function ProjectForm({ project, employees, contract_id }) {
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={
-                                        project.signing_authority_employee_id
+                                        project
+                                            ? project.signing_authority_employee_id
+                                            : null
                                     }
                                     employees={employees}
                                     onSelect={(employeeId) => {
@@ -320,7 +321,9 @@ export default function ProjectForm({ project, employees, contract_id }) {
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={
-                                        project.signing_authority_employee_id
+                                        project
+                                            ? project.signing_authority_employee_id
+                                            : null
                                     }
                                     employees={employees}
                                     onSelect={(employeeId) => {

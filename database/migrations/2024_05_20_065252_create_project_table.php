@@ -36,7 +36,7 @@ return new class extends Migration
             $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
 
             $table->foreignId("contract_id");
-            $table->foreign("contract_id")->references("id")->on("contract");
+            $table->foreign("contract_id")->references("id")->on("contract")->onDelete('cascade');
         });
     }
 

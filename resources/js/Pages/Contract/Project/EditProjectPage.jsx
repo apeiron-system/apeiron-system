@@ -29,11 +29,6 @@ export default function EditProjectPage({
         >
             <Head title="Edit Project" />
 
-            <ProjectTabNavigation
-                contract_id={contract.id}
-                project_id={project.id}
-            />
-
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Edit Project</h1>
             </section>
