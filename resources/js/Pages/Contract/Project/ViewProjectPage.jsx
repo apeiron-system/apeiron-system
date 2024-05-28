@@ -26,7 +26,7 @@ export default function ViewProjectPage({
         >
             <Head title={`View Project - ${project.project_name}`} />
 
-            {/* <ProjectTabNavigation projectId={contract.id} contractId={project.id}/> */}
+            <ProjectTabNavigation contract_id={contract.id} project_id={project.id}/>
 
             {/* <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Projects</h1>

@@ -236,7 +236,9 @@ export default function ContractForm({ contract, employees }) {
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={
-                                        contract.authorized_representative_employee_id
+                                        contract
+                                            ? contract.authorized_representative_employee_id
+                                            : null
                                     }
                                     employees={employees}
                                     onSelect={(employeeId) => {

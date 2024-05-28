@@ -3,6 +3,7 @@ import ProjectsTable from "@/Componentss/contract/project/ProjectsTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ContractHeader from "@/Componentss/contract/ContractHeader";
+import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 
 export default function ViewContractPage({
     auth,
@@ -37,7 +38,7 @@ export default function ViewContractPage({
         >
             <Head title={`View Contract - ${contract.contract_name}`} />
 
-            <ProjectTabNavigation id={contract.id} />
+            <ProjectTabNavigation />
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Projects</h1>

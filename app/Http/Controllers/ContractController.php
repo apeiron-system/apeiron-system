@@ -112,7 +112,7 @@ class ContractController extends Controller
 
         $contract->save();
 
-        return redirect()->route('contract');
+        return redirect()->route('contract.view', ['id' => $contract->id]);
     }
 
     public function delete($id)

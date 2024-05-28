@@ -1,10 +1,7 @@
-import ContractForm from "@/Componentss/contract/ContractForm";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ProjectForm from "../../../Componentss/contract/project/ProjectForm";
-import _ from "lodash";
 
 export default function AddProjectPage({
     auth,
@@ -24,7 +21,10 @@ export default function AddProjectPage({
         >
             <Head title="Add Project" />
 
-            <ProjectTabNavigation id={contract.id} employees={employees} />
+            <ProjectTabNavigation
+                contract_id={contract.id}
+                project_id={project.id}
+            />
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Add Project</h1>
