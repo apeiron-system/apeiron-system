@@ -1,30 +1,31 @@
-import { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Button } from '@/Components/ui/button';
-import Modal from '@/Components/Modal';
+import { useState } from "react";
+import { Head, Link } from "@inertiajs/react";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Button } from "@/Components/ui/button";
+import Modal from "@/Components/Modal";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { ChevronLeft } from 'lucide-react';
-import InputLabel from '@/Components/InputLabel';
-import TextInput from '@/Components/TextInput';
+import { ChevronLeft } from "lucide-react";
+import InputLabel from "@/Components/InputLabel";
+import TextInput from "@/Components/TextInput";
+import Checkbox from "@/Components/Checkbox";
 
 export default function JobOrderDetailsPage({ auth }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
-        projectId: 'PROJECT-001234',
-        jobOrderNo: 'JO1234',
-        contractId: '#00000',
-        location: 'Panabo City',
-        itemsWork: 'PHP 1,000,000.00',
-        periodCovered: '2022-2026',
-        supplier: 'Name of Supplier',
-        dateNeeded: '2022-2026',
-        status: 'PENDING', // default status
+        projectId: "PROJECT-A/B",
+        jobOrderNo: "UNIT 21/22",
+        contractId: "#00000",
+        location: "Panabo City",
+        itemsWork: "PHP 1,000,000.00",
+        periodCovered: "2022-2026",
+        supplier: "Name of Supplier",
+        dateNeeded: "2022-2026",
+        status: "PENDING", // default status
     });
 
     const [relatedData, setRelatedData] = useState([]); // Define relatedData state
@@ -43,7 +44,10 @@ export default function JobOrderDetailsPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link href={route('job-order')} className="text-grey-600 hover:text-grey-900 mr-4">
+                    <Link
+                        href={route("job-order")}
+                        className="text-grey-600 hover:text-grey-900 mr-4"
+                    >
                         <button>
                             <ChevronLeft size={25} strokewidth={1.25} />
                         </button>
@@ -59,120 +63,227 @@ export default function JobOrderDetailsPage({ auth }) {
             {/* JO Details Page */}
             <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="text-gray-900">
-                            <div className="pb-4">
-                                <div className="flex mb-1">
-                                    <div className="text-xl">{formData.projectId}</div>
-                                </div>
-                                <div className="flex justify-between items-center items-center">
-                                    <div className="mr-2 flex justify-start">
-                                        <div className="text-sm text-gray-600 pr-2">Project Status</div>
-                                        <div
-                                        // bg color should have condition 'if ON-GOING: Blue , if PENDING: yellow'
-                                            className={`bg-yellow-500 text-white text-center w-28 py-1 px-2 rounded-lg`}
-                                        >
-                                            {formData.status}
-                                        </div>
-                                    </div>
-                                    <Button onClick={() => setIsModalOpen(true)} className="bg-gray-500 text-white">
-                                        Edit
-                                    </Button>
+                    <div className="text-gray-900">
+                        <div className="pb-4">
+                            <div className="flex mb-1">
+                                <div className="text-xl">
+                                    {formData.projectId}
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <div className="text-sm text-gray-600">Job Order No:</div>
-                                    <div>{formData.jobOrderNo}</div>
+                            <div className="flex justify-between items-center items-center">
+                                <div className="mr-2 flex justify-start">
+                                    <div className="text-sm text-gray-600 pr-2">
+                                        Project Status
+                                    </div>
+                                    <div
+                                        // bg color should have condition 'if ON-GOING: Blue , if PENDING: yellow'
+                                        className={`bg-yellow-500 text-white text-center w-28 py-1 px-2 rounded-lg`}
+                                    >
+                                        {formData.status}
+                                    </div>
                                 </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Contract ID:</div>
-                                    <div>{formData.contractId}</div>
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Location:</div>
-                                    <div>{formData.location}</div>
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Items Work:</div>
-                                    <div>{formData.itemsWork}</div>
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Period Covered:</div>
-                                    <div>{formData.periodCovered}</div>
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Supplier:</div>
-                                    <div>{formData.supplier}</div>
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-600">Date Needed:</div>
-                                    <div>{formData.dateNeeded}</div>
-                                </div>
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="bg-gray-500 text-white"
+                                >
+                                    Edit
+                                </Button>
                             </div>
                         </div>
-                        <div className="mt-6">
-                            <h3 className="text-lg font-semibold">Bill of Quantities</h3>
-                            <table className="min-w-full bg-white mt-4">
-                                <thead>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Job Order No:
+                                </div>
+                                <div>{formData.jobOrderNo}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Contract ID:
+                                </div>
+                                <div>{formData.contractId}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Location:
+                                </div>
+                                <div>{formData.location}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Items Work:
+                                </div>
+                                <div>{formData.itemsWork}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Period Covered:
+                                </div>
+                                <div>{formData.periodCovered}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Supplier:
+                                </div>
+                                <div>{formData.supplier}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-600">
+                                    Date Needed:
+                                </div>
+                                <div>{formData.dateNeeded}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-6">
+                        <h3 className="text-xl font-semibold mb-4">
+                            Bill of Quantites
+                        </h3>
+                        <div className="bg-white shadow rounded overflow-hidden">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="py-2 px-4 border-b border-gray-200">Item No.</th>
-                                        <th className="py-2 px-4 border-b border-gray-200">Description</th>
-                                        <th className="py-2 px-4 border-b border-gray-200">Unit</th>
-                                        <th className="py-2 px-4 border-b border-gray-200">Quantity</th>
-                                        <th className="py-2 px-4 border-b border-gray-200">Unit Cost</th>
-                                        <th className="py-2 px-4 border-b border-gray-200">Amount</th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Item No.
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Description
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Unit
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Quantity
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Unit Cost
+                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200">
+                                            Amount
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* Retrieve Data from Database */}
-                                    {relatedData.map((data) => (
-                                        <tr key={data.id}>
-                                            {/* 
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.itemno}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.description}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.unit}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.quantity}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.unitcost}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{data.amount}</td>
-                                            */}
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Item No</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Description</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Unit</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Quantity</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Unit Cost</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">Placeholder Amount</td>
-                                        </tr>
-                                    ))}
+                                    <tr className="hover:bg-gray-600 ">
+                                        <td className="px-2 py-2 whitespace-nowrap">
+                                            <Checkbox />
+                                        </td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap text-right text-sm font-medium">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger className="text-gray-500 hover:text-white">
+                                                    &#8226;&#8226;&#8226;
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            href="#"
+                                                            className="w-full flex gap-2 items-center"
+                                                        >
+                                                            View
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            href="#"
+                                                            className="w-full flex gap-2 items-center"
+                                                        >
+                                                            Delete
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </td>
+                                    </tr>
+                                    <tr className="hover:bg-gray-600 ">
+                                        <td className="px-2 py-2 whitespace-nowrap">
+                                            <Checkbox />
+                                        </td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap"></td>
+                                        <td className="px-2 py-2 whitespace-nowrap text-right text-sm font-medium">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger className="text-gray-500 hover:text-white">
+                                                    &#8226;&#8226;&#8226;
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            href="#"
+                                                            className="w-full flex gap-2 items-center"
+                                                        >
+                                                            View
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        <Link
+                                                            href="#"
+                                                            className="w-full flex gap-2 items-center"
+                                                        >
+                                                            Delete
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <Link href={route('job-order-item-billing')}>
+                    </div>
+                    <div className="col-span-2 flex justify-end mt-4">
+                        <Link href={route("job-order-item-billing")}>
                             <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
                                 Add Pay Item
                             </button>
                         </Link>
+                    </div>
                 </div>
             </div>
 
             {/* Edit Modal */}
 
-            <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="lg">
+            <Modal
+                show={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                maxWidth="lg"
+            >
                 <div className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">Edit Job Order Details</h3>
+                    <h3 className="text-lg font-semibold mb-4">
+                        Edit Job Order Details
+                    </h3>
                     <div>
                         <div className="flex justify-between items-center">
                             <InputLabel htmlFor="status">Status</InputLabel>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <button className="block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                        {formData.status} 
+                                        {formData.status}
                                     </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem onClick={() => { /* Logic to change status to On Going */ }}>
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            /* Logic to change status to On Going */
+                                        }}
+                                    >
                                         ON-GOING
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => { /* Logic to change status to Pending */ }}>
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            /* Logic to change status to Pending */
+                                        }}
+                                    >
                                         PENDING
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -182,7 +293,9 @@ export default function JobOrderDetailsPage({ auth }) {
 
                     <form>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="jobOrderNo">Job Order No:</InputLabel>
+                            <InputLabel htmlFor="jobOrderNo">
+                                Job Order No:
+                            </InputLabel>
                             <TextInput
                                 id="jobOrderNo"
                                 name="jobOrderNo"
@@ -193,7 +306,9 @@ export default function JobOrderDetailsPage({ auth }) {
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="contractId">Contract ID</InputLabel>
+                            <InputLabel htmlFor="contractId">
+                                Contract ID
+                            </InputLabel>
                             <TextInput
                                 id="contractId"
                                 name="contractId"
@@ -215,7 +330,9 @@ export default function JobOrderDetailsPage({ auth }) {
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="itemsWork">Items Work</InputLabel>
+                            <InputLabel htmlFor="itemsWork">
+                                Items Work
+                            </InputLabel>
                             <TextInput
                                 id="itemsWork"
                                 name="itemsWork"
@@ -226,7 +343,9 @@ export default function JobOrderDetailsPage({ auth }) {
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="periodCovered">Period Covered</InputLabel>
+                            <InputLabel htmlFor="periodCovered">
+                                Period Covered
+                            </InputLabel>
                             <TextInput
                                 id="periodCovered"
                                 name="periodCovered"
@@ -248,7 +367,9 @@ export default function JobOrderDetailsPage({ auth }) {
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="dateNeeded">Date Needed</InputLabel>
+                            <InputLabel htmlFor="dateNeeded">
+                                Date Needed
+                            </InputLabel>
                             <TextInput
                                 id="dateNeeded"
                                 name="dateNeeded"
@@ -260,17 +381,24 @@ export default function JobOrderDetailsPage({ auth }) {
                             />
                         </div>
                         <div className="col-span-2 flex justify-end mt-4">
-                            <Button onClick={() => setShowModal(false)} variant="outline" className="mr-2">
+                            <Button
+                                onClick={() => setShowModal(false)}
+                                variant="outline"
+                                className="mr-2"
+                            >
                                 Cancel
                             </Button>
-                            <Button onClick={() => { /* Save changes logic */ }}>
+                            <Button
+                                onClick={() => {
+                                    /* Save changes logic */
+                                }}
+                            >
                                 Confirm
                             </Button>
                         </div>
                     </form>
                 </div>
             </Modal>
-
         </AuthenticatedLayout>
     );
 }
