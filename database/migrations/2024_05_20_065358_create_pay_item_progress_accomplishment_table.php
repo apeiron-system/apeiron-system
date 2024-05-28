@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('pay_item_progress_accomplishment', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('accomplishment_report_id');
-            $table->foreignId('contract_part_id');
-            $table->foreignId('parent_id');
-            $table->foreignId('pay_item_no');
+            $table->foreignId('accomplishment_report_id')->constrained('progress_accomplishment', 'id', 'fk_payitem_progress_id')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->integer('contract_part_id');
+            $table->integer('pay_item_no');
             $table->double('quantity_this_period');
             $table->double('amount_this_period');
             $table->double('to_date_weight_percent');
