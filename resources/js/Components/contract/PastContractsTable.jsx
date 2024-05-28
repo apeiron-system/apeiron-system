@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Link } from "@inertiajs/react";
 
 export default function PastContractsTable({ contracts }) {
     // $table->id();
@@ -40,7 +41,12 @@ export default function PastContractsTable({ contracts }) {
                 </TableHeader>
                 <TableBody>
                     {contracts.map((contract) => (
-                        <TableRow key={"contract-" + contract.id}>
+                        <TableRow
+                            key={"contract-" + contract.id}
+                            onClick={() => {
+                                window.location.href = `/contract/${contract.id}`;
+                            }}
+                        >
                             <TableCell>{contract.contract_name}</TableCell>
                             <TableCell>{contract.location}</TableCell>
                             <TableCell>{contract.designation}</TableCell>
