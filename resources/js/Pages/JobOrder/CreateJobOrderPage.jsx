@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
 import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
+import { ChevronLeft } from 'lucide-react';
 
 export default function CreateJobOrderPage({ auth }) {
     const [formData, setFormData] = useState({
@@ -77,8 +78,24 @@ export default function CreateJobOrderPage({ auth }) {
     );
 
     return (
-        <AuthenticatedLayout user={auth.user}>
-            <Head title="Job Order" />
+        <AuthenticatedLayout 
+            user={auth.user}
+            header={
+                <div className="flex">
+                    <Link href={route('job-order')} className="text-grey-600 hover:text-grey-900 mr-4">
+                        <button>
+                            <ChevronLeft size={25} strokewidth={1.25} />
+                        </button>
+                    </Link>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Create Job Order
+                    </h2>
+                </div>
+            }
+        >
+
+            <Head title="Create Job Order" />
+
             <div className="py-3">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">

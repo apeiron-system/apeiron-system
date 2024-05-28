@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { ChevronLeft, Link } from "lucide-react";
+import { Head, Link } from "@inertiajs/react";
+import { ChevronLeft } from "lucide-react";
 import { MapPin } from "lucide-react";
 
 export default function JobOrderPage({ auth }) {
@@ -10,15 +10,19 @@ export default function JobOrderPage({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight flex items-center gap-2">
-                    <button>
-                        <ChevronLeft size={25} strokeWidth={1.25} />
-                    </button>
-                    Job Order
-                </h2>
+                <div className="flex">
+                    <Link href={route('job-order-projects')} className="text-grey-600 hover:text-grey-900 mr-4">
+                        <button>
+                            <ChevronLeft size={25} strokewidth={1.25} />
+                        </button>
+                    </Link>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Job Orders
+                    </h2>
+                </div>
             }
         >
-            <Head title="Contract" /> {/*Fixed the Title*/}
+            <Head title="Job Orders" /> 
 
             <div className="flex flex-col md:flex-row md:justify-between mb-10">
 
@@ -58,9 +62,11 @@ export default function JobOrderPage({ auth }) {
                         </button>
                     </div>
                         
+                    <Link href={route('create-job-order')}>
                         <button className="py-2 px-4 bg-gray-500 text-black rounded text-white font-weight-bold hover:bg-gray-600 mt-2">
                             Add Job Order
                         </button>
+                    </Link>
                 </div>
             </div>
             
@@ -125,10 +131,11 @@ export default function JobOrderPage({ auth }) {
                     <span>90%</span>
                 </div>
 
+                <Link href={route('job-order-details')}>
                     <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
                         View Details
                     </button>
-
+                </Link>
             </div>
 
                
@@ -171,10 +178,11 @@ export default function JobOrderPage({ auth }) {
                     <span>90%</span>
                 </div>
 
+                <Link href={route('job-order-details')}>
                     <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
                         View Details
                     </button>
-
+                </Link>
             </div>
 
 

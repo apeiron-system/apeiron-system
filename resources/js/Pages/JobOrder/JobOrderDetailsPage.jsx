@@ -43,7 +43,7 @@ export default function JobOrderDetailsPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link href={route('contract')} className="text-grey-600 hover:text-grey-900 mr-4">
+                    <Link href={route('job-order')} className="text-grey-600 hover:text-grey-900 mr-4">
                         <button>
                             <ChevronLeft size={25} strokewidth={1.25} />
                         </button>
@@ -146,6 +146,11 @@ export default function JobOrderDetailsPage({ auth }) {
                                 </tbody>
                             </table>
                         </div>
+                        <Link href={route('job-order-item-billing')}>
+                            <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
+                                Add Pay Item
+                            </button>
+                        </Link>
                 </div>
             </div>
 

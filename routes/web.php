@@ -23,15 +23,37 @@ Route::get('/contract', function () {
 })->middleware(['auth', 'verified'])->name('contract');
 
 //PROGRESS BILLING MODULE
+    //Create Job Order Page
+        Route::get('/create-job-order', function () {
+            return Inertia::render('JobOrder/CreateJobOrderPage');
+        })->middleware(['auth', 'verified'])->name('create-job-order');
+
+    //Job Order Contracts Page
+        Route::get('/job-order-contracts', function () {
+            return Inertia::render('JobOrder/JobOrderContractsPage');
+        })->middleware(['auth', 'verified'])->name('job-order-contracts');
+    
+    //Job Order Details Page
+        Route::get('/job-order-details', function () {
+            return Inertia::render('JobOrder/JobOrderDetailsPage');
+        })->middleware(['auth', 'verified'])->name('job-order-details');
+
+    //Job Order Item Billing Page
+        Route::get('/job-order-item-billing', function () {
+            return Inertia::render('JobOrder/JobOrderItemBillingPage');
+        })->middleware(['auth', 'verified'])->name('job-order-item-billing');
+
     //Job Order
         Route::get('/job-order', function () {
             return Inertia::render('JobOrder/JobOrderPage');
         })->middleware(['auth', 'verified'])->name('job-order');
 
-    //Job Order Details Page
-        Route::get('/job-order-details', function () {
-            return Inertia::render('JobOrderDetails/JobOrderDetailsPage');
-        })->middleware(['auth', 'verified'])->name('job-order-details');
+    //Job Order
+        Route::get('/job-order-projects', function () {
+            return Inertia::render('JobOrder/JobOrderProjectsPage');
+        })->middleware(['auth', 'verified'])->name('job-order-projects');
+
+    
 
 Route::get('/item', function () {
     return Inertia::render('Item/ItemPage');

@@ -50,8 +50,8 @@ export default function Authenticated({ user, header, children }) {
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
                         <NavLink
-                            href={route("job-order")}
-                            active={route().current("job-order")}
+                            href={route("job-order-contracts")}
+                            active={route().current("job-order-contracts")}
                         >
                             <NotebookPen className="mr-2" /> Job Order
                         </NavLink>
