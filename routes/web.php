@@ -23,11 +23,15 @@ Route::get('/contract', function () {
 })->middleware(['auth', 'verified'])->name('contract');
 
 //PROGRESS BILLING MODULE
-Route::get('/job-order', function () {
-    return Inertia::render('JobOrder/JobOrderPage');
-})->middleware(['auth', 'verified'])->name('job-order');
+    //Job Order
+        Route::get('/job-order', function () {
+            return Inertia::render('JobOrder/JobOrderPage');
+        })->middleware(['auth', 'verified'])->name('job-order');
 
-
+    //Job Order Details Page
+        Route::get('/job-order-details', function () {
+            return Inertia::render('JobOrderDetails/JobOrderDetailsPage');
+        })->middleware(['auth', 'verified'])->name('job-order-details');
 
 Route::get('/item', function () {
     return Inertia::render('Item/ItemPage');
