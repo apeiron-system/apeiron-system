@@ -43,6 +43,7 @@ export default function ProjectsTable({ projects }) {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Project Name</TableHead>
+                        <TableHead>Location</TableHead>
                         <TableHead>Duration in Days</TableHead>
                         <TableHead>Number of Units</TableHead>
                         <TableHead>ABC Value</TableHead>
@@ -63,6 +64,7 @@ export default function ProjectsTable({ projects }) {
                                 {project.city}, {project.province},{" "}
                                 {project.zip_code}, {project.country}
                             </TableCell>
+                            <TableCell>{project.duration_in_days}</TableCell>
                             <TableCell>{project.num_of_units}</TableCell>
                             <TableCell>{project.abc_value}</TableCell>
                             <TableCell>

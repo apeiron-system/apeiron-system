@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContractModel;
 use App\Models\EmployeeModel;
 use App\Models\ProjectModel;
 use Illuminate\Http\Request;
@@ -16,7 +17,13 @@ class ProjectController extends Controller
 
         $employees = EmployeeModel::all();
 
-        return Inertia::render('Contract/Project/AddProjectPage', ["id" => $id, "employees" => $employees]);
+        $contract = ContractModel::find($id);
+
+        $signingAuthorityEmployee = EmployeeModel::find($contract->authorized_representative_employee_id);
+
+
+        return Inertia::render('Contract/Project/AddProjectPage', ["contract" => $contract, "employees" => $employees,
+        "signingAuthorityEmployee" => $signingAuthorityEmployee]);
     }
 
     public function create(Request $request, $contract_id)
@@ -41,6 +48,6 @@ class ProjectController extends Controller
 
         $project->save();
 
-        return redirect()->route('contract');
+        return redirect()->route('contract.view', $contract_id);
     }
 }
