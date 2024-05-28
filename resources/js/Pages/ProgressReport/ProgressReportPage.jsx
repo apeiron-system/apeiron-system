@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProgressReport({ auth }) {
     const [contracts, setContracts] = useState([
@@ -11,9 +11,51 @@ export default function ProgressReport({ auth }) {
         { id: 5, name: "Contract 5", startDate: "2019-01-01", endDate: "2019-12-31", dotColor: "blue" },
     ]);
     const [sortBy, setSortBy] = useState("Most Recent");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredContracts, setFilteredContracts] = useState(contracts);
+
+    useEffect(() => {
+        setFilteredContracts(contracts);
+    }, [contracts]);
 
     const handleSortByChange = (e) => {
         setSortBy(e.target.value);
+        applyFilters(e.target.value, searchQuery);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearch = () => {
+        applyFilters(sortBy, searchQuery);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
+    const applyFilters = (sortBy, searchQuery) => {
+        let filtered = contracts;
+
+        if (sortBy === "Active Contracts") {
+            filtered = filtered.filter(contract => contract.dotColor === "blue");
+        } else if (sortBy === "Pending Contracts") {
+            filtered = filtered.filter(contract => contract.dotColor === "yellow");
+        }
+
+        if (searchQuery) {
+            filtered = filtered.filter(contract =>
+                contract.id.toString().includes(searchQuery) ||
+                contract.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                contract.startDate.includes(searchQuery) ||
+                contract.endDate.includes(searchQuery)
+            );
+        }
+
+        setFilteredContracts(filtered);
     };
 
     return (
@@ -56,35 +98,36 @@ export default function ProgressReport({ auth }) {
                             type="text"
                             placeholder="Search"
                             className="border-2 border-black rounded p-1 w-1/3"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleKeyDown}
                         />
-                        <button className="ml-2 px-5 py-1 bg-gray-800 text-white rounded">Search</button>
+                        <button className="ml-2 px-5 py-1 bg-gray-800 text-white rounded" onClick={handleSearch}>Search</button>
                     </div>
 
                     <div className="h-90 overflow-y-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {contracts
-                                .filter(contract => sortBy === "Active Contracts" ? contract.dotColor === "blue" : sortBy === "Pending Contracts" ? contract.dotColor === "yellow" : true)
-                                .map(contract => (
-                                    <div key={contract.id} className="bg-white rounded-lg shadow-md p-6 relative">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h2 className="text-lg font-bold">{contract.name}</h2>
-                                                <p className="text-gray-500">Contract ID: {contract.id}</p>
-                                            </div>
-                                            <div className={`w-3 h-3 rounded-full absolute top-2 right-2 ${contract.dotColor === 'blue' ? 'bg-blue-500' : 'bg-yellow-400'}`}></div>
-                                        </div>
-                                        <div className="mb-4">
-                                            <p className="text-gray-700"><strong>Location:</strong> <span className="text-gray-500">Panabo, Davao City</span></p>
-                                            <p className="text-gray-700"><strong>Duration:</strong> <span className="text-gray-500">12 months</span></p>
-                                            <p className="text-gray-700"><strong>Amount:</strong> <span className="text-gray-500">₱1,000,000.00</span></p>
-                                        </div>
+                            {filteredContracts.map(contract => (
+                                <div key={contract.id} className="bg-white rounded-lg shadow-md p-6 relative">
+                                    <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <InertiaLink href={route("par-details")}>
-                                                <button className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200">View</button>
-                                            </InertiaLink>
+                                            <h2 className="text-lg font-bold">{contract.name}</h2>
+                                            <p className="text-gray-500">Contract ID: {contract.id}</p>
                                         </div>
+                                        <div className={`w-3 h-3 rounded-full absolute top-2 right-2 ${contract.dotColor === 'blue' ? 'bg-blue-500' : 'bg-yellow-400'}`}></div>
                                     </div>
-                                ))}
+                                    <div className="mb-4">
+                                        <p className="text-gray-700"><strong>Location:</strong> <span className="text-gray-500">Panabo, Davao City</span></p>
+                                        <p className="text-gray-700"><strong>Duration:</strong> <span className="text-gray-500">12 months</span></p>
+                                        <p className="text-gray-700"><strong>Amount:</strong> <span className="text-gray-500">₱1,000,000.00</span></p>
+                                    </div>
+                                    <div>
+                                        <InertiaLink href={route("par-details")}>
+                                            <button className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-200">View</button>
+                                        </InertiaLink>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
@@ -100,7 +143,7 @@ export default function ProgressReport({ auth }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {contracts.map((contract, index) => (
+                                {filteredContracts.map((contract, index) => (
                                     <tr key={contract.id}>
                                         <td className="p-2 border-b">
                                             <input
