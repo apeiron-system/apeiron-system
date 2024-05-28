@@ -16,14 +16,14 @@ import EmployeesDialog from "./EmployeesDialog";
 // Function to format the date as yyyy-MM-dd
 const formatDate = (date) => {
     const d = new Date(date);
-    let month = '' + (d.getMonth() + 1);
-    let day = '' + d.getDate();
+    let month = "" + (d.getMonth() + 1);
+    let day = "" + d.getDate();
     const year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
 
-    return [year, month, day].join('-');
+    return [year, month, day].join("-");
 };
 
 const schema = z.object({
@@ -51,8 +51,11 @@ export default function ContractForm({ contract, employees }) {
             designation: contract?.designation || "",
             duration_in_days: contract?.duration_in_days || 0,
             amount: contract?.amount || 0,
-            date: contract?.date ? formatDate(contract.date) : formatDate(new Date()),
-            authorized_representative_employee_id: contract?.authorized_representative_employee_id || null,
+            date: contract?.date
+                ? formatDate(contract.date)
+                : formatDate(new Date()),
+            authorized_representative_employee_id:
+                contract?.authorized_representative_employee_id || null,
         },
     });
 
@@ -61,7 +64,9 @@ export default function ContractForm({ contract, employees }) {
             ...values,
             duration_in_days: Number(values.duration_in_days),
             amount: Number(values.amount),
-            authorized_representative_employee_id: Number(values.authorized_representative_employee_id),
+            authorized_representative_employee_id: Number(
+                values.authorized_representative_employee_id
+            ),
             date: formatDate(values.date), // Ensure the date is in yyyy-MM-dd format
         };
 
@@ -230,6 +235,9 @@ export default function ContractForm({ contract, employees }) {
                             <FormLabel>Authorized Representative</FormLabel>
                             <div>
                                 <EmployeesDialog
+                                    selectedEmployee={
+                                        contract.authorized_representative_employee_id
+                                    }
                                     employees={employees}
                                     onSelect={(employeeId) => {
                                         form.setValue(

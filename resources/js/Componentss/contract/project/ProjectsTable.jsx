@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import _ from "lodash";
 
-export default function ProjectsTable({ projects }) {
+export default function ProjectsTable({ projects, contract }) {
     // $table->id();
     // $table->timestamps();
 

@@ -66,12 +66,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
     });
 
     const onSubmit = async (values) => {
-        console.log("Submitting form with values:", values);
+
         try {
             if (project && project.id) {
                 // Edit mode
                 await router.patch(
-                    `/project/${contract_id}/project/${project.id}/update`,
+                    `/contract/${contract_id}/project/${project.id}/update`,
                     values
                 );
             } else {
@@ -295,6 +295,9 @@ export default function ProjectForm({ project, employees, contract_id }) {
                             <FormLabel>Submitted By</FormLabel>
                             <div>
                                 <EmployeesDialog
+                                    selectedEmployee={
+                                        project.signing_authority_employee_id
+                                    }
                                     employees={employees}
                                     onSelect={(employeeId) => {
                                         form.setValue(
@@ -316,6 +319,9 @@ export default function ProjectForm({ project, employees, contract_id }) {
                             <FormLabel>Signing Authority</FormLabel>
                             <div>
                                 <EmployeesDialog
+                                    selectedEmployee={
+                                        project.signing_authority_employee_id
+                                    }
                                     employees={employees}
                                     onSelect={(employeeId) => {
                                         form.setValue(

@@ -5,11 +5,11 @@ export default function ProjectTabNavigation({ id }) {
         <TabNavigation
             routeObject={[
                 {
-                    routeName: "View Projects",
+                    routeName: "Project Overview",
                     route: route("contract.view", id),
                 },
                 {
-                    routeName: "Add Project",
+                    routeName: "Add Part",
                     route: route("contract.project.add", id),
                 },
             ]}

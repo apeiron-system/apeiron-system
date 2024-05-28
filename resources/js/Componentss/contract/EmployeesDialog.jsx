@@ -18,10 +18,16 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 
-export default function EmployeesDialog({ employees, onSelect }) {
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+export default function EmployeesDialog({
+    employees,
+    onSelect,
+    selectedEmployee,
+}) {
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(
+        selectedEmployee ? selectedEmployee : null
+    );
     const [addedSelectedEmployeeId, setAddedSelectedEmployeeId] =
-        useState(null);
+        useState(selectedEmployee ? selectedEmployee : null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleAddEmployee = () => {

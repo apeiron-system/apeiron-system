@@ -41,7 +41,9 @@ export default function ViewContractPage({
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Projects</h1>
-                {projects && <ProjectsTable projects={projects} />}
+                {projects && (
+                    <ProjectsTable projects={projects} contract={contract} />
+                )}
             </section>
 
             <section></section>
