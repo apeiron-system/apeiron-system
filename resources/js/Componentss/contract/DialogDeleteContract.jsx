@@ -8,14 +8,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Trash } from "lucide-react";
 
-export function DialogDeleteContract({ contract, onDelete }) {
+export default function DialogDeleteContract({ contract, onDelete }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="danger">Delete</Button>
+                <Button variant="danger">
+                    <Trash />
+                </Button>
             </DialogTrigger>
-            {employee && (
+            {contract && (
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Delete Contract</DialogTitle>

@@ -1,8 +1,9 @@
 import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
 import ProjectsTable from "@/Componentss/contract/project/ProjectsTable";
+import DialogDeleteContract from "@/Componentss/contract/DialogDeleteContract";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/components/ui/button";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import _ from "lodash";
 import { Edit } from "lucide-react";
 
@@ -73,6 +74,14 @@ export default function ViewContractPage({
                                 <Edit />
                             </Button>
                         </Link>
+                        <DialogDeleteContract
+                            contract={contract}
+                            onDelete={() => {
+                                router.delete(
+                                    route("contract.delete", contract.id)
+                                );
+                            }}
+                        />
                     </div>
                 </section>
             }

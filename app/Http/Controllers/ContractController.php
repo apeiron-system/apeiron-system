@@ -114,4 +114,14 @@ class ContractController extends Controller
 
         return redirect()->route('contract');
     }
+
+    public function delete($id)
+    {
+
+        $contract = ContractModel::find($id);
+
+        $contract->delete();
+
+        return redirect()->route('contract');
+    }
 }
