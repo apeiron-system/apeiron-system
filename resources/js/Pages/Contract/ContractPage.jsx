@@ -87,11 +87,17 @@ export default function ContractPage({ auth, contracts }) {
                     </DropdownMenu>
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 flex gap-2">
                     {/* render card here for contracts */}
                     {contracts &&
                         contracts
                             .filter((contract) => {
+                                if (
+                                    contract.status === "completed" ||
+                                    contract.status === "canceled"
+                                ) {
+                                    return false;
+                                }
                                 if (statusFilter === "all") {
                                     return true;
                                 }

@@ -30,14 +30,12 @@ export default function PastContractsTable({ contracts }) {
                 <TableCaption>Past Contracts</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Select</TableHead>
                         <TableHead>Contract Name</TableHead>
                         <TableHead>Location</TableHead>
                         <TableHead>Designation</TableHead>
                         <TableHead>Duration in Days</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Date</TableHead>
-                        <TableHead>Authorized Representative</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -49,9 +47,6 @@ export default function PastContractsTable({ contracts }) {
                             <TableCell>{contract.duration_in_days}</TableCell>
                             <TableCell>{contract.amount}</TableCell>
                             <TableCell>{contract.date}</TableCell>
-                            <TableCell>
-                                {contract.authorized_representative_employee_id}
-                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

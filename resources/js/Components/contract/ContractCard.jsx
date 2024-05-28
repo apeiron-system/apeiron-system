@@ -1,10 +1,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button"; // Ensure you have the Button component in your project
 import _ from "lodash";
+import { Link } from "@inertiajs/react";
 
 const ContractCard = ({ contract }) => {
     return (
-        <div className="border rounded-lg p-4 shadow-lg max-w-xs">
+        <div className="border rounded-lg p-4 shadow-lg max-w-xs min-w-[300px]">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-bold">{contract.contract_name}</h2>
             </div>
@@ -24,9 +25,11 @@ const ContractCard = ({ contract }) => {
                     <strong>Status:</strong> {_.capitalize(contract.status)}
                 </p>
             </div>
-            <Button className="mt-4 w-full bg-gray-600 text-white rounded-md">
-                View
-            </Button>
+            <Link href={`/contract/${contract.id}`}>
+                <Button className="mt-4 w-full bg-gray-600 text-white rounded-md">
+                    View
+                </Button>
+            </Link>
         </div>
     );
 };

@@ -62,4 +62,51 @@ class ContractController extends Controller
 
         return redirect()->route('contract');
     }
+
+    public function viewContract($id)
+    {
+
+        $contract = ContractModel::find($id);
+
+        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract]);
+    }
+
+    public function edit($id)
+    {
+
+        $contract = ContractModel::find($id);
+        $employees = EmployeeModel::all();
+
+        return Inertia::render('Contract/EditContractPage', ['contract' => $contract, 'employees' => $employees]);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $request->validate([
+            'contract_name' => 'required',
+            'location' => 'required',
+            'designation' => 'required',
+            'duration_in_days' => 'required',
+            'amount' => 'required',
+            'date' => 'required',
+            'authorized_representative_employee_id' => 'required',
+        ]);
+
+        $contract = ContractModel::find($id);
+
+        $contract->contract_name = $request->contract_name;
+        $contract->status = $request->status;
+        $contract->location = $request->location;
+        $contract->description = $request->description;
+        $contract->designation = $request->designation;
+        $contract->duration_in_days = $request->duration_in_days;
+        $contract->amount = $request->amount;
+        $contract->date = $request->date;
+        $contract->authorized_representative_employee_id = $request->authorized_representative_employee_id;
+
+        $contract->save();
+
+        return redirect()->route('contract');
+    }
 }

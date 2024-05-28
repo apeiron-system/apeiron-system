@@ -32,8 +32,8 @@ const schema = z.object({
     description: z.string().nullable(),
     location: z.string().min(1),
     designation: z.string().min(1).nullable(),
-    duration_in_days: z.number(),
-    amount: z.number(),
+    duration_in_days: z.coerce.number(),
+    amount: z.coerce.number(),
     date: z.string().refine((date) => !isNaN(Date.parse(date)), {
         message: "Invalid date format",
     }),
