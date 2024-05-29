@@ -1,17 +1,18 @@
+import ContractForm from "@/Componentss/contract/ContractForm";
+import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
+import ProjectPartForm from "@/Componentss/contract/project/ProjectPart/ProjectPartForm";
 import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart/ProjectPartTabNavigation";
-
-import ProjectPartTable from "@/Componentss/contract/project/ProjectPart/ProjectPartTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function ViewProjectPage({
+export default function AddContractPage({
     auth,
     contract,
     project,
-    projectParts,
-    signingAuthorityEmployee,
     submittedByEmployee,
+    signingAuthorityEmployee,
+    projectPart
 }) {
     return (
         <AuthenticatedLayout
@@ -20,28 +21,26 @@ export default function ViewProjectPage({
                 <ProjectHeader
                     contract={contract}
                     project={project}
-                    signingAuthorityEmployee={signingAuthorityEmployee}
                     submittedByEmployee={submittedByEmployee}
+                    signingAuthorityEmployee={signingAuthorityEmployee}
                 />
             }
         >
-            <Head title={`View Project - ${project.project_name}`} />
+            <Head title="Add Project Part" />
 
             <ProjectPartTabNavigation
                 contract_id={contract.id}
                 project_id={project.id}
             />
 
-            <section>
-                <h1>Project Overview</h1>
+            <section className="mt-4 ml-4">Add Project Part</section>
 
-                <section className="mt-12">
-                    <ProjectPartTable
-                        projectParts={projectParts}
-                        contract_id={contract.id}
-                        project_id={project.id}
-                    />
-                </section>
+            <section>
+                <ProjectPartForm
+                    contract_id={contract.id}
+                    project_id={project.id}
+                    projectPart={projectPart}
+                />
             </section>
         </AuthenticatedLayout>
     );

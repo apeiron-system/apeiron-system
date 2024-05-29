@@ -25,4 +25,9 @@ class ProjectModel extends Model
     {
         return $this->belongsTo(ContractModel::class, 'contract_id');
     }
+
+    public function projectParts()
+    {
+        return $this->hasMany(ProjectPartModel::class, 'project_id');
+    }
 }

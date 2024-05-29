@@ -64,10 +64,14 @@ class ProjectController extends Controller
 
         $submittedByEmployee = EmployeeModel::find($project->submitted_by_employee_id);
 
+        $projectParts = $project->projectParts;
+
         return Inertia::render('Contract/Project/ViewProjectPage', [
             "project" => $project, "contract" => $contract,
             "signingAuthorityEmployee" => $signingAuthorityEmployee,
-            "submittedByEmployee" => $submittedByEmployee
+            "submittedByEmployee" => $submittedByEmployee,
+            "projectParts" => $projectParts
+
         ]);
     }
 
