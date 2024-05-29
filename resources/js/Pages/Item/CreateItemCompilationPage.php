@@ -19,7 +19,7 @@ class Item extends Model
         'quantity',
         'job_order_id',
         'project_id',
-        'contract_id' // Assuming you have a 'contract_id' field in the 'items' table
+        'contract_id' 
     ];
 
     // Relationships
