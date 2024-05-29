@@ -20,7 +20,6 @@ class Item extends Model
         'quantity',
         'job_order_id',
         'project_id',
-        // ... any other relevant fields for item details
     ];
 
     // Relationships
