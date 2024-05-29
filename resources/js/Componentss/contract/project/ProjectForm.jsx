@@ -296,7 +296,7 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                 <EmployeesDialog
                                     selectedEmployee={
                                         project
-                                            ? project.signing_authority_employee_id
+                                            ? project.submitted_by_employee_id
                                             : null
                                     }
                                     employees={employees}
