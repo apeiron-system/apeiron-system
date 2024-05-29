@@ -9,8 +9,7 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $table = 'items';  // Explicitly define the table name
-
+    protected $table = 'items';
     protected $primaryKey = 'item_id';
 
     protected $fillable = [
@@ -20,25 +19,26 @@ class Item extends Model
         'quantity',
         'job_order_id',
         'project_id',
+        'contract_id' // Assuming you have a 'contract_id' field in the 'items' table
     ];
 
     // Relationships
     public function jobOrder()
     {
-        return $this->belongsTo(JobOrder::class, 'job_order_id');
+        return $this->belongsTo(JobOrder::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class);
     }
 
     public function contract()
     {
-        return $this->belongsTo(Contract::class, 'contract_id');
+        return $this->belongsTo(Contract::class);
     }
 
-    // Additional Helper Methods (Optional)
+    // Accessor (for calculated attributes)
     public function getTotalCostAttribute()
     {
         return $this->unit_price * $this->quantity;
