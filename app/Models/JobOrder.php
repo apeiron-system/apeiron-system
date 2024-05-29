@@ -23,7 +23,6 @@ class JobOrder extends Model
         'jo_contract_id',
     ];
 
-    protected $primaryKey = 'job_order_id'; 
 
     //PARENT: (Job Order belongs to) Contract
     public function contract()

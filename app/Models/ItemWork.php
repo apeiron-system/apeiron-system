@@ -15,7 +15,6 @@ class ItemWork extends Model
         'iw_contract_id',
     ];
 
-    protected $primaryKey = 'item_work_id'; 
     
     //PARENT: (ItemWork belongs to) Job Order
     public function jobOrder()

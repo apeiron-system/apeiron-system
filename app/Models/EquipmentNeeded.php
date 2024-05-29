@@ -15,7 +15,6 @@ class EquipmentNeeded extends Model
         'en_contract_id',
     ];
 
-    protected $primaryKey = 'equipment_id';
 
     //PARENT: (EquipmentNeeded belongs to) Job Order
     public function jobOrder()

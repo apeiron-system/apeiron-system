@@ -17,7 +17,6 @@ class JobOrderPayItem extends Model
         'pi_jo_part_id',
     ];
 
-    protected $primaryKey = 'pay_item_id'; 
     
     //PARENT: (Job Order Pay Item belongs to) Job Order
     public function jobOrder()

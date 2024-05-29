@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('job_order', function (Blueprint $table) {
-            $table->id('job_order_id');
+            $table->id();
             $table->string('job_order_no');
             $table->text('location');
             $table->string('period_covered');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamp('failed_at')->useCurrent();
 
             $table->unsignedBigInteger('jo_contract_id');
-            $table->foreign('jo_contract_id')->references('contract_id')->on('contract')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('jo_contract_id')->references('id')->on('project_contract')->onDelete('cascade')->onUpdate('cascade');
        
         });
     }

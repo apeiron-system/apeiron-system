@@ -20,7 +20,6 @@ class Contract extends Model
         'authorized_representative',
     ];
 
-    protected $primaryKey = 'contract_id'; 
 
     //CHILDREN:
     //(Contract has many) Job Orders

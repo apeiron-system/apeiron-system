@@ -15,7 +15,6 @@ class JobOrderPart extends Model
         'part_job_order_id',
     ];
 
-    protected $primaryKey = 'part_id'; 
     
     //PARENT: (Job Order Part belongs to) Job Order
     public function jobOrder()

@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pay_item_job_order', function (Blueprint $table) {
-            $table->id('pay_item_id');
+            $table->id();
             $table->integer('job_order_no');
             $table->integer('job_order_part');
             $table->string('equipment_name');
             $table->timestamps();
 
             $table->unsignedBigInteger('pi_job_order_id');
-            $table->foreign('pi_job_order_id')->references('job_order_id')->on('job_order')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('pi_job_order_id')->references('id')->on('job_order')->onDelete('cascade')->onUpdate('cascade');
 
             $table->unsignedBigInteger('pi_jo_part_id');
-            $table->foreign('pi_jo_part_id')->references('part_id')->on('job_order_part')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('pi_jo_part_id')->references('id')->on('job_order_part')->onDelete('cascade')->onUpdate('cascade');
   
         });
     }
