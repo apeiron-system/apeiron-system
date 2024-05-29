@@ -1,46 +1,50 @@
-<?php
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head, Link } from "@inertiajs/react";
+import { ChevronLeft, MoreVertical } from "lucide-react";
+import { useState } from "react";
 
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Item extends Model
-{
-    use HasFactory;
-
-    protected $table = 'items';
-    protected $primaryKey = 'item_id';
-
-    protected $fillable = [
-        'item_name',
-        'description',
-        'unit_price',
-        'quantity',
-        'job_order_id',
-        'project_id',
-        'contract_id' 
+export default function ItemPage({ auth }) {
+    const itemListData = [
+        "Item 1",
+        "Item 2",
+        "Item 3",
+        "Item 4",
+        "Item 5",
+        "Item 6",
+        "Item 7",
+        "Item 8",
+        "Item 9",
+        "Item x",
+        "Item xx",
+        "Item xxx",
     ];
 
-    // Relationships
-    public function jobOrder()
-    {
-        return $this->belongsTo(JobOrder::class);
-    }
+    const [showDropdown, setShowDropdown] = useState(null);
 
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+    const handleDropdownToggle = (index) => {
+        setShowDropdown(showDropdown === index ? null : index);
+    };
 
-    public function contract()
-    {
-        return $this->belongsTo(Contract::class);
-    }
+    return (
+        <AuthenticatedLayout
+            user={auth.user}
+            header={
+                <div className="flex items-center">
+                    <Link href={route("dashboard")} className="text-gray-600 hover:text-gray-900 mr-4">
+                        <button>
+                            <ChevronLeft size={25} strokeWidth={1.25} />
+                        </button>
+                    </Link>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Item List
+                    </h2>
+                </div>
+            }
+        >
+            <Head title="Item List" />
 
-    // Accessor (for calculated attributes)
-    public function getTotalCostAttribute()
-    {
-        return $this->unit_price * $this->quantity;
-    }
-}
+            <div className="mb-4 flex justify-between">
+                <input
+                    type="text"
+                    placeholder="Search"
+                    clas
