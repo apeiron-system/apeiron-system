@@ -1,99 +1,147 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-const ItemListPage = ({ items }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const ItemDetailsPage = ({ auth }) => {
+  const itemDetails = {
+    itemId: "1",
+    itemNo: "8030/1a",
+    itemName: "Cement",
+    itemType: "Material",
+    description: "Plain",
+    unit: "2",
+    price: "250.00",
+  };
 
-  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+  const [isPriceHistoryOpen, setIsPriceHistoryOpen] = useState(false);
+  const [priceHistory, setPriceHistory] = useState([]); // Placeholder for price history data
+
+  const togglePriceHistory = () => setIsPriceHistoryOpen(!isPriceHistoryOpen);
+
+  // Fetch price history data (implementation depends on your backend)
+  // Example: Simulate fetching data after component mounts
+  useEffect(() => {
+    const fetchPriceHistory = async () => {
+      const response = await fetch(`/api/items/${itemDetails.itemId}/price-history`);
+      const data = await response.json();
+      setPriceHistory(data);
+    };
+    fetchPriceHistory();
+  }, []);
 
   return (
-    <div className="flex">
-      <aside className="w-64 bg-gray-800 text-white h-screen">
-        <div className="p-4">
-          <div className="text-2xl font-bold">Apeiron Construction Solutions</div>
-          <nav className="mt-6">
-            <ul>
-              <li className="mt-2">
+    <AuthenticatedLayout user={auth.user}>
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <aside className="w-64 bg-gray-800 text-white p-4 space-y-6">
+          <h2 className="text-2xl font-bold">Apeiron Construction Solutions</h2>
+          <nav>
+            <ul className="space-y-2">
+              <li>
                 <Link
                   to="/contract"
-                  className="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded"
+                  className="block px-4 py-2 text-sm hover:bg-gray-700 rounded"
                 >
                   Contract
                 </Link>
               </li>
-              <li className="mt-2">
+              <li>
                 <Link
                   to="/job-order"
-                  className="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded"
+                  className="block px-4 py-2 text-sm hover:bg-gray-700 rounded"
                 >
                   Job Order
                 </Link>
               </li>
-              <li className="mt-2">
+              <li>
                 <Link
                   to="/item"
-                  className="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded bg-gray-900"
+                  className="block px-4 py-2 text-sm hover:bg-gray-700 rounded bg-gray-900"
                 >
                   Item
                 </Link>
               </li>
-              <li className="mt-2">
+              <li>
                 <Link
                   to="/progress-report"
-                  className="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded"
+                  className="block px-4 py-2 text-sm hover:bg-gray-700 rounded"
                 >
                   Progress Report
                 </Link>
               </li>
             </ul>
           </nav>
-        </div>
-        <div className="p-4">
           <button className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">
             Log Out
           </button>
-        </div>
-      </aside>
-      <main className="flex-1 p-6 bg-gray-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-xl font-semibold">Item List</h1>
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-                Create Item
-              </button>
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full px-4 py-2 border rounded-md"
-              />
-            </div>
-            <table className="min-w-full bg-white border">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Item Name</th>
-                  <th className="py-2 px-4 border-b"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
-                    <td className="py-2 px-4 border-b">{item}</td>
-                    <td className="py-2 px-4 border-b text-right relative">
-                      <button onClick={toggleDropdown} className="relative z-10 inline-flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 12h.01M12 12h.01M18 12h.01" />
-                        </svg>
-                      </button>
-                      {dropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white border
+        </aside>
 
+        {/* Main Content */}
+        <main className="flex-1 p-6 bg-gray-100">
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-white shadow-md rounded-lg p-6 space-y-6">
+              {/* Header */}
+              <div className="flex justify-between items-center mb-4">
+                <h1 className="text-xl font-semibold">Item Details</h1>
+                <div className="space-x-2">
+                  <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded">
+                    Edit
+                  </button>
+                  <button
+                    className={`px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded ${
+                      isPriceHistoryOpen ? "bg-blue-500 hover:bg-blue-600" : ""
+                    }`}
+                    onClick={togglePriceHistory}
+                  >
+                    View Price History
+                  </button>
+                </div>
+              </div>
+
+              {/* Item Details */}
+              <div className="space-y-4">
+                {Object.keys(itemDetails).map((key) => (
+                  <div key={key} className="flex">
+                    <span className="font-semibold w-1/3 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                    <span>{itemDetails[key]}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Price History */}
+              {isPriceHistoryOpen && (
+                <div className="mt-6">
+                  <h2 className="text-lg font-semibold mb-4">Price History</h2>
+                  <table className="min-w-full bg-white border">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 border-b">Date</th>
+                        <th className="py-2 px-4 border-b">Price</th>
+                      </tr>
+                    </thead>
+                    <
+                    <tbody>
+                      {priceHistory.map((entry, index) => (
+                        <tr key={index} className="hover:bg-gray-100">
+                          <td className="py-2 px-4 border-b">{entry.date}</td>
+                          <td className="py-2 px-4 border-b">{entry.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+      </div>
+    </AuthenticatedLayout>
+  );
+};
+
+// Example usage of the component with an example auth object
+const auth = { user: { name: "User" } };
+
+const App = () => <ItemDetailsPage auth={auth} />;
+
+export default App;
