@@ -133,9 +133,6 @@ export default function JobOrderPage({ auth }) {
             <div className="flex items-end justify-end mb-4">
                 <div className="mr-4">
                     <select className="px-5 py-2 bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-gray-500 text-sm mg-2">
-                        <option value="Filter" disabled>
-                            Filter
-                        </option>
                         <option className="border-0" value="ascending">
                             Ascending
                         </option>
