@@ -293,7 +293,7 @@ export default function CreateJobOrderPage({ auth }) {
                                                 type="submit"
                                                 className="bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] text-white font-bold py-2 px-4 rounded"
                                             >
-                                                Save
+                                                Save as Draft
                                             </Button>
                                             <Button
                                                 type="button"
