@@ -23,19 +23,52 @@ class ItemController extends Controller
     }
 
     // Display the item listing for a specific contract
-    public function contractIndex($contractId)
+    public function contractIndex(Request $request, $contractId)
     {
-        $items = ItemModel::with(['prices' => function ($query) {
-            $query->orderBy('created_at', 'desc')->limit(1); // Adjust the field as necessary
-        }])->where('contract_id', $contractId)->paginate(30);
+        $query = ItemModel::where('contract_id', $contractId)->with('prices');
+
+        // Apply search filter
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where(function ($q) use ($request) {
+                $q->where('description', 'like', '%' . $request->search . '%')
+                    ->orWhere('type', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Apply sorting
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'az':
+                    $query->orderBy('description', 'asc');
+                    break;
+                case 'za':
+                    $query->orderBy('description', 'desc');
+                    break;
+                case 'date_asc':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'date_desc':
+                default:
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+        } else {
+            // Default sorting by latest
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Paginate the results
+        $items = $query->paginate(10);
 
         $contract = ContractModel::findOrFail($contractId);
 
         return Inertia::render('Item/ContractIndex', [
             'items' => $items,
             'contract' => $contract,
+            'filters' => $request->only(['search', 'sort']),
         ]);
     }
+
 
     // Show the form for creating a new item under a specific contract
     public function create($contractId)
