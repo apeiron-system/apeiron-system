@@ -91,7 +91,7 @@ export default function AddItemCsv({ contract }) {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="max-w-2xl p-6">
             <h2 className="text-xl font-semibold mb-4">Add Items from CSV</h2>
             <p>Upload a CSV file with the following format:</p>
             <p className="mb-4">
