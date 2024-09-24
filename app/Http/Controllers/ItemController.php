@@ -124,58 +124,88 @@ class ItemController extends Controller
     // Show the form for editing an item
     public function edit($contractId, $id)
     {
-        $item = ItemModel::with('prices')->where('contract_id', $contractId)->findOrFail($id);
+        // Retrieve the item and eager load only the latest price
+        $item = ItemModel::with(['prices' => function ($query) {
+            $query->latest()->limit(1); // Get only the latest price
+        }])->where('contract_id', $contractId)->findOrFail($id);
+
         return Inertia::render('Item/Edit', [
             'item' => $item,
             'contractId' => $contractId,
         ]);
     }
 
+
     // Update the specified item
     public function update(Request $request, $contractId, $id)
     {
-        $validated = $request->validate([
-            'description' => 'required|string',
-            'type' => 'required|string',
-            'unit' => 'required|string',
-            'unit_cost' => 'required|numeric',
-            'prices' => 'array',
-            'prices.*.unit_cost' => 'required|numeric',
-            'prices.*.is_current' => 'required|boolean',
-        ]);
 
-        $itemModel = ItemModel::where('contract_id', $contractId)->findOrFail($id);
-        $itemModel->editItem($validated);
+        $data = $request->getContent();
 
-        // Update prices if provided
-        if (isset($validated['prices'])) {
-            $itemModel->prices()->delete(); // Optionally clear old prices
-            foreach ($validated['prices'] as $price) {
-                $itemModel->addItemPrice($price);
-            }
+        $data = json_decode($data, true);
+
+        $item = ItemModel::where('id', $id)->findOrFail($id);
+
+        Log::info($data);
+        Log::info($item);
+
+        $item->description = $data['description'];
+        $item->type = $data['type'];
+        $item->unit = $data['unit'];
+
+        //check if unit cost is the same as the latest price unit cost, if yes, ignore. if different, make a new price model and add to the item
+
+        $latestPrice = $item->getLatestPrice();
+
+        if ($latestPrice->unit_cost != $data['unit_cost']) {
+            $priceModel = new ItemPriceModel();
+            $priceModel->unit_cost = $data['unit_cost'];
+            $latestPrice->is_current = false;
+            $priceModel->is_current = true;
+            $priceModel->item_id = $item->id;
+            $latestPrice->save();
+            $priceModel->save();
         }
 
-        return redirect()->route('contracts.items.index', $contractId)->with('success', 'Item updated successfully.');
+        $item->save();
+
+
+        return redirect()->route('item.contract.show', ["contract" => $contractId, "item" => $id])->with('success', 'Item updated successfully.');
     }
 
     // Remove the specified item
     public function destroy(Request $request, $contractId)
     {
 
+        Log::info("sheei");
+
         $idArray = $request->getContent();
-
-        Log::info($idArray);
-
         $ids = json_decode($idArray, true);
 
-
-
+        Log::info($idArray);
 
         foreach ($ids as $id) {
             $item = ItemModel::where('id', $id)->findOrFail($id);
             $item->delete();
         }
 
-        return redirect()->route('item.contract', $contractId)->with('success', 'Item deleted successfully.');
+        return redirect()->route('item.contract', ["contract" => $contractId])->with('success', 'Item deleted successfully.');
+    }
+
+    //get one item
+    public function show($contractId, $id)
+    {
+
+        //the prices should be order latest by
+
+        $item = ItemModel::with(['prices' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->where('contract_id', $contractId)->findOrFail($id);
+
+
+        return Inertia::render('Item/Show', [
+            'item' => $item,
+            'contractId' => $contractId,
+        ]);
     }
 }

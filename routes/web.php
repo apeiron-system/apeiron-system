@@ -142,8 +142,8 @@ Route::prefix('item')->group(function () {
     Route::post('/contracts/{contract}', [ItemController::class, 'store'])->name('item.contract.store'); // Store new item
     Route::get('/contracts/{contract}/{item}', [ItemController::class, 'show'])->name('item.contract.show'); // Show single item (if needed)
     Route::get('/contracts/{contract}/{item}/edit', [ItemController::class, 'edit'])->name('item.contract.edit'); // Show edit form
-    Route::put('/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
-    Route::post('/contracts/{contract}/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
+    Route::post('/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
+    Route::post('/contracts/{contract}/item/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
 });
 
 

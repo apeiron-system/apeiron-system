@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
+import { Head, router, Link } from "@inertiajs/react";
 import ContractHeader from "@/Componentss/contract/ContractHeader";
 import ItemTabNavigation from "@/Componentss/item/ItemTabNavigation";
 import {
@@ -30,7 +30,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"; // Assuming you have a Modal component
-import { Trash2 } from "lucide-react";
+import { MoveRight, Trash2 } from "lucide-react";
 
 export default function Index({ auth, contract, items, filters }) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -75,8 +75,6 @@ export default function Index({ auth, contract, items, filters }) {
     // Confirm deletion
     const confirmDelete = () => {
         // Send a request to delete the selected items
-
-
 
         router.post(
             route("item.contract.destroy", contract.id),
@@ -164,7 +162,7 @@ export default function Index({ auth, contract, items, filters }) {
                             </DialogHeader>
                             <DialogFooter>
                                 <DialogClose asChild>
-                                    <Button type="button" variant="secondary" >
+                                    <Button type="button" variant="secondary">
                                         Cancel
                                     </Button>
                                 </DialogClose>
@@ -247,6 +245,15 @@ export default function Index({ auth, contract, items, filters }) {
                                                   item.prices.length - 1
                                               ].unit_cost
                                             : "N/A"}
+                                    </TableCell>
+                                    <TableCell className=" w-[10px] py-2 px-4">
+                                        <Link
+                                            href={`/item/contracts/${contract.id}/${item.id}`}
+                                        >
+                                            <Button variant="outline">
+                                                <MoveRight className="text-gray-600" />
+                                            </Button>
+                                        </Link>
                                     </TableCell>
                                 </TableRow>
                             ))}
