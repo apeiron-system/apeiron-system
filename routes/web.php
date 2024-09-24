@@ -143,7 +143,7 @@ Route::prefix('item')->group(function () {
     Route::get('/contracts/{contract}/{item}', [ItemController::class, 'show'])->name('item.contract.show'); // Show single item (if needed)
     Route::get('/contracts/{contract}/{item}/edit', [ItemController::class, 'edit'])->name('item.contract.edit'); // Show edit form
     Route::put('/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
-    Route::delete('/contracts/{contract}/{item}', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
+    Route::post('/contracts/{contract}/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
 });
 
 

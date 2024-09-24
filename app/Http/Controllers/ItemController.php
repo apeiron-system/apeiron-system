@@ -159,11 +159,23 @@ class ItemController extends Controller
     }
 
     // Remove the specified item
-    public function destroy($contractId, $id)
+    public function destroy(Request $request, $contractId)
     {
-        $itemModel = new ItemModel();
-        $itemModel->deleteItem($id, true); // Deletes the item and its prices
 
-        return redirect()->route('contracts.items.index', $contractId)->with('success', 'Item deleted successfully.');
+        $idArray = $request->getContent();
+
+        Log::info($idArray);
+
+        $ids = json_decode($idArray, true);
+
+
+
+
+        foreach ($ids as $id) {
+            $item = ItemModel::where('id', $id)->findOrFail($id);
+            $item->delete();
+        }
+
+        return redirect()->route('item.contract', $contractId)->with('success', 'Item deleted successfully.');
     }
 }
