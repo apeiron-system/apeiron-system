@@ -56,7 +56,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("item")}
-                            active={route().current("item")}
+                            active={route().current().startsWith("item")}
                         >
                             <ShoppingBasket className="mr-2" /> Item
                         </NavLink>
