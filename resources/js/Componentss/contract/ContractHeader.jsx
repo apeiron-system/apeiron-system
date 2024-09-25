@@ -1,7 +1,7 @@
 import { Edit } from "lucide-react";
 import DialogDeleteContract from "./DialogDeleteContract";
 import { Link, router } from "@inertiajs/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import _ from "lodash";
 
 import {
@@ -9,7 +9,7 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/Components/ui/accordion";
 
 export default function ContractHeader({ contract, signingAuthorityEmployee }) {
     return (

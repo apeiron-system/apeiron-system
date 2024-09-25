@@ -5,7 +5,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@/Components/ui/navigation-menu";
 
 export default function TabNavigation({ routeObject }) {
     //accepts props that is formatted like
