@@ -111,8 +111,9 @@ class ItemController extends Controller
             $priceModel = new ItemPriceModel();
             $priceModel->unit_cost = $validated['unit_cost'];
             $priceModel->is_current = true;
-            $priceModel->item_id = $itemModel->id;
             $itemModel->save();
+            $priceModel->item_id = $itemModel->id;
+
             $priceModel->save();
         }
 
