@@ -30,7 +30,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"; // Assuming you have a Modal component
-import { FilterIcon, MoveRight, SearchIcon, SlidersHorizontalIcon, Trash2 } from "lucide-react";
+import {
+    FilterIcon,
+    MoveRight,
+    SearchIcon,
+    SlidersHorizontalIcon,
+    Trash2,
+} from "lucide-react";
 
 export default function Index({ auth, contract, items, filters }) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -89,6 +95,8 @@ export default function Index({ auth, contract, items, filters }) {
         );
     };
 
+    console.log(items);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -120,7 +128,7 @@ export default function Index({ auth, contract, items, filters }) {
                         onValueChange={handleSortChange}
                     >
                         <SelectTrigger className="w-[180px]">
-                            <SlidersHorizontalIcon/>
+                            <SlidersHorizontalIcon />
                             <SelectValue
                                 placeholder="Newest First"
                                 value={sortOrder}
@@ -241,11 +249,13 @@ export default function Index({ auth, contract, items, filters }) {
                                         {item.unit}
                                     </TableCell>
                                     <TableCell className="py-2 px-4 border-b">
-                                        {item.prices
-                                            ? item.prices[
-                                                  item.prices.length - 1
-                                              ].unit_cost
-                                            : "N/A"}
+                                        {item.prices.length !== 0 &&
+                                            (item.prices[item.prices.length - 1]
+                                                .unit_cost
+                                                ? item.prices[
+                                                      item.prices.length - 1
+                                                  ].unit_cost
+                                                : "N/A")}
                                     </TableCell>
                                     <TableCell className=" w-[10px] py-2 px-4">
                                         <Link
