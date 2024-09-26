@@ -95,8 +95,6 @@ export default function Index({ auth, contract, items, filters }) {
         );
     };
 
-    console.log(items);
-
     return (
         <AuthenticatedLayout
             user={auth.user}
