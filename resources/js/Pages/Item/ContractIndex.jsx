@@ -30,7 +30,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"; // Assuming you have a Modal component
-import { MoveRight, Trash2 } from "lucide-react";
+import { FilterIcon, MoveRight, SearchIcon, SlidersHorizontalIcon, Trash2 } from "lucide-react";
 
 export default function Index({ auth, contract, items, filters }) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -120,6 +120,7 @@ export default function Index({ auth, contract, items, filters }) {
                         onValueChange={handleSortChange}
                     >
                         <SelectTrigger className="w-[180px]">
+                            <SlidersHorizontalIcon/>
                             <SelectValue
                                 placeholder="Newest First"
                                 value={sortOrder}

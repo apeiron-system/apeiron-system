@@ -15,7 +15,7 @@ const ContractCard = ({ contract }) => {
                     <p className="text-gray-700">
                         <strong>Location:</strong> {contract.location}
                     </p>
-                    {/* <p className="text-gray-700">
+                    <p className="text-gray-700">
                         <strong>Duration in Days:</strong> {contract.duration_in_days}
                     </p>
                     <p className="text-gray-700">
@@ -23,7 +23,7 @@ const ContractCard = ({ contract }) => {
                     </p>
                     <p className="text-gray-700">
                         <strong>Status:</strong> {_.capitalize(contract.status)}
-                    </p> */}
+                    </p>
                 </div>
             </div>
 
