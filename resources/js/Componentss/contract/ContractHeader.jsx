@@ -11,7 +11,7 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 
-export default function ContractHeader({ contract, signingAuthorityEmployee }) {
+export default function ContractHeader({ contract, signingAuthorityEmployee, canEdit }) {
     return (
         <section className="grid grid-cols-3">
             <div>
@@ -34,12 +34,12 @@ export default function ContractHeader({ contract, signingAuthorityEmployee }) {
                                 <h2 className="text-sm text-gray-600 leading-tight mt-2">
                                     Date - {contract.date}
                                 </h2>
-                                <h2 className="text-sm text-gray-600 leading-tight mt-2">
+                                {signingAuthorityEmployee && <h2 className="text-sm text-gray-600 leading-tight mt-2">
                                     Authorized Representative -{" "}
                                     {signingAuthorityEmployee.first_name +
                                         " " +
                                         signingAuthorityEmployee.last_name}
-                                </h2>
+                                </h2>}
                             </div>
                             <div>
                                 <h2 className="text-sm text-gray-600 leading-tight mt-2">
@@ -61,7 +61,7 @@ export default function ContractHeader({ contract, signingAuthorityEmployee }) {
                 </Accordion>
             </div>
 
-            <div className="w-full text-right">
+           {canEdit && <div className="w-full text-right">
                 <Link href={`/contract/${contract.id}/edit`}>
                     <Button variant="outline">
                         <Edit />
@@ -73,7 +73,7 @@ export default function ContractHeader({ contract, signingAuthorityEmployee }) {
                         router.delete(route("contract.delete", contract.id));
                     }}
                 />
-            </div>
+            </div>}
         </section>
     );
 }

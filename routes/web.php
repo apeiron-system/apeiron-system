@@ -5,6 +5,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
@@ -28,10 +29,6 @@ Route::get('/dashboard', function () {
 Route::get('/job-order', function () {
     return Inertia::render('JobOrder/JobOrderPage');
 })->middleware(['auth', 'verified'])->name('job-order');
-
-Route::get('/item', function () {
-    return Inertia::render('Item/ItemPage');
-})->middleware(['auth', 'verified'])->name('item');
 
 Route::get('/progress-report', function () {
     return Inertia::render('ProgressReport/ProgressReportPage');
@@ -135,5 +132,23 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::get("/item", [ItemController::class, 'index'])->name('item');
+
+Route::prefix('item')->group(function () {
+    Route::get('/contracts/{contract}', [ItemController::class, 'contractIndex'])->name('item.contract'); // List items
+    Route::get('/contracts/{contract}/create', [ItemController::class, 'create'])->name('item.contract.create'); // Show create form
+    Route::post('/contracts/{contract}', [ItemController::class, 'store'])->name('item.contract.store'); // Store new item
+    Route::get('/contracts/{contract}/{item}', [ItemController::class, 'show'])->name('item.contract.show'); // Show single item (if needed)
+    Route::get('/contracts/{contract}/{item}/edit', [ItemController::class, 'edit'])->name('item.contract.edit'); // Show edit form
+    Route::post('/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
+    Route::post('/contracts/{contract}/item/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
+});
+
+
+
+
+
 
 require __DIR__ . '/auth.php';

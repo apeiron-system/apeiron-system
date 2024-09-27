@@ -1,0 +1,7 @@
+description,type,unit,unit_cost
+"Concrete mix","material","kg",150.50
+"Excavator","equipment","unit",2500.00
+"Laborer","labor","hours",100.00
+"Steel bars","material","kg",80.25
+"Bulldozer","equipment","unit",3200.00
+"Carpenter","labor","hours",120.00
