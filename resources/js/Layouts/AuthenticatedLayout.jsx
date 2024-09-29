@@ -1,9 +1,5 @@
-import { useState } from "react";
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import Dropdown from "@/Components/Dropdown";
-import NavLink from "@/Components/NavLink";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { Link } from "@inertiajs/react";
+import ApplicationLogo from "@/Componentss/ApplicationLogo";
+import NavLink from "@/Componentss/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,7 +7,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu";
+  } from "@/components/ui/dropdown-menu";
+import { Link } from "@inertiajs/react";
+
 import {
     LayoutDashboard,
     LineChart,
@@ -20,7 +18,9 @@ import {
     ScrollText,
     ShoppingBasket,
     User,
+    Users,
 } from "lucide-react";
+import { useState } from "react";
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
@@ -45,7 +45,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("contract")}
-                            active={route().current("contract")}
+                            active={route().current().startsWith("contract")}
                         >
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
@@ -57,7 +57,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("item")}
-                            active={route().current("item")}
+                            active={route().current().startsWith("item")}
                         >
                             <ShoppingBasket className="mr-2" /> Item
                         </NavLink>
@@ -66,6 +66,12 @@ export default function Authenticated({ user, header, children }) {
                             active={route().current("progress-report")}
                         >
                             <LineChart className="mr-2" /> Progress Report
+                        </NavLink>
+                        <NavLink
+                            href={route("employees")}
+                            active={route().current().startsWith("employee")}
+                        >
+                            <Users className="mr-2" /> Employees
                         </NavLink>
 
                         {/* Add more NavLinks here */}

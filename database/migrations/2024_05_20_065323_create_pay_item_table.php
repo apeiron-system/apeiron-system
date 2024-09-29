@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date("date_modified");
             $table->string("description");
             $table->string("unit");
-            $table->decimal("unit_bid_cost");
+            $table->decimal("unit_bid_cost" , 15, 2);
         });
     }
 

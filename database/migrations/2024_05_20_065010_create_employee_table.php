@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string("first_name", length: 255);
-            $table->string("middle_name");
+            $table->string("middle_name")->nullable();
             $table->string("last_name", length: 255);
 
             //columns for address, in the philippines
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string("email_address");
 
             //columns for employee information
-            $table->string("employee_role");
+            $table->string("employee_role")->default("employee");
         });
     }
 

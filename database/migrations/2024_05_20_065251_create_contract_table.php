@@ -11,22 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_contract', function (Blueprint $table) {
+        Schema::create('contract', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
-            $table->string("description");
+            $table->string("description")->nullable();
+            $table->enum("status", ["pending", "ongoing", "canceled", "completed"])->default("pending");
             $table->string("contract_name");
             $table->string("location");
-            $table->string("designation");
+            $table->string("designation")->nullable();
+            $table->integer("duration_in_days");
+            $table->decimal("amount", 15, 2);
             $table->date("date");
 
-            $table->foreignId("submitted_by_employee_id");
-            $table->foreignId("signing_authority_employee_id");
-            $table->foreignId("authorized_representative_employee_id");
-
-            $table->foreign("submitted_by_employee_id")->references("id")->on("employee");
-            $table->foreign("signing_authority_employee_id")->references("id")->on("employee");
+            $table->foreignId("authorized_representative_employee_id")->nullable();
             $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
         });
     }
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_contract');
+        Schema::dropIfExists('contract');
     }
 };

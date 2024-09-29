@@ -11,4 +11,16 @@ class EmployeeModel extends Model
 
     protected $table = 'employee';
 
+
+    //employee has many to many relationship with ProjectModel
+
+    public function projects()
+    {
+        return $this->hasMany(ProjectModel::class, 'project_id');
+    }
+
+    public function contracts()
+    {
+        return $this->hasMany(ContractModel::class, 'project_id');
+    }
 }

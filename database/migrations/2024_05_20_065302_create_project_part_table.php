@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_part', function (Blueprint $table) {
+        Schema::create('project_part', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string("description");
 
-            $table->foreignId("contract_id");
+            $table->foreignId("project_id");
             $table->foreignId("parent_id")->nullable();
 
-            $table->foreign("contract_id")->references("id")->on("project_contract");
-            $table->foreign("parent_id")->references("id")->on("contract_part");
+            $table->foreign("project_id")->references("id")->on("project");
+            $table->foreign("parent_id")->references("id")->on("project_part");
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contract_part');
+        Schema::dropIfExists('project_part');
     }
 };
