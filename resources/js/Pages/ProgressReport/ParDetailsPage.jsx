@@ -24,7 +24,7 @@ export default function ParDetailsPage({ auth, contract }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Progress Report
+                    Progress Accomplishment Details
                 </h2>
             }
         >
