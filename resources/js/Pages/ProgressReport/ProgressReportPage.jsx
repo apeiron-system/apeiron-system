@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 
 export default function ProgressAccomplishmentReport({ auth }) {
     const [contracts, setContracts] = useState([
-        { id: 1, name: "Contract 1", startDate: "2023-01-01", endDate: "2023-12-31", dotColor: "blue" },
-        { id: 2, name: "Contract 2", startDate: "2022-01-01", endDate: "2022-12-31", dotColor: "yellow" },
-        { id: 3, name: "Contract 3", startDate: "2021-01-01", endDate: "2021-12-31", dotColor: "blue" },
-        { id: 4, name: "Contract 4", startDate: "2020-01-01", endDate: "2020-12-31", dotColor: "yellow" },
-        { id: 5, name: "Contract 5", startDate: "2019-01-01", endDate: "2019-12-31", dotColor: "blue" },
+        { id: 1, name: "Contract Name", location: "Panabo, Davao City", startDate: "2023-01-01", endDate: "2023-12-31", dotColor: "blue" },
+        { id: 2, name: "Contract 2", location: "Panabo, Davao City", startDate: "2022-01-01", endDate: "2022-12-31", dotColor: "yellow" },
+        { id: 3, name: "Contract 3", location: "Panabo, Davao City", startDate: "2021-01-01", endDate: "2021-12-31", dotColor: "blue" },
+        { id: 4, name: "Contract 4", location: "Tagum City", startDate: "2020-01-01", endDate: "2020-12-31", dotColor: "yellow" },
+        { id: 5, name: "Contract 5", location: "Panabo, Davao City", startDate: "2019-01-01", endDate: "2019-12-31", dotColor: "blue" },
     ]);
+    
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredContracts, setFilteredContracts] = useState(contracts);
@@ -48,11 +49,12 @@ export default function ProgressAccomplishmentReport({ auth }) {
         }
 
         if (searchQuery) {
+            const lowercasedQuery = searchQuery.toLowerCase();
             filtered = filtered.filter(contract =>
-                contract.id.toString().includes(searchQuery) ||
-                contract.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                contract.startDate.includes(searchQuery) ||
-                contract.endDate.includes(searchQuery)
+                contract.name.toLowerCase().includes(lowercasedQuery) ||
+                contract.location.toLowerCase().includes(lowercasedQuery) ||
+                contract.startDate.includes(lowercasedQuery) ||
+                contract.endDate.includes(lowercasedQuery)
             );
         }
 
@@ -77,13 +79,12 @@ export default function ProgressAccomplishmentReport({ auth }) {
         >
             <Head title="Progress Report" />
 
-            <div className="flex flex-col h-screen">
+            <div className="flex flex-col h-screen overflow-hidden">
                 <div className="flex-1 p-10">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">Contract Overview</h1>
                     </div>
 
-                    {/* Search and Sort Section */}
                     <div className="mb-6 flex items-center justify-between">
                         <div className="flex items-center gap-2 w-1/3">
                             <input
@@ -118,9 +119,7 @@ export default function ProgressAccomplishmentReport({ auth }) {
                             </div>
                         </div>
                     </div>
-
-                    {/* Scrollable Container for Contracts */}
-                    <div className="h-[calc(100vh-200px)] overflow-y-auto"> {/* Adjust height as needed */}
+                    <div className="scrollable-container">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredContracts.map(contract => (
                                 <div key={contract.id} className="bg-white rounded-lg shadow-md p-6">
@@ -130,13 +129,9 @@ export default function ProgressAccomplishmentReport({ auth }) {
                                             <div className={`w-3 h-3 rounded-full ml-2 ${contract.dotColor === 'blue' ? 'bg-blue-500' : 'bg-yellow-400'}`}></div>
                                         </div>
                                         <div className="relative">
-                                            <button className="text-gray-500 focus:outline-none" onClick={() => toggleMenu(contract.id)}>
-                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v.01M12 12v.01M12 18v.01"></path>
-                                                </svg>
-                                            </button>
+                                            <button onClick={() => toggleMenu(contract.id)}>⋮</button>
                                             {menuOpen[contract.id] && (
-                                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                                                <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-10">
                                                     <InertiaLink href={route("par-details", { contract })} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                                         Progress Report
                                                     </InertiaLink>
@@ -147,11 +142,9 @@ export default function ProgressAccomplishmentReport({ auth }) {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="mb-4">
-                                        <p className="text-gray-700"><strong>Location:</strong> <span className="text-gray-500">Panabo, Davao City</span></p>
-                                        <p className="text-gray-700"><strong>Duration:</strong> <span className="text-gray-500">12 months</span></p>
-                                        <p className="text-gray-700"><strong>Amount:</strong> <span className="text-gray-500">₱1,000,000.00</span></p>
-                                    </div>
+                                    <p className="text-gray-600">Contract ID: {contract.id}</p>
+                                    <p className="text-gray-600">Location: {contract.location}</p>
+                                    <p className="text-gray-600">Duration: {contract.startDate} - {contract.endDate}</p>
                                 </div>
                             ))}
                         </div>
