@@ -5,6 +5,10 @@ import { FileX2 } from "lucide-react";
 const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
     if (!show) return null;
 
+    const handleDone = () => {
+        window.location.href = "/job-order"; // Adjust the URL as needed
+    };
+
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
             <div
@@ -30,7 +34,7 @@ const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
                         No
                     </button>
                     <button
-                        onClick={onConfirm}
+                        onClick={handleDone}
                         className="bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] text-white py-2 px-4 rounded"
                     >
                         Yes

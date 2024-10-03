@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
@@ -20,10 +20,14 @@ export default function CreateJobOrderPage({ auth }) {
         dateNeeded: "",
     });
 
+    // State for handling modals
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
+
+    // Helper function to check if any field is empty
+    const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
 
     const handleChange = (e) => {
         setFormData({
@@ -32,13 +36,47 @@ export default function CreateJobOrderPage({ auth }) {
         });
     };
 
-    const handleCancel = () => {
-        setIsCancelModalOpen(true);
+    // Handle the scenario where the user exits with incomplete fields
+    const handleExitWithIncompleteFields = () => {
+        if (isAnyFieldEmpty) {
+            setIsSaveModalOpen(true); // Show the save modal when form is incomplete
+        }
     };
 
+    // Handle page unload or navigation
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isAnyFieldEmpty) {
+                e.preventDefault();
+                e.returnValue = ""; // Show confirmation dialog in supported browsers
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [isAnyFieldEmpty]);
+
+    // Run logic when the component unmounts (e.g., when the user navigates away)
+    useEffect(() => {
+        return () => {
+            handleExitWithIncompleteFields();
+        };
+    }, [isAnyFieldEmpty]);
+
+    // Handle Save button (trigger save modal if form is incomplete)
     const handleSave = (e) => {
         e.preventDefault();
-        setIsSaveModalOpen(true);
+        if (isAnyFieldEmpty) {
+            setIsSaveModalOpen(true);
+        }
+    };
+
+    // Handle Cancel button
+    const handleCancel = () => {
+        setIsCancelModalOpen(true);
     };
 
     const handleConfirmCancel = () => {
@@ -72,10 +110,6 @@ export default function CreateJobOrderPage({ auth }) {
         setIsSubmitModalOpen(false);
         setIsSubmittedModalOpen(false);
     };
-
-    const isAnyFieldEmpty = Object.values(formData).some(
-        (value) => value === ""
-    );
 
     return (
         <AuthenticatedLayout
