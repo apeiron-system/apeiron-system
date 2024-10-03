@@ -75,30 +75,35 @@ export default function ProgressAccomplishmentReport({ auth }) {
                 </h2>
             }
         >
-            <Head title="Progress Accomplishment Report" />
+            <Head title="Progress Report" />
 
-            <div className="flex h-screen">
-                <div className="flex-1 p-10 ml-1/4">
+            <div className="flex flex-col h-screen">
+                <div className="flex-1 p-10">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">Contract Overview</h1>
                     </div>
-                    <div className="mb-6 flex justify-between items-center">
-                        <div className="flex items-center gap-4">
+
+                    {/* Search and Sort Section */}
+                    <div className="mb-6 flex items-center justify-between">
+                        <div className="flex items-center gap-2 w-1/3">
                             <input
                                 type="text"
-                                className="border-1 border-black rounded p-1 w-"
+                                className="border-1 border-black rounded p-1 w-full"
                                 value={searchQuery}
                                 onChange={handleSearchChange}
                                 onKeyDown={handleKeyDown}
+                                placeholder="Search"
                             />
-                            <button className="px-5 py-1 bg-gray-800 text-white rounded" onClick={handleSearch}>Search</button>
+                            <button className="px-5 py-1 bg-gray-800 text-white rounded" onClick={handleSearch}>
+                                Search
+                            </button>
                         </div>
 
                         <div className="relative">
                             <label htmlFor="sort-by" className="sr-only">Sort By</label>
                             <select 
                                 id="sort-by" 
-                                className="px-2 py-1 bg-gray-500 text-white rounded appearance-none"
+                                className="px-2 py-1 bg-gray-600 text-white rounded appearance-none"
                                 value={sortBy}
                                 onChange={handleSortByChange}
                             >
@@ -114,7 +119,8 @@ export default function ProgressAccomplishmentReport({ auth }) {
                         </div>
                     </div>
 
-                    <div className="h-90 overflow-y-auto">
+                    {/* Scrollable Container for Contracts */}
+                    <div className="h-[calc(100vh-200px)] overflow-y-auto"> {/* Adjust height as needed */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredContracts.map(contract => (
                                 <div key={contract.id} className="bg-white rounded-lg shadow-md p-6">
