@@ -32,6 +32,8 @@ export default function CreateJobOrderPage({ auth }) {
         });
     };
 
+    const isFieldEmpty = (field) => formData[field] === "";
+
     const handleCancel = () => {
         setIsCancelModalOpen(true);
     };
@@ -103,8 +105,11 @@ export default function CreateJobOrderPage({ auth }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <div className="mt-0">
-                                <h2 className="text-xl font-semibold text-gray-800">
+                                <h2 htmlFor="projectName" className="text-xl font-semibold text-gray-800">
                                     Project Selection
+                                    {isFieldEmpty("projectName") && (
+                                        <span className="text-red-500"> *</span>
+                                    )}
                                 </h2>
                                 <p className="mt-1 text-sm text-gray-600">
                                     Choose the project you're creating the job
@@ -143,6 +148,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Job Order No.
+                                                {isFieldEmpty("jobOrderNo") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <select
                                                 id="jobOrderNo"
@@ -169,6 +177,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Contract ID
+                                                {isFieldEmpty("contractId") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <select
                                                 id="contractId"
@@ -195,6 +206,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Period Covered
+                                                {isFieldEmpty("periodCovered") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <input
                                                 id="periodCovered"
@@ -213,6 +227,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Supplier
+                                                {isFieldEmpty("supplier") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <input
                                                 id="supplier"
@@ -231,6 +248,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Location
+                                                {isFieldEmpty("location") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <input
                                                 id="location"
@@ -249,6 +269,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Date Needed
+                                                {isFieldEmpty("dateNeeded") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <input
                                                 id="dateNeeded"
@@ -266,6 +289,9 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Items Work
+                                                {isFieldEmpty("itemsWork") && (
+                                                    <span className="text-red-500"> *</span>
+                                                )}
                                             </label>
                                             <input
                                                 id="itemsWork"
@@ -290,16 +316,10 @@ export default function CreateJobOrderPage({ auth }) {
                                         </Button>
                                         <div className="flex space-x-4">
                                             <Button
-                                                type="submit"
-                                                className="bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] text-white font-bold py-2 px-4 rounded"
-                                            >
-                                                Save as Draft
-                                            </Button>
-                                            <Button
                                                 type="button"
                                                 onClick={handleSubmit}
                                                 disabled={isAnyFieldEmpty}
-                                                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                                                className="bg-[rgb(15,23,42)] hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                                             >
                                                 Submit
                                             </Button>
