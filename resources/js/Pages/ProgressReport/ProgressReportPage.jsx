@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ProgressAccomplishmentReport({ auth }) {
     const [contracts, setContracts] = useState([
@@ -15,6 +15,7 @@ export default function ProgressAccomplishmentReport({ auth }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredContracts, setFilteredContracts] = useState(contracts);
     const [menuOpen, setMenuOpen] = useState({});
+    const menuRefs = useRef({});
 
     useEffect(() => {
         setFilteredContracts(contracts);
@@ -67,6 +68,24 @@ export default function ProgressAccomplishmentReport({ auth }) {
             [id]: !prevState[id],
         }));
     };
+
+    const handleClickOutside = (event) => {
+        Object.keys(menuRefs.current).forEach((id) => {
+            if (menuOpen[id] && menuRefs.current[id] && !menuRefs.current[id].contains(event.target)) {
+                setMenuOpen((prevState) => ({
+                    ...prevState,
+                    [id]: false,
+                }));
+            }
+        });
+    };
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [menuOpen]);
 
     return (
         <AuthenticatedLayout
@@ -131,7 +150,7 @@ export default function ProgressAccomplishmentReport({ auth }) {
                                         <div className="relative">
                                             <button onClick={() => toggleMenu(contract.id)}>⋮</button>
                                             {menuOpen[contract.id] && (
-                                                <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-10">
+                                                <div ref={(el) => (menuRefs.current[contract.id] = el)} className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-10">
                                                     <InertiaLink href={route("par-details", { contract })} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                                                         Progress Report
                                                     </InertiaLink>

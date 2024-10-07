@@ -32,6 +32,7 @@ export default function ParDetailsPage({ auth, contract }) {
 
             <div className="flex h-screen">
                 <div className="container mx-auto bg-white p-6 rounded-lg shadow-md">
+
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">Progress Accomplishment Details Page</h1>
                         <div className="relative inline-block text-left">
