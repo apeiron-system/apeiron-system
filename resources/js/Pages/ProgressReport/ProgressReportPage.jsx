@@ -84,7 +84,6 @@ export default function ProgressReport({ auth }) {
                                 value={searchQuery}
                                 onChange={handleSearchChange}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Search"
                             />
                             <button className="px-5 py-1 bg-gray-800 text-white rounded" onClick={handleSearch}>
                                 Search

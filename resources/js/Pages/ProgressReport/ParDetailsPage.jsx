@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link as InertiaLink, usePage } from "@inertiajs/react";
+import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 export default function ParDetailsPage({ auth }) {
@@ -14,9 +14,9 @@ export default function ParDetailsPage({ auth }) {
         }
     }, []);
 
-    // const toggleOptionsDropdown = (index) => {
-    //     setOptionsDropdownOpen((prevIndex) => (prevIndex === index ? null : index));
-    // };
+    const toggleOptionsDropdown = (index) => {
+        setOptionsDropdownOpen((prevIndex) => (prevIndex === index ? null : index));
+    };
 
     const handleViewJobOrder = (jobOrder) => {
         sessionStorage.setItem('joDetails', JSON.stringify(jobOrder));
@@ -55,7 +55,20 @@ export default function ParDetailsPage({ auth }) {
                                 <p><strong>End Date:</strong> {contract.endDate}</p>
                             </div>
 
-                            <h2 className="text-xl font-bold mb-4">Progress Accomplishment</h2>
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-xl font-bold">Progress Accomplishment</h2>
+                                <div className="flex space-x-2">
+                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Add
+                                    </button>
+                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Edit
+                                    </button>
+                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
 
                             <div className="overflow-x-auto" style={{ height: '300px' }}>
                                 <table className="min-w-full bg-white border border-gray-200 rounded-lg">
