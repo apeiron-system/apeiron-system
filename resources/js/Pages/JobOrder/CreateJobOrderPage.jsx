@@ -79,7 +79,7 @@ export default function CreateJobOrderPage({ auth }) {
         setIsCancelModalOpen(true);
     };
 
-    const handleConfirmCancel = () => {
+    const resetForm = () => {
         setFormData({
             projectName: "",
             jobOrderNo: "",
@@ -180,24 +180,16 @@ export default function CreateJobOrderPage({ auth }) {
                                                 Job Order No.
                                                 <span className="text-red-500"> *</span>
                                             </label>
-                                            <select
+                                            <input
                                                 id="jobOrderNo"
                                                 name="jobOrderNo"
+                                                type="text"
                                                 required
                                                 value={formData.jobOrderNo}
                                                 onChange={handleChange}
-                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
-                                            >
-                                                <option value="">
-                                                    Select Job Order Number
-                                                </option>
-                                                <option value="Order 1">
-                                                    JO-001
-                                                </option>
-                                                <option value="Order 2">
-                                                    JO-002
-                                                </option>
-                                            </select>
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Job Order Number"
+                                            />
                                         </div>
                                         <div>
                                             <label
@@ -357,7 +349,7 @@ export default function CreateJobOrderPage({ auth }) {
                 <CancelJobOrderModal
                     show={isCancelModalOpen}
                     onClose={closeModal}
-                    onConfirm={handleConfirmCancel}
+                    onConfirm={resetForm}
                 />
             )}
             {isSubmitModalOpen && (
@@ -371,6 +363,7 @@ export default function CreateJobOrderPage({ auth }) {
                 <JobOrderSubmittedModal
                     show={isSubmittedModalOpen}
                     onClose={closeModal}
+                    onCreateAnother={resetForm}
                 />
             )}
         </AuthenticatedLayout>

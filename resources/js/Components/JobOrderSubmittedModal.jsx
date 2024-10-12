@@ -1,11 +1,16 @@
 import React from "react";
 import { CheckCheck } from "lucide-react";
 
-const JobOrderSubmittedModal = ({ show, onClose }) => {
+const JobOrderSubmittedModal = ({ show, onClose, onCreateAnother }) => {
     if (!show) return null;
 
     const handleDone = () => {
         window.location.href = "/job-order"; // Adjust the URL as needed
+    };
+
+    const handleCreateAnother = () => {
+        onCreateAnother();
+        onClose();
     };
 
     return (
@@ -27,7 +32,7 @@ const JobOrderSubmittedModal = ({ show, onClose }) => {
                 </p>
                 <div className="mt-6 flex justify-center space-x-4">
                     <button
-                        onClick={onClose}
+                        onClick={handleCreateAnother}
                         className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
                     >
                         Create Another
