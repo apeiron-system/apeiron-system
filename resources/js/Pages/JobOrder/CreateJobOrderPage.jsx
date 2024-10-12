@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
+import ExitJobOrderModal from "@/Components/ExitJobOrderModal";
 import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
@@ -21,6 +22,7 @@ export default function CreateJobOrderPage({ auth }) {
     });
 
     // State for handling modals
+    const [isExitModalOpen, setIsExitModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -36,46 +38,24 @@ export default function CreateJobOrderPage({ auth }) {
         });
     };
 
-    // Handle the scenario where the user exits with incomplete fields
-    const handleExitWithIncompleteFields = () => {
+    // Handle Exit button (trigger Exit modal if form is incomplete)
+    const handleExit = (e) => {
+        e.preventDefault();
         if (isAnyFieldEmpty) {
-            setIsSaveModalOpen(true); // Show the save modal when form is incomplete
+            closeModal();
+            setIsExitModalOpen(true);
         }
     };
 
-    // Handle page unload or navigation
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-            if (isAnyFieldEmpty) {
-                e.preventDefault();
-                e.returnValue = ""; // Show confirmation dialog in supported browsers
-            }
-        };
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [isAnyFieldEmpty]);
-
-    // Run logic when the component unmounts (e.g., when the user navigates away)
-    useEffect(() => {
-        return () => {
-            handleExitWithIncompleteFields();
-        };
-    }, [isAnyFieldEmpty]);
-
-    // Handle Save button (trigger save modal if form is incomplete)
-    const handleSave = (e) => {
-        e.preventDefault();
-        if (isAnyFieldEmpty) {
-            setIsSaveModalOpen(true);
-        }
+    // Handle Save button
+    const handleSave = () => {
+        closeModal();
+        setIsSaveModalOpen(true);
     };
 
     // Handle Cancel button
     const handleCancel = () => {
+        closeModal();
         setIsCancelModalOpen(true);
     };
 
@@ -105,10 +85,21 @@ export default function CreateJobOrderPage({ auth }) {
     };
 
     const closeModal = () => {
+        setIsExitModalOpen(false);
         setIsSaveModalOpen(false);
         setIsCancelModalOpen(false);
         setIsSubmitModalOpen(false);
         setIsSubmittedModalOpen(false);
+    };
+
+    // Handle the Back Button click
+    const handleBackButtonClick = (e) => {
+        e.preventDefault();
+        setIsExitModalOpen(true);
+    };
+
+    const handleReturn = () => {
+        window.location.href = "job-order";
     };
 
     return (
@@ -116,14 +107,9 @@ export default function CreateJobOrderPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link
-                        href={route("job-order")}
-                        className="text-grey-600 hover:text-grey-900 mr-4"
-                    >
-                        <button>
-                            <ChevronLeft size={25} strokeWidth={1.25} />
-                        </button>
-                    </Link>
+                    <button onClick={handleBackButtonClick}>
+                        <ChevronLeft size={25} strokeWidth={1.25} />
+                    </button>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Create Job Order
                     </h2>
@@ -142,8 +128,7 @@ export default function CreateJobOrderPage({ auth }) {
                                     <span className="text-red-500"> *</span>
                                 </h2>
                                 <p className="mt-1 text-sm text-gray-600">
-                                    Choose the project you're creating the job
-                                    order for.
+                                    Choose the project you're creating the job order for.
                                 </p>
                                 <select
                                     id="projectName"
@@ -170,7 +155,7 @@ export default function CreateJobOrderPage({ auth }) {
                                     below:
                                 </p>
 
-                                <form className="mt-6" onSubmit={handleSave}>
+                                <form className="mt-6" onSubmit={handleExit}>
                                     <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
                                         <div>
                                             <label
@@ -339,6 +324,14 @@ export default function CreateJobOrderPage({ auth }) {
                     </div>
                 </div>
             </div>
+            {isExitModalOpen && (
+                <ExitJobOrderModal
+                    show={isExitModalOpen}
+                    onClose={closeModal}
+                    onSaveDraft={handleSave}
+                    onDiscard={handleReturn}
+                />
+            )}
             {isSaveModalOpen && (
                 <SaveJobOrderModal
                     show={isSaveModalOpen}

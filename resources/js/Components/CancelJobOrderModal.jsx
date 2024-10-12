@@ -6,7 +6,7 @@ const CancelJobOrderModal = ({ show, onClose, onConfirm }) => {
     if (!show) return null;
 
     const handleDone = () => {
-        window.location.href = "/job-order"; // Adjust the URL as needed
+        window.location.href = "/job-order";
     };
 
     return (
