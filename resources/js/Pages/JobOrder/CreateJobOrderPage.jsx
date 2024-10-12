@@ -102,6 +102,23 @@ export default function CreateJobOrderPage({ auth }) {
         window.location.href = "job-order";
     };
 
+    // Safety net for navigating away from the page
+    const handleBeforeUnload = (event) => {
+        if (isAnyFieldEmpty) {
+            const message = "You have unsaved changes. Are you sure you want to leave?";
+            event.returnValue = message; // Legacy for some browsers
+            return message; // Modern browsers
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [isAnyFieldEmpty]);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
