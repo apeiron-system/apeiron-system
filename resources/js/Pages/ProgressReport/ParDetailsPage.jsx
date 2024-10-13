@@ -2,8 +2,118 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
+function Modal({ isOpen, onClose, onSubmit }) {
+    const [newDetail, setNewDetail] = useState({
+        description: '',
+        date: '',
+        checkedBy: '',
+        reviewedBy: '',
+        approvedBy: '',
+        preparedBy: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewDetail((prevDetail) => ({
+            ...prevDetail,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(newDetail);
+        setNewDetail({ description: '', date: '', checkedBy: '', reviewedBy: '', approvedBy: '', preparedBy: '' });
+        onClose();
+    };
+
+    return (
+        isOpen ? (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+                <div className="bg-white rounded-lg p-6 z-10">
+                    <h2 className="text-lg font-bold mb-4">Add New Detail</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Description</label>
+                            <input
+                                type="text"
+                                name="description"
+                                value={newDetail.description}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Date</label>
+                            <input
+                                type="date"
+                                name="date"
+                                value={newDetail.date}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Checked By</label>
+                            <input
+                                type="text"
+                                name="checkedBy"
+                                value={newDetail.checkedBy}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Reviewed By</label>
+                            <input
+                                type="text"
+                                name="reviewedBy"
+                                value={newDetail.reviewedBy}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Approved By</label>
+                            <input
+                                type="text"
+                                name="approvedBy"
+                                value={newDetail.approvedBy}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Prepared By</label>
+                            <input
+                                type="text"
+                                name="preparedBy"
+                                value={newDetail.preparedBy}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                required
+                            />
+                        </div>
+                        <div className="flex justify-end">
+                            <button type="button" onClick={onClose} className="mr-2 px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
+                            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Add Detail</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        ) : null
+    );
+}
+
 export default function ParDetailsPage({ auth }) {
     const [contract, setContract] = useState(null);
+    const [showForm, setShowForm] = useState(false);
     const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(null);
 
     useEffect(() => {
@@ -20,6 +130,15 @@ export default function ParDetailsPage({ auth }) {
 
     const handleViewJobOrder = (jobOrder) => {
         sessionStorage.setItem('joDetails', JSON.stringify(jobOrder));
+    };
+
+    const handleAddDetail = (newDetail) => {
+        if (contract) {
+            setContract((prevContract) => ({
+                ...prevContract,
+                details: [...prevContract.details, newDetail]
+            }));
+        }
     };
 
     return (
@@ -58,7 +177,10 @@ export default function ParDetailsPage({ auth }) {
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl font-bold">Progress Accomplishment</h2>
                                 <div className="flex space-x-2">
-                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button
+                                        onClick={() => setShowForm(true)}
+                                        className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
                                         Add
                                     </button>
                                     <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -86,7 +208,7 @@ export default function ParDetailsPage({ auth }) {
                                     </thead>
                                     <tbody>
                                         {contract.details?.map((detail, index) => (
-                                            <tr key={index}>
+                                            <tr key={index} onClick={() => handleViewJobOrder(detail)}>
                                                 <td className="px-4 py-2 border-b border-gray-200">
                                                     <input type="checkbox" />
                                                 </td>
@@ -119,6 +241,12 @@ export default function ParDetailsPage({ auth }) {
                                 </div>
                                 <div className="text-sm whitespace-nowrap">90%</div>
                             </div>
+
+                            <Modal
+                                isOpen={showForm}
+                                onClose={() => setShowForm(false)}
+                                onSubmit={handleAddDetail}
+                            />
                         </>
                     ) : (
                         <p>Loading contract progress accomplishment details...</p>

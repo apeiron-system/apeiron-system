@@ -39,7 +39,7 @@ Route::get('/par-details', function () {
 })->middleware(['auth', 'verified'])->name('par-details');
 
 Route::get('/jo-details', function () {
-    return Inertia::render('ParDetailsPage/JODetailsPage');
+    return Inertia::render('ProgressReport/JODetailsPage');
 })->middleware(['auth', 'verified'])->name('jo-details');
 
 Route::get('/par-contract-details', function () {
