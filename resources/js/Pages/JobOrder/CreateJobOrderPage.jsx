@@ -31,6 +31,9 @@ export default function CreateJobOrderPage({ auth }) {
     // Helper function to check if any field is empty
     const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
 
+    // Check if all input fields are empty
+    const areAllFieldsEmpty = Object.values(formData).every(value => value === "");
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -94,8 +97,12 @@ export default function CreateJobOrderPage({ auth }) {
 
     // Handle the Back Button click
     const handleBackButtonClick = (e) => {
-        e.preventDefault();
-        setIsExitModalOpen(true);
+         // If all fields are empty, proceed with navigation; otherwise, show the exit modal
+        if (areAllFieldsEmpty) {
+            handleReturn(); // Directly navigate back
+        } else {
+            setIsExitModalOpen(true); // Show the exit modal if there are filled fields
+        }
     };
 
     const handleReturn = () => {
