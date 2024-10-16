@@ -9,9 +9,9 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/Components/ui/input";
 import {
     Select,
     SelectContent,
@@ -19,8 +19,8 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
+} from "@/Components/ui/select";
+import { Button } from "@/Components/ui/button"; // Assuming you have a Button component
 import {
     Dialog,
     DialogClose,
@@ -29,7 +29,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"; // Assuming you have a Modal component
+} from "@/Components/ui/dialog"; // Assuming you have a Modal component
 import {
     FilterIcon,
     MoveRight,

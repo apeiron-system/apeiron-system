@@ -41,4 +41,5 @@ class ItemModel extends Model
         return $this->prices()->latest()->first();
     }
 
+
 }
