@@ -102,7 +102,7 @@ function Modal({ isOpen, onClose, onSubmit }) {
                         </div>
                         <div className="flex justify-end">
                             <button type="button" onClick={onClose} className="mr-2 px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
-                            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">Add Detail</button>
+                            <button type="submit" className="px-6 py-1 bg-gray-700 text-white rounded-md">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -115,6 +115,7 @@ export default function ParDetailsPage({ auth }) {
     const [contract, setContract] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(null);
+    const [selectedDetails, setSelectedDetails] = useState([]);
 
     useEffect(() => {
         const contractDetails = sessionStorage.getItem('contractDetails');
@@ -128,10 +129,6 @@ export default function ParDetailsPage({ auth }) {
         setOptionsDropdownOpen((prevIndex) => (prevIndex === index ? null : index));
     };
 
-    const handleViewJobOrder = (jobOrder) => {
-        sessionStorage.setItem('joDetails', JSON.stringify(jobOrder));
-    };
-
     const handleAddDetail = (newDetail) => {
         if (contract) {
             setContract((prevContract) => ({
@@ -141,13 +138,46 @@ export default function ParDetailsPage({ auth }) {
         }
     };
 
+    const handleCheckboxChange = (index) => {
+        setSelectedDetails((prevSelected) => {
+            if (prevSelected.includes(index)) {
+                return prevSelected.filter((i) => i !== index);
+            } else {
+                return [...prevSelected, index];
+            }
+        });
+    };
+
+    const handleDeleteSelected = () => {
+        setContract((prevContract) => {
+            const updatedDetails = prevContract.details.filter((_, index) => !selectedDetails.includes(index));
+            return { ...prevContract, details: updatedDetails };
+        });
+        setSelectedDetails([]);
+    };
+
+    const handleDeleteSingleDetail = (index) => {
+        setContract((prevContract) => {
+            const updatedDetails = prevContract.details.filter((_, i) => i !== index);
+            return { ...prevContract, details: updatedDetails };
+        });
+        setOptionsDropdownOpen(null);
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Progress Accomplishment Report
-                </h2>
+                <div className="flex items-center">
+                    <button onClick={() => window.location.href = route('progress-report')}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Contract Progress Accomplishment Report
+                    </h2>
+                </div>
             }
         >
             <Head title="Progress Report" />
@@ -177,17 +207,19 @@ export default function ParDetailsPage({ auth }) {
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl font-bold">Progress Accomplishment</h2>
                                 <div className="flex space-x-2">
+                                    {selectedDetails.length > 0 && (
+                                        <button
+                                            onClick={handleDeleteSelected}
+                                            className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => setShowForm(true)}
                                         className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     >
                                         Add
-                                    </button>
-                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Edit
-                                    </button>
-                                    <button className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        Delete
                                     </button>
                                 </div>
                             </div>
@@ -203,56 +235,61 @@ export default function ParDetailsPage({ auth }) {
                                             <th className="px-4 py-2 border-b border-gray-200 text-left">Reviewed By</th>
                                             <th className="px-4 py-2 border-b border-gray-200 text-left">Approved By</th>
                                             <th className="px-4 py-2 border-b border-gray-200 text-left">Prepared By</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {contract.details?.map((detail, index) => (
-                                            <tr key={index} onClick={() => handleViewJobOrder(detail)}>
-                                                <td className="px-4 py-2 border-b border-gray-200">
-                                                    <input type="checkbox" />
+                                        {contract.details.map((detail, index) => (
+                                            <tr key={index} className="hover:bg-gray-100">
+                                                <td className="border-b border-gray-200 px-4 py-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedDetails.includes(index)}
+                                                        onChange={() => handleCheckboxChange(index)}
+                                                    />
                                                 </td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.description}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.date}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.checkedBy}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.reviewedBy}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.approvedBy}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">{detail.preparedBy}</td>
-                                                <td className="px-4 py-2 border-b border-gray-200 text-left">
-                                                    <div className="relative inline-block text-left">
-                                                        <button
-                                                            className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                            onClick={() => toggleOptionsDropdown(index)}
-                                                        >
-                                                            ⋮
-                                                        </button>
-                                                    </div>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.description}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.date}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.checkedBy}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.reviewedBy}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.approvedBy}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2">{detail.preparedBy}</td>
+                                                <td className="border-b border-gray-200 px-4 py-2 relative">
+                                                    <button
+                                                        onClick={() => toggleOptionsDropdown(index)}
+                                                        className="text-gray-600 hover:text-gray-900"
+                                                    >
+                                                        <span className="text-lg">⋮</span>
+                                                    </button>
+                                                    {optionsDropdownOpen === index && (
+                                                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                                            <InertiaLink
+                                                                href={route('par-contract-details', { id: contract.id, detailId: detail.id })}
+                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                            >
+                                                                View
+                                                            </InertiaLink>
+                                                            <button
+                                                                onClick={() => handleDeleteSingleDetail(index)}
+                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-
-                            <div className="w-full max-w-md mx-5 my-5 flex items-center">
-                                <div className="text-sm mr-5 whitespace-nowrap">Contract Progress</div>
-                                <div className="flex-1 bg-gray-200 rounded-full overflow-hidden mr-2">
-                                    <div className="bg-gray-800 h-2 rounded-full" style={{ width: '90%' }}></div>
-                                </div>
-                                <div className="text-sm whitespace-nowrap">90%</div>
-                            </div>
-
-                            <Modal
-                                isOpen={showForm}
-                                onClose={() => setShowForm(false)}
-                                onSubmit={handleAddDetail}
-                            />
                         </>
                     ) : (
-                        <p>Loading contract progress accomplishment details...</p>
+                        <p>Loading contract details...</p>
                     )}
                 </div>
             </div>
+
+            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
         </AuthenticatedLayout>
     );
 }

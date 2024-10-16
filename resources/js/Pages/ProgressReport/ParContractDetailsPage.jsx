@@ -6,10 +6,18 @@ export default function ParContractDetails({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Progress Accomplishment Details
-                </h2>
+                <div className="flex items-center">
+                    <button onClick={() => window.location.href = route('par-details')}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Progress Accomplishment Report
+                    </h2>
+                </div>
             }
+
         >
             <Head title="Progress Accomplishment Details" />
 
