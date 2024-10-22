@@ -7,9 +7,14 @@ export default function JODetailsPage({ auth }) {
 
     useEffect(() => {
         const joDetails = sessionStorage.getItem('joDetails');
+        console.log("Job Order Details from sessionStorage:", joDetails); // Debugging log to check data
         if (joDetails) {
             setJo(JSON.parse(joDetails));
             sessionStorage.removeItem('joDetails');
+        } else {
+            console.error("No job order details found in sessionStorage.");
+            // Optionally redirect to another page or show an error message
+            // window.location.href = route('some-other-route'); 
         }
     }, []);
 
@@ -33,7 +38,7 @@ export default function JODetailsPage({ auth }) {
 
             <div className="flex h-screen">
                 <div className="container mx-auto bg-white p-6 rounded-lg shadow-md">
-                    {jo ? (
+                    {jo && (
                         <>
                             <div className="flex justify-between items-center mb-6">
                                 <h1 className="text-2xl font-bold">
@@ -80,8 +85,6 @@ export default function JODetailsPage({ auth }) {
                                 </table>
                             </div>
                         </>
-                    ) : (
-                        <p>Loading job order details...</p>
                     )}
                 </div>
             </div>

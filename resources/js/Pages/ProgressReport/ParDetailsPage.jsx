@@ -283,9 +283,7 @@ export default function ParDetailsPage({ auth }) {
                                 </table>
                             </div>
                         </>
-                    ) : (
-                        <p>Loading contract details...</p>
-                    )}
+                    ) : null}
                 </div>
             </div>
 
