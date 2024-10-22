@@ -5,8 +5,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
-} from "@/Components/ui/navigation-menu";
-import { Link } from "@inertiajs/react";
+} from "@/components/ui/navigation-menu";
 
 export default function TabNavigation({ routeObject }) {
     //accepts props that is formatted like

@@ -10,7 +10,7 @@ export default function EmployeeTabNavigation() {
                 },
                 {
                     routeName: "Add Employee",
-                    route: route("employee.create"),
+                    route: route("employee.add"),
                 },
             ]}
         />

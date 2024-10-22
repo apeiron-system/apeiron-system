@@ -1,5 +1,7 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import NavLink from "@/Components/NavLink";
+import ApplicationLogo from "@/Componentss/ApplicationLogo";
+import NavLink from "@/Componentss/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -44,7 +46,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("contract")}
-                            active={route().current("contract")}
+                            active={route().current().startsWith("contract")}
                         >
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
@@ -56,7 +58,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("item")}
-                            active={route().current("item")}
+                            active={route().current().startsWith("item")}
                         >
                             <ShoppingBasket className="mr-2" /> Item
                         </NavLink>
@@ -68,7 +70,7 @@ export default function Authenticated({ user, header, children }) {
                         </NavLink>
                         <NavLink
                             href={route("employees")}
-                            active={route().current("employees")}
+                            active={route().current().startsWith("employee")}
                         >
                             <Users className="mr-2" /> Employees
                         </NavLink>
