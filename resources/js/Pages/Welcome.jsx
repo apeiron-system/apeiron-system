@@ -1,6 +1,6 @@
 
 import ApplicationLogo from "@/Componentss/ApplicationLogo";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 
 import {
     Card,
@@ -8,7 +8,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 
 import { Head, Link } from "@inertiajs/react";
 

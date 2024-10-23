@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('item_prices', function (Blueprint $table) {
-            $table->dropColumn('version'); // Drop the 'version' column
+            // $table->dropColumn('version'); // Drop the 'version' column
         });
     }
 

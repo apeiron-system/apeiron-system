@@ -7,14 +7,13 @@ export default function JODetailsPage({ auth }) {
 
     useEffect(() => {
         const joDetails = sessionStorage.getItem('joDetails');
-        console.log("Job Order Details from sessionStorage:", joDetails); // Debugging log to check data
+        console.log("Job Order Details from sessionStorage:", joDetails);
         if (joDetails) {
             setJo(JSON.parse(joDetails));
             sessionStorage.removeItem('joDetails');
         } else {
             console.error("No job order details found in sessionStorage.");
-            // Optionally redirect to another page or show an error message
-            // window.location.href = route('some-other-route'); 
+
         }
     }, []);
 
