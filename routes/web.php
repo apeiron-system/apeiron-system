@@ -106,7 +106,7 @@ Route::get('/contracts/{id}/items', [ContractItemController::class, 'showItemsFo
 
 Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('item.contract.bid');
 
-Route::post('/contracts/{contractId}/items/{itemId}/update-price', [ContractItemController::class, 'updateItemPrice'])->name('item.contract.update-price'); 
+Route::post('/contracts/{contractId}/items/{itemId}/bids', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
 
 //project
     

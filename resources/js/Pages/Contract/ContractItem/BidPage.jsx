@@ -7,24 +7,23 @@ import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 
 export default function BidPage({ auth, item, contractId }) {
-    // Initialize form data with just the unit_cost (price) for the bid
     const [formData, setFormData] = useState({
-        unit_cost: item.prices[0].unit_cost, // Use the current price as the default value
+        bid_amount: '', // Initialize bid amount as empty
     });
 
-    // Handle input change for the price/bid field
+    // Handle input change for the bid amount
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle form submission to update the bid (unit cost)
+    // Handle form submission to store the bid
     const handleSubmit = (e) => {
         e.preventDefault();
 
         // Post the new bid to the backend route
         router.post(
-            route("item.contract.update-price", [contractId, item.id]), // Make sure the route exists
+            route('item.contract.bid.store', [contractId, item.id]), // Post bid to this route
             formData
         );
     };
@@ -50,13 +49,13 @@ export default function BidPage({ auth, item, contractId }) {
 
             <section className="py-4 w-full max-w-[600px]">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Unit Cost/Bid Price Field */}
+                    {/* Bid Amount Field */}
                     <div>
-                        <Label>Bid Price</Label>
+                        <Label>Bid Amount</Label>
                         <Input
                             type="number"
-                            name="unit_cost"
-                            value={formData.unit_cost}
+                            name="bid_amount"
+                            value={formData.bid_amount}
                             onChange={handleChange}
                             required
                             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
@@ -64,10 +63,7 @@ export default function BidPage({ auth, item, contractId }) {
                     </div>
 
                     <div className="flex justify-end">
-                        <Button
-                            type="submit"
-                            className="bg-blue-500 text-white"
-                        >
+                        <Button type="submit" className="bg-blue-500 text-white">
                             Submit Bid
                         </Button>
                     </div>
