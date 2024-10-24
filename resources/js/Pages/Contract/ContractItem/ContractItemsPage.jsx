@@ -190,6 +190,14 @@ export default function Index({
                                                   ].unit_cost
                                                 : "N/A")}
                                     </TableCell>
+                                    {/* Bid Column */}
+                                    <TableCell>
+                                        {/* Display the latest bid if available */}
+                                        {item.bids?.length > 0
+                                            ? item.bids[item.bids.length - 1]
+                                                  .bid_amount
+                                            : "No Bids"}
+                                    </TableCell>
                                     {/* Bid Button */}
                                     <TableCell>
                                         <Link

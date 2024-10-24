@@ -41,5 +41,9 @@ class ItemModel extends Model
         return $this->prices()->latest()->first();
     }
 
+    public function bids()
+    {
+        return $this->hasMany(Bid::class, 'item_id');
+    }
 
 }

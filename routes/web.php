@@ -102,11 +102,11 @@ Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->m
 
 //contract item
 
-Route::get('/contracts/{id}/items', [ContractItemController::class, 'showItemsForContract'])->name('contract.items');
+Route::get('/contracts/{contractId}/items', [ContractItemController::class, 'showItemsForContract'])->name('contract.items');
 
 Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('item.contract.bid');
 
-Route::post('/contracts/{contractId}/items/{itemId}/bids', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
+Route::post('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
 
 //project
     

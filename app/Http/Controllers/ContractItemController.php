@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\ItemService;
 use App\Models\ContractModel;
 use App\Models\ItemModel;
+use App\Models\Bid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
@@ -50,22 +51,24 @@ class ContractItemController extends Controller
         
      }
  
-     // Method to update the price of an item
-     public function updateItemPrice(Request $request, $contractId, $itemId)
+     //method for putting a bid on an item
+     public function storeBid(Request $request, $contractId, $itemId)
      {
-         // Decode the JSON content from the request
-         $data = json_decode($request->getContent(), true);
- 
-         // Validate the price
-         $request->validate([
-             'price' => 'required|numeric|min:0',
+         $validatedData = $request->validate([
+             'bid_amount' => 'required|numeric|min:0',
          ]);
- 
-         // Call the service to update the item's price
-         $this->itemService->updateItemPrice($contractId, $itemId, $data['price']);
- 
-         // Redirect back with success message
-         return redirect()->route('item.contract.show', ['contract' => $contractId, 'item' => $itemId])
-                          ->with('success', 'Item price updated successfully.');
+     
+         // Create a new bid for the specified item and contract
+         Bid::create([
+             'contract_id' => $contractId,
+             'item_id' => $itemId,
+             'bid_amount' => $validatedData['bid_amount'],
+         ]);
+     
+         // Redirect to the contract's items page with a success message
+         return redirect()->route('contract.items', ['contractId' => $contractId])
+             ->with('success', 'Bid placed successfully.');
      }
+     
+     
 }

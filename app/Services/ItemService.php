@@ -16,15 +16,17 @@ class ItemService
 
     public function getItemsForContract(Request $request, $contractId)
     {
-        $query = ItemModel::where('contract_id', $contractId)->with('prices');
-
+        $query = ItemModel::where('contract_id', $contractId)
+            ->with(['prices', 'bids']); // Eager load prices and bids
+    
+        // Apply filters like search or sorting here if needed
         if ($request->has('search') && !empty($request->search)) {
             $query->where(function ($q) use ($request) {
                 $q->where('description', 'like', '%' . $request->search . '%')
                     ->orWhere('type', 'like', '%' . $request->search . '%');
             });
         }
-
+    
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'az':
@@ -44,9 +46,10 @@ class ItemService
         } else {
             $query->orderBy('created_at', 'desc');
         }
-
+    
         return $query->paginate(10);
     }
+    
 
     public function storeItems($contractId, $items)
     {
