@@ -111,4 +111,31 @@ class ItemService
             $query->orderBy('created_at', 'desc');
         }])->where('contract_id', $contractId)->findOrFail($id);
     }
+
+    //update price for the item
+    public function updateItemPrice($contractId, $itemId, $newPrice)
+    {
+        // Find the item by its ID and contract_id
+        $item = ItemModel::where('id', $itemId)
+            ->where('contract_id', $contractId)
+            ->firstOrFail();
+
+        // Get the latest price
+        $latestPrice = $item->prices()->where('is_current', true)->first();
+
+        // If the new price is different, create a new price entry
+        if ($latestPrice->unit_cost != $newPrice) {
+            // Mark the old price as not current
+            $latestPrice->is_current = false;
+            $latestPrice->save();
+
+            // Save the new price as current
+            $priceModel = new ItemPriceModel();
+            $priceModel->unit_cost = $newPrice;
+            $priceModel->is_current = true;
+            $priceModel->item_id = $item->id;
+            $priceModel->save();
+        }
+    }
+
 }

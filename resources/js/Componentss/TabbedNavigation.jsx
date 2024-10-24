@@ -15,7 +15,7 @@ export default function TabNavigation({ routeObject }) {
         <NavigationMenu>
             <NavigationMenuList>
                 {routeObject.map((route) => (
-                    <NavigationMenuItem key={route.routeName}>
+                    <NavigationMenuItem className="border rounded-md" key={route.routeName}>
                         <NavigationMenuLink
                             href={route.route}
                             className={navigationMenuTriggerStyle()}
