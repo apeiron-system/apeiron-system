@@ -153,6 +153,9 @@ export default function Index({
                                 <TableHead className="py-2 px-4 border-b">
                                     Latest Price
                                 </TableHead>
+                                <TableHead className="py-2 px-4 border-b">
+                                    Bid Price
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -185,11 +188,14 @@ export default function Index({
                                         {item.prices.length !== 0 &&
                                             (item.prices[item.prices.length - 1]
                                                 .unit_cost
-                                                ? item.prices[
-                                                      item.prices.length - 1
-                                                  ].unit_cost
+                                                ? parseFloat(
+                                                      item.prices[
+                                                          item.prices.length - 1
+                                                      ].unit_cost
+                                                  ).toFixed(2)
                                                 : "N/A")}
                                     </TableCell>
+
                                     {/* Bid Column */}
                                     <TableCell>
                                         {/* Display the latest bid if available */}
