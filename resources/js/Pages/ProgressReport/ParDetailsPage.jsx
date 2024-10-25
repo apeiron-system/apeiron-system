@@ -82,8 +82,8 @@ export default function ParDetailsPage({ auth }) {
             return (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-                    <div className="bg-white rounded-lg p-6 z-10">
-                        <h2 className="text-lg font-bold mb-4">Add New Detail</h2>
+                    <div className="bg-white rounded-lg p-6 z-10 w-1/4">
+                        <h2 className="text-lg font-bold mb-4">Add New Progress Detail</h2>
                         <form onSubmit={handleSubmit}>
                             {['description', 'date', 'checkedBy', 'reviewedBy', 'approvedBy', 'preparedBy'].map((field, index) => (
                                 <div className="mb-4" key={index}>
@@ -184,6 +184,7 @@ export default function ParDetailsPage({ auth }) {
                                 <thead>
                                     <tr>
                                         <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">PAR #</th>
                                         <th className="px-4 py-2 border-b border-gray-200 text-left">Description</th>
                                         <th className="px-4 py-2 border-b border-gray-200 text-left">Date</th>
                                         <th className="px-4 py-2 border-b border-gray-200 text-left">Checked By</th>
@@ -204,6 +205,7 @@ export default function ParDetailsPage({ auth }) {
                                                     className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
                                                 />
                                             </td>
+                                            <td className="px-4 py-2 border-b border-gray-200">{index + 1}</td>
                                             <td className="px-4 py-2">{detail.description}</td>
                                             <td className="px-4 py-2">{detail.date}</td>
                                             <td className="px-4 py-2">{detail.checkedBy}</td>
@@ -221,10 +223,14 @@ export default function ParDetailsPage({ auth }) {
                                                         <div className="absolute right-0 mt-2 w-20 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                                             <InertiaLink
                                                                 href={route('par-contract-details', { id: contract.id, detailId: detail.id })}
+                                                                onClick={() => {
+                                                                    sessionStorage.setItem('selectedDetail', JSON.stringify(detail));
+                                                                }}
                                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                             >
                                                                 View
                                                             </InertiaLink>
+
                                                             <button
                                                                 onClick={() => handleDeleteSingleDetail(index)}
                                                                 className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
