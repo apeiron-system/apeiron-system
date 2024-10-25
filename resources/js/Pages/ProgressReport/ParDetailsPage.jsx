@@ -2,115 +2,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-function Modal({ isOpen, onClose, onSubmit }) {
-    const [newDetail, setNewDetail] = useState({
-        description: '',
-        date: '',
-        checkedBy: '',
-        reviewedBy: '',
-        approvedBy: '',
-        preparedBy: ''
-    });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewDetail((prevDetail) => ({
-            ...prevDetail,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(newDetail);
-        setNewDetail({ description: '', date: '', checkedBy: '', reviewedBy: '', approvedBy: '', preparedBy: '' });
-        onClose();
-    };
-
-    return (
-        isOpen ? (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-                <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-                <div className="bg-white rounded-lg p-6 z-10">
-                    <h2 className="text-lg font-bold mb-4">Add New Detail</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Description</label>
-                            <input
-                                type="text"
-                                name="description"
-                                value={newDetail.description}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Date</label>
-                            <input
-                                type="date"
-                                name="date"
-                                value={newDetail.date}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Checked By</label>
-                            <input
-                                type="text"
-                                name="checkedBy"
-                                value={newDetail.checkedBy}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Reviewed By</label>
-                            <input
-                                type="text"
-                                name="reviewedBy"
-                                value={newDetail.reviewedBy}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Approved By</label>
-                            <input
-                                type="text"
-                                name="approvedBy"
-                                value={newDetail.approvedBy}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Prepared By</label>
-                            <input
-                                type="text"
-                                name="preparedBy"
-                                value={newDetail.preparedBy}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-end">
-                            <button type="button" onClick={onClose} className="mr-2 px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
-                            <button type="submit" className="px-6 py-1 bg-gray-700 text-white rounded-md">Submit</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        ) : null
-    );
-}
-
 export default function ParDetailsPage({ auth }) {
     const [contract, setContract] = useState(null);
     const [showForm, setShowForm] = useState(false);
@@ -130,12 +21,10 @@ export default function ParDetailsPage({ auth }) {
     };
 
     const handleAddDetail = (newDetail) => {
-        if (contract) {
-            setContract((prevContract) => ({
-                ...prevContract,
-                details: [...prevContract.details, newDetail]
-            }));
-        }
+        setContract((prevContract) => ({
+            ...prevContract,
+            details: [...(prevContract?.details || []), newDetail],
+        }));
     };
 
     const handleCheckboxChange = (index) => {
@@ -164,6 +53,63 @@ export default function ParDetailsPage({ auth }) {
         setOptionsDropdownOpen(null);
     };
 
+    function Modal({ isOpen, onClose, onSubmit }) {
+        const [newDetail, setNewDetail] = useState({
+            description: '',
+            date: '',
+            checkedBy: '',
+            reviewedBy: '',
+            approvedBy: '',
+            preparedBy: ''
+        });
+
+        const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setNewDetail((prevDetail) => ({
+                ...prevDetail,
+                [name]: value
+            }));
+        };
+
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            onSubmit(newDetail);
+            setNewDetail({ description: '', date: '', checkedBy: '', reviewedBy: '', approvedBy: '', preparedBy: '' });
+            onClose();
+        };
+
+        if (isOpen) {
+            return (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+                    <div className="bg-white rounded-lg p-6 z-10">
+                        <h2 className="text-lg font-bold mb-4">Add New Detail</h2>
+                        <form onSubmit={handleSubmit}>
+                            {['description', 'date', 'checkedBy', 'reviewedBy', 'approvedBy', 'preparedBy'].map((field, index) => (
+                                <div className="mb-4" key={index}>
+                                    <label className="block text-sm font-medium text-gray-700 capitalize">{field.replace(/([A-Z])/g, ' $1')}</label>
+                                    <input
+                                        type={field === 'date' ? 'date' : 'text'}
+                                        name={field}
+                                        value={newDetail[field]}
+                                        onChange={handleInputChange}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                        required
+                                    />
+                                </div>
+                            ))}
+                            <div className="flex justify-end">
+                                <button type="button" onClick={onClose} className="mr-2 px-4 py-2 bg-gray-300 rounded-md">Cancel</button>
+                                <button type="submit" className="px-6 py-1 bg-gray-700 text-white rounded-md">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -184,7 +130,7 @@ export default function ParDetailsPage({ auth }) {
 
             <div className="flex h-screen">
                 <div className="container mx-auto bg-white p-6 rounded-lg shadow-md">
-                    {contract ? (
+                    {contract && (
                         <>
                             <div className="flex justify-between items-center mb-6">
                                 <h1 className="text-2xl font-bold">
@@ -234,35 +180,37 @@ export default function ParDetailsPage({ auth }) {
                                 </div>
                             </div>
 
-                                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                                    <thead>
-                                        <tr>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Description</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Date</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Checked By</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Reviewed By</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Approved By</th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">Prepared By</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {contract.details.map((detail, index) => (
-                                            <tr key={index} className="hover:bg-gray-100">
-                                                <td className="border-b border-gray-200 px-4 py-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedDetails.includes(index)}
-                                                        onChange={() => handleCheckboxChange(index)}
-                                                    />
-                                                </td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.description}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.date}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.checkedBy}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.reviewedBy}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.approvedBy}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2">{detail.preparedBy}</td>
-                                                <td className="border-b border-gray-200 px-4 py-2 relative">
+                            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead>
+                                    <tr>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Description</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Date</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Checked By</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Reviewed By</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Approved By</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Prepared By</th>
+                                        <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {contract.details?.map((detail, index) => (
+                                        <tr key={index} className="border-b border-gray-200">
+                                            <td className="px-4 py-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedDetails.includes(index)}
+                                                    onChange={() => handleCheckboxChange(index)}
+                                                    className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                                />
+                                            </td>
+                                            <td className="px-4 py-2">{detail.description}</td>
+                                            <td className="px-4 py-2">{detail.date}</td>
+                                            <td className="px-4 py-2">{detail.checkedBy}</td>
+                                            <td className="px-4 py-2">{detail.reviewedBy}</td>
+                                            <td className="px-4 py-2">{detail.approvedBy}</td>
+                                            <td className="px-4 py-2">{detail.preparedBy}</td>
+                                            <td className="px-4 py-2 relative">
                                                     <button
                                                         onClick={() => toggleOptionsDropdown(index)}
                                                         className="text-gray-600 hover:text-gray-900"
@@ -270,7 +218,7 @@ export default function ParDetailsPage({ auth }) {
                                                         <span className="text-lg">⋮</span>
                                                     </button>
                                                     {optionsDropdownOpen === index && (
-                                                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                                        <div className="absolute right-0 mt-2 w-20 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                                             <InertiaLink
                                                                 href={route('par-contract-details', { id: contract.id, detailId: detail.id })}
                                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -279,25 +227,27 @@ export default function ParDetailsPage({ auth }) {
                                                             </InertiaLink>
                                                             <button
                                                                 onClick={() => handleDeleteSingleDetail(index)}
-                                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                                                className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
                                                             >
                                                                 Delete
                                                             </button>
                                                         </div>
                                                     )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </>
-                    ) : (
-                        <p className="text-center">No contract details found.</p>
                     )}
                 </div>
             </div>
 
-            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
+            <Modal
+                isOpen={showForm}
+                onClose={() => setShowForm(false)}
+                onSubmit={handleAddDetail}
+            />
         </AuthenticatedLayout>
     );
 }

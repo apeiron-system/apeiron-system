@@ -1,23 +1,29 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useState, useEffect } from "react";
+import { Dialog } from "@headlessui/react";
 
 export default function ProgressReport({ auth }) {
-    const [contracts, setContracts] = useState([
-        { id: 1, name: "Contract 1", location: "Panabo, Davao City", startDate: "2023-01-01", endDate: "2023-12-31", dotColor: "blue", details: [] },
-        { id: 2, name: "Contract 2", location: "Panabo, Davao City", startDate: "2022-01-01", endDate: "2022-12-31", dotColor: "yellow", details: [] },
-        { id: 3, name: "Contract 3", location: "Panabo, Davao City", startDate: "2021-01-01", endDate: "2021-12-31", dotColor: "blue", details: [] },
-        { id: 4, name: "Contract 4", location: "Tagum City", startDate: "2020-01-01", endDate: "2020-12-31", dotColor: "yellow", details: [] },
-        { id: 5, name: "Contract 5", location: "Panabo, Davao City", startDate: "2019-01-01", endDate: "2019-12-31", dotColor: "blue", details: [] },
-    ]);
-
+    const [contracts, setContracts] = useState([]);
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredContracts, setFilteredContracts] = useState(contracts);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newContract, setNewContract] = useState({
+        name: "",
+        location: "",
+        startDate: "",
+        endDate: "",
+        dotColor: "green",
+    });
 
     useEffect(() => {
         applyFilters(sortBy, searchQuery);
     }, [sortBy, searchQuery, contracts]);
+
+    const handleAddContract = () => {
+        setIsModalOpen(true);
+    };
 
     const handleSortByChange = (e) => {
         setSortBy(e.target.value);
@@ -41,7 +47,7 @@ export default function ProgressReport({ auth }) {
         let filtered = [...contracts];
 
         if (sortBy === "Active Contracts") {
-            filtered = filtered.filter(contract => contract.dotColor === "blue");
+            filtered = filtered.filter(contract => contract.dotColor === "green");
         } else if (sortBy === "Pending Contracts") {
             filtered = filtered.filter(contract => contract.dotColor === "yellow");
         }
@@ -59,12 +65,33 @@ export default function ProgressReport({ auth }) {
         setFilteredContracts(filtered);
     };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewContract({ ...newContract, [name]: value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const newContractData = {
+            id: contracts.length + 1,
+            ...newContract,
+        };
+        setContracts([...contracts, newContractData]);
+        setIsModalOpen(false);
+        setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" });
+    };
+
+    const handleContractClick = (contract) => {
+        sessionStorage.setItem('contractDetails', JSON.stringify(contract));
+        window.location.href = '/par-details';
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Progress Report
+                    Contract Progress Accomplishment
                 </h2>
             }
         >
@@ -85,15 +112,18 @@ export default function ProgressReport({ auth }) {
                                 onChange={handleSearchChange}
                                 onKeyDown={handleKeyDown}
                             />
-                            <button className="px-5 py-1 bg-gray-800 text-white rounded" onClick={handleSearch}>
+                            <button
+                                className="px-5 py-1 bg-gray-800 text-white rounded"
+                                onClick={handleSearch}
+                            >
                                 Search
                             </button>
                         </div>
 
                         <div className="relative">
                             <label htmlFor="sort-by" className="sr-only">Sort By</label>
-                            <select 
-                                id="sort-by" 
+                            <select
+                                id="sort-by"
                                 className="px-2 py-1 bg-gray-600 text-white rounded appearance-none"
                                 value={sortBy}
                                 onChange={handleSortByChange}
@@ -109,31 +139,117 @@ export default function ProgressReport({ auth }) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="scrollable-container">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredContracts.map(contract => (
-                                <InertiaLink 
-                                    href={route("par-details", { id: contract.id })}
+                                <div
                                     key={contract.id}
-                                    className="bg-white rounded-lg shadow-md p-6 block"
-                                    onClick={() => {
-                                        sessionStorage.setItem('contractDetails', JSON.stringify(contract));
-                                    }}
+                                    className="bg-white rounded-lg shadow-md p-6 block transition-transform transform hover:scale-105 cursor-pointer"
+                                    onClick={() => handleContractClick(contract)} 
                                 >
                                     <div className="flex justify-between items-center mb-4">
-                                        <div className="flex items-center">
-                                            <h2 className="text-lg font-bold">{contract.name}</h2>
-                                            <div className={`w-3 h-3 rounded-full ml-2 ${contract.dotColor === 'blue' ? 'bg-blue-500' : 'bg-yellow-400'}`}></div>
-                                        </div>
+                                        <h2 className="text-lg font-bold">{contract.name}</h2>
+                                        <div className={`w-3 h-3 rounded-full ${contract.dotColor === 'green' ? 'bg-green-500' : contract.dotColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                                     </div>
                                     <p className="text-gray-600">Contract ID: {contract.id}</p>
                                     <p className="text-gray-600">Location: {contract.location}</p>
                                     <p className="text-gray-600">Duration: {contract.startDate} - {contract.endDate}</p>
-                                </InertiaLink>
+                                </div>
                             ))}
+
+                            <div
+                                onClick={handleAddContract}
+                                className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-10 w-10 text-black"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <title>Add Contract</title>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                                <p className="mt-2 text-gray-600 hover:text-gray-800">Add Contract</p>
+                            </div>
                         </div>
                     </div>
+
+                    {/* Modal for adding a new contract */}
+                    <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="fixed z-10 inset-0 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen">
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                            <div className="bg-white rounded-lg shadow-lg p-6 z-20 w-1/3">
+                                <Dialog.Title className="text-lg font-bold">Add New Contract</Dialog.Title>
+                                <form onSubmit={handleSubmit} className="mt-4">
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700">Contract Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            value={newContract.name}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="border border-gray-300 rounded w-full p-2"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700">Location</label>
+                                        <input
+                                            type="text"
+                                            name="location"
+                                            value={newContract.location}
+                                            onChange={handleInputChange}
+                                            required
+                                            className="border border-gray-300 rounded w-full p-2"
+                                        />
+                                    </div>
+                                    <div className="flex mb-4">
+                                        <div className="flex-1 mr-2">
+                                            <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                                            <input
+                                                type="date"
+                                                name="startDate"
+                                                value={newContract.startDate}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="border border-gray-300 rounded w-full p-2"
+                                            />
+                                        </div>
+                                        <div className="flex-1 ml-2">
+                                            <label className="block text-sm font-medium text-gray-700">End Date</label>
+                                            <input
+                                                type="date"
+                                                name="endDate"
+                                                value={newContract.endDate}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="border border-gray-300 rounded w-full p-2"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
+                                            onClick={() => setIsModalOpen(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150"
+                                        >
+                                            Add Contract
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </Dialog>
                 </div>
             </div>
         </AuthenticatedLayout>
