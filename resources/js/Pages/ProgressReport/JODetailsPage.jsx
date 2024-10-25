@@ -4,18 +4,28 @@ import { useEffect, useState } from "react";
 
 export default function JODetailsPage({ auth }) {
     const [jo, setJo] = useState(null);
+    const jobOrderId = new URLSearchParams(window.location.search).get('id'); // Get the job order ID from the URL
 
     useEffect(() => {
-        const joDetails = sessionStorage.getItem('joDetails');
-        console.log("Job Order Details from sessionStorage:", joDetails);
-        if (joDetails) {
-            setJo(JSON.parse(joDetails));
-            sessionStorage.removeItem('joDetails');
-        } else {
-            console.error("No job order details found in sessionStorage.");
+        const fetchJobOrderDetails = async () => {
+            try {
+                const response = await fetch(`/api/job-orders/${jobOrderId}`); // Use the job order ID in the fetch URL
+                if (!response.ok) {
+                    throw new Error('Failed to fetch job order details');
+                }
+                const data = await response.json();
+                setJo(data);
+            } catch (error) {
+                console.error("Error fetching job order details:", error);
+            }
+        };
 
+        if (jobOrderId) {
+            fetchJobOrderDetails();
+        } else {
+            console.error("No job order ID found.");
         }
-    }, []);
+    }, [jobOrderId]);
 
     return (
         <AuthenticatedLayout
@@ -37,7 +47,7 @@ export default function JODetailsPage({ auth }) {
 
             <div className="flex h-screen">
                 <div className="container mx-auto bg-white p-6 rounded-lg shadow-md">
-                    {jo && (
+                    {jo ? (
                         <>
                             <div className="flex justify-between items-center mb-6">
                                 <h1 className="text-2xl font-bold">
@@ -84,6 +94,8 @@ export default function JODetailsPage({ auth }) {
                                 </table>
                             </div>
                         </>
+                    ) : (
+                        <p className="text-center">Loading job order details...</p>
                     )}
                 </div>
             </div>

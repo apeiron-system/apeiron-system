@@ -208,23 +208,32 @@ export default function ParDetailsPage({ auth }) {
                                 <h2 className="text-xl font-bold">Progress Accomplishment</h2>
                                 <div className="flex space-x-2">
                                     {selectedDetails.length > 0 && (
-                                        <button
-                                            onClick={handleDeleteSelected}
-                                            className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                        >
-                                            Delete
-                                        </button>
+                                        <div className="relative group">
+                                            <button
+                                                onClick={handleDeleteSelected}
+                                                className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M10 6V4a2 2 0 114 0v2" />
+                                                </svg>
+                                            </button>
+                                            <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Delete</span>
+                                        </div>
                                     )}
-                                    <button
-                                        onClick={() => setShowForm(true)}
-                                        className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        Add
-                                    </button>
+                                    <div className="relative group">
+                                        <button
+                                            onClick={() => setShowForm(true)}
+                                            className="inline-flex justify-center items-center p-0"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </button>
+                                        <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Add</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="overflow-x-auto" style={{ height: '300px' }}>
                                 <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                                     <thead>
                                         <tr>
@@ -281,9 +290,10 @@ export default function ParDetailsPage({ auth }) {
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
                         </>
-                    ) : null}
+                    ) : (
+                        <p className="text-center">No contract details found.</p>
+                    )}
                 </div>
             </div>
 
