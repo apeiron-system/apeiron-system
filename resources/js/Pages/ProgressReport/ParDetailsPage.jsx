@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-export default function ParDetailsPage({ auth }) {
+export default function ParDetails({ auth }) {
     const [contract, setContract] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(null);

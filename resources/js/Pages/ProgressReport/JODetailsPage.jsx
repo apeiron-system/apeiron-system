@@ -1,27 +1,61 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function JODetailsPage({ auth }) {
-    const [contracts] = useState([
-        { id: 1, name: "Contract 1", location: "Panabo, Davao City", startDate: "2023-01-01", endDate: "2023-12-31", dotColor: "blue" },
-        { id: 2, name: "Contract 2", location: "Panabo, Davao City", startDate: "2022-01-01", endDate: "2022-12-31", dotColor: "yellow" },
-    ]);
+    const [contract, setContract] = useState(() => {
+        const savedContract = sessionStorage.getItem('contractDetails');
+        return savedContract ? JSON.parse(savedContract) : null;
+    });
 
     const [jobOrders, setJobOrders] = useState([]);
+    const [newJobOrder, setNewJobOrder] = useState({
+        contractor: "",
+        address: "",
+        type: "",
+        periodCovered: "",
+        projectCode: "",
+        projectId: "",
+        location: contract ? contract.location : "",
+        joNumber: "",
+        billNumber: ""
+    });
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
 
+    useEffect(() => {
+        if (contract) {
+            setNewJobOrder((prev) => ({
+                ...prev,
+                location: contract.location
+            }));
+        }
+    }, [contract]);
+
     const handleAddJobOrder = () => {
-        const newJobOrder = {
+        const jobOrderData = {
             id: jobOrders.length + 1,
-            name: `New Job Order ${jobOrders.length + 1}`,
-            location: "Sample Location",
+            ...newJobOrder,
             startDate: new Date().toISOString().split("T")[0],
             endDate: "2024-12-31",
             dotColor: "green",
+            dateAdded: new Date().toLocaleDateString(),
         };
-        setJobOrders([...jobOrders, newJobOrder]);
+        setJobOrders([...jobOrders, jobOrderData]);
+
+        sessionStorage.setItem('jobOrderDetails', JSON.stringify([...jobOrders, jobOrderData]));
+
+        setNewJobOrder({
+            contractor: "",
+            address: "",
+            type: "",
+            periodCovered: "",
+            projectCode: "",
+            projectId: "",
+            location: contract ? contract.location : "",
+            joNumber: "",
+            billNumber: ""
+        });
     };
 
     const handleSortByChange = (e) => {
@@ -43,7 +77,7 @@ export default function JODetailsPage({ auth }) {
                         </svg>
                     </button>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Job Order Progress Accomplishment
+                        Job Order Progress Accomplishment
                     </h2>
                 </div>
             }
@@ -68,25 +102,6 @@ export default function JODetailsPage({ auth }) {
                                 Search
                             </button>
                         </div>
-
-                        <div className="relative">
-                            <label htmlFor="sort-by" className="sr-only">Sort By</label>
-                            <select
-                                id="sort-by"
-                                className="px-2 py-1 bg-gray-600 text-white rounded appearance-none"
-                                value={sortBy}
-                                onChange={handleSortByChange}
-                            >
-                                <option value="Most Recent">Most Recent</option>
-                                <option value="Active Contracts">Active Contracts</option>
-                                <option value="Pending Contracts">Pending Contracts</option>
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </div>
-                        </div>
                     </div>
                     
                     <div className="scrollable-container">
@@ -96,13 +111,9 @@ export default function JODetailsPage({ auth }) {
                                     key={jobOrder.id}
                                     className="bg-white rounded-lg shadow-md p-6 relative"
                                 >
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-lg font-bold">{jobOrder.name}</h2>
-                                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                    </div>
-                                    <p className="text-gray-600">Job Order ID: {jobOrder.id}</p>
-                                    <p className="text-gray-600">Location: {jobOrder.location}</p>
-                                    <p className="text-gray-600">Duration: {jobOrder.startDate} - {jobOrder.endDate}</p>
+                                    <h2 className="text-lg font-bold">Job Order {jobOrder.id}</h2>
+                                    <p className="text-gray-600">ID: {jobOrder.id}</p>
+                                    <p className="text-gray-600">Date Added: {jobOrder.dateAdded}</p>
                                 </div>
                             ))}
 
