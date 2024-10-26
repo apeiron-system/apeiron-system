@@ -26,10 +26,6 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/job-order', function () {
-    return Inertia::render('JobOrder/JobOrderPage');
-})->middleware(['auth', 'verified'])->name('job-order');
-
 Route::get('/progress-report', function () {
     return Inertia::render('ProgressReport/ProgressReportPage');
 })->middleware(['auth', 'verified'])->name('progress-report');
@@ -38,13 +34,17 @@ Route::get('/par-details', function () {
     return Inertia::render('ProgressReport/ParDetailsPage');
 })->middleware(['auth', 'verified'])->name('par-details');
 
+Route::get('/par-contract-details', function () {
+    return Inertia::render('ProgressReport/ParContractDetailsPage');
+})->middleware(['auth', 'verified'])->name('par-contract-details');
+
 Route::get('/jo-details', function () {
     return Inertia::render('ProgressReport/JODetailsPage');
 })->middleware(['auth', 'verified'])->name('jo-details');
 
-Route::get('/par-contract-details', function () {
-    return Inertia::render('ProgressReport/ParContractDetailsPage');
-})->middleware(['auth', 'verified'])->name('par-contract-details');
+Route::get('/job-order', function () {
+    return Inertia::render('JODetails/JobOrderPage');
+})->middleware(['auth', 'verified'])->name('job-order');
 
 //contract
 

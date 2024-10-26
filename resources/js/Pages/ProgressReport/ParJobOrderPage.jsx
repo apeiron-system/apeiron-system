@@ -3,7 +3,7 @@ import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 
-export default function ProgressReport({ auth }) {
+export default function ParJobOrder({ auth }) {
     const [contracts, setContracts] = useState([]);
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
@@ -129,6 +129,11 @@ export default function ProgressReport({ auth }) {
         window.location.href = '/par-details';
     };
 
+    const handleJobOrderClick = (jobOrder) => {
+        sessionStorage.setItem('jobOrderDetails', JSON.stringify(jobOrder));
+        window.location.href = '/par-job-order';
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -201,136 +206,192 @@ export default function ProgressReport({ auth }) {
                                 </div>
                             ))}
 
-                            <div
-                                onClick={handleAddContract}
-                                className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-10 w-10 text-black"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
+                            {/* Job Orders Section */}
+                            {jobOrders.map(jobOrder => (
+                                <div
+                                    key={jobOrder.id}
+                                    className="bg-white rounded-lg shadow-md p-6 block transition-transform transform hover:scale-105 cursor-pointer"
+                                    onClick={() => handleJobOrderClick(jobOrder)} // Click handler for job orders
                                 >
-                                    <title>Add Contract</title>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                </svg>
-                                <p className="mt-2 text-gray-600 hover:text-gray-800">Add Contract</p>
-                            </div>
+                                    <h2 className="text-lg font-bold">{jobOrder.contractor}</h2>
+                                    <p className="text-gray-600">JO Number: {jobOrder.joNumber}</p>
+                                    <p className="text-gray-600">Location: {jobOrder.location}</p>
+                                    <p className="text-gray-600">Period Covered: {jobOrder.periodCovered}</p>
+                                </div>
+                            ))}
 
-                            <div
-                                onClick={handleAddJobOrder}
-                                className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-10 w-10 text-black"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    <title>Add Job Order</title>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                </svg>
-                                <p className="mt-2 text-gray-600 hover:text-gray-800">Add Job Order</p>
-                            </div>
                         </div>
                     </div>
+
+                    {/* Contract Modal */}
+                    <Dialog open={isContractModalOpen} onClose={() => setIsContractModalOpen(false)}>
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" />
+                        <div className="fixed inset-0 flex items-center justify-center">
+                            <Dialog.Panel className="bg-white rounded-lg p-6 max-w-md mx-auto">
+                                <Dialog.Title className="text-lg font-bold">Add Contract</Dialog.Title>
+                                <form onSubmit={handleSubmitContract}>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="name">Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newContract.name}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="location">Location</label>
+                                        <input
+                                            type="text"
+                                            name="location"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newContract.location}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="startDate">Start Date</label>
+                                        <input
+                                            type="date"
+                                            name="startDate"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newContract.startDate}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="endDate">End Date</label>
+                                        <input
+                                            type="date"
+                                            name="endDate"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newContract.endDate}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <button type="submit" className="px-4 py-2 bg-gray-800 text-white rounded">Add Contract</button>
+                                </form>
+                            </Dialog.Panel>
+                        </div>
+                    </Dialog>
+
+                    {/* Job Order Modal */}
+                    <Dialog open={isJobOrderModalOpen} onClose={() => setIsJobOrderModalOpen(false)}>
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" />
+                        <div className="fixed inset-0 flex items-center justify-center">
+                            <Dialog.Panel className="bg-white rounded-lg p-6 max-w-md mx-auto">
+                                <Dialog.Title className="text-lg font-bold">Add Job Order</Dialog.Title>
+                                <form onSubmit={handleSubmitJobOrder}>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="contractor">Contractor</label>
+                                        <input
+                                            type="text"
+                                            name="contractor"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.contractor}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="address">Address</label>
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.address}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="type">Type</label>
+                                        <input
+                                            type="text"
+                                            name="type"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.type}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="periodCovered">Period Covered</label>
+                                        <input
+                                            type="text"
+                                            name="periodCovered"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.periodCovered}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="projectCode">Project Code</label>
+                                        <input
+                                            type="text"
+                                            name="projectCode"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.projectCode}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="projectId">Project ID</label>
+                                        <input
+                                            type="text"
+                                            name="projectId"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.projectId}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="location">Location</label>
+                                        <input
+                                            type="text"
+                                            name="location"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.location}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="joNumber">JO Number</label>
+                                        <input
+                                            type="text"
+                                            name="joNumber"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.joNumber}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700" htmlFor="billNumber">Bill Number</label>
+                                        <input
+                                            type="text"
+                                            name="billNumber"
+                                            className="border border-gray-300 rounded p-2 w-full"
+                                            value={newJobOrder.billNumber}
+                                            onChange={handleJobOrderInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <button type="submit" className="px-4 py-2 bg-gray-800 text-white rounded">Add Job Order</button>
+                                </form>
+                            </Dialog.Panel>
+                        </div>
+                    </Dialog>
                 </div>
-
-                {/* Modal for adding a new contract */}
-                <Dialog open={isContractModalOpen} onClose={() => setIsContractModalOpen(false)} className="fixed z-10 inset-0 overflow-y-auto">
-                    <div className="flex items-center justify-center min-h-screen">
-                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-                        <div className="bg-white rounded-lg shadow-lg p-6 z-20 w-1/3">
-                            <Dialog.Title className="text-lg font-bold">Add New Contract</Dialog.Title>
-                            <form onSubmit={handleSubmitContract} className="mt-4">
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Name</label>
-                                    <input type="text" name="name" value={newContract.name} onChange={handleInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Location</label>
-                                    <input type="text" name="location" value={newContract.location} onChange={handleInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Start Date</label>
-                                    <input type="date" name="startDate" value={newContract.startDate} onChange={handleInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">End Date</label>
-                                    <input type="date" name="endDate" value={newContract.endDate} onChange={handleInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="flex justify-end">
-                                    <button type="button" className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150" onClick={() => setIsContractModalOpen(false)}>
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150">
-                                        Add Contract
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </Dialog>
-
-                {/* Modal for adding a new job order */}
-                <Dialog open={isJobOrderModalOpen} onClose={() => setIsJobOrderModalOpen(false)} className="fixed z-10 inset-0 overflow-y-auto">
-                    <div className="flex items-center justify-center min-h-screen">
-                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-                        <div className="bg-white rounded-lg shadow-lg p-6 z-20 w-1/3">
-                            <Dialog.Title className="text-lg font-bold">Add New Job Order</Dialog.Title>
-                            <form onSubmit={handleSubmitJobOrder} className="mt-4">
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Contractor</label>
-                                    <input type="text" name="contractor" value={newJobOrder.contractor} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Address</label>
-                                    <input type="text" name="address" value={newJobOrder.address} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Type</label>
-                                    <input type="text" name="type" value={newJobOrder.type} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Period Covered</label>
-                                    <input type="text" name="periodCovered" value={newJobOrder.periodCovered} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Project Code</label>
-                                    <input type="text" name="projectCode" value={newJobOrder.projectCode} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Project ID</label>
-                                    <input type="text" name="projectId" value={newJobOrder.projectId} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Location</label>
-                                    <input type="text" name="location" value={newJobOrder.location} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">JO Number</label>
-                                    <input type="text" name="joNumber" value={newJobOrder.joNumber} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-gray-700">Bill Number</label>
-                                    <input type="text" name="billNumber" value={newJobOrder.billNumber} onChange={handleJobOrderInputChange} required className="border border-gray-300 rounded w-full p-2" />
-                                </div>
-                                <div className="flex justify-end">
-                                    <button type="button" className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150" onClick={() => setIsJobOrderModalOpen(false)}>
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150">
-                                        Add Job Order
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </Dialog>
             </div>
         </AuthenticatedLayout>
     );

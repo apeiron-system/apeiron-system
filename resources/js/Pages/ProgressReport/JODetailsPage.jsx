@@ -109,7 +109,7 @@ export default function JODetailsPage({ auth }) {
                             {jobOrders.map(jobOrder => (
                                 <div
                                     key={jobOrder.id}
-                                    className="bg-white rounded-lg shadow-md p-6 relative"
+                                    className="bg-white rounded-lg shadow-md p-6 relative transition-transform transform hover:scale-105 hover:shadow-lg"
                                 >
                                     <h2 className="text-lg font-bold">Job Order {jobOrder.id}</h2>
                                     <p className="text-gray-600">ID: {jobOrder.id}</p>
