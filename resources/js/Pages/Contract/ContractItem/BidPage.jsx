@@ -71,11 +71,11 @@ export default function BidPage({ auth, item, contractId, bids }) {
             user={auth.user}
             header={
                 <div className="flex items-center gap-2">
-                    <Link href={`/contracts/${contractId}/items`}>
-                        <button className="text-gray-500">
-                            <ArrowLeft />
-                        </button>
-                    </Link>
+                        <Link href={`/contracts/${contractId}/items`}>
+                            <button className="text-gray-500">
+                                <ArrowLeft />
+                            </button>
+                        </Link>
 
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Place Bid - {item.description}

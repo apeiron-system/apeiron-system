@@ -34,6 +34,7 @@ export default function ViewContractPage({
                 <ContractHeader
                     contract={contract}
                     signingAuthorityEmployee={signingAuthorityEmployee}
+                    canEdit={true}
                 />
             }
         >
