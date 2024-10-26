@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, Link } from "@inertiajs/react";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
+import ContractItemHeader from "@/Componentss/contract/contractitem/ContractItemHeader";
 import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
 import {
     Table,
@@ -33,7 +33,7 @@ export default function Index({
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("date_desc");
     const [selectedItems, setSelectedItems] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -68,7 +68,7 @@ export default function Index({
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <ContractHeader
+                <ContractItemHeader
                     contract={contract}
                     signingAuthorityEmployee={signingAuthorityEmployee}
                 />
@@ -120,40 +120,22 @@ export default function Index({
                 </div>
                 <div className="py-4 w-full">
                     {/* Table for Items */}
-                    <Table className="w-full bg-white border border-gray-300">
+                    <Table className="w-full bg-white border border-gray-300 text-center">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="py-2 px-4 border-b">
-                                    <input
-                                        type="checkbox"
-                                        onChange={(e) =>
-                                            setSelectedItems(
-                                                e.target.checked
-                                                    ? items.data.map(
-                                                          (item) => item.id
-                                                      )
-                                                    : []
-                                            )
-                                        }
-                                        checked={
-                                            selectedItems.length ===
-                                            items.data.length
-                                        }
-                                    />
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Description
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Type
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Unit
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Latest Price
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Bid Price
                                 </TableHead>
                             </TableRow>
@@ -164,17 +146,6 @@ export default function Index({
                                     key={item.id}
                                     className="hover:bg-gray-100"
                                 >
-                                    <TableCell className="py-2 px-4 border-b">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedItems.includes(
-                                                item.id
-                                            )}
-                                            onChange={() =>
-                                                handleCheckboxChange(item.id)
-                                            }
-                                        />
-                                    </TableCell>
                                     <TableCell className="py-2 px-4 border-b">
                                         {item.description}
                                     </TableCell>

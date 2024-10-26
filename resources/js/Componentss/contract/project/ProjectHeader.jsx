@@ -1,4 +1,4 @@
-import { Edit } from "lucide-react";
+import { Edit, ArrowLeft } from "lucide-react";
 
 import { Link, router } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
@@ -36,6 +36,12 @@ export default function ProjectHeader({
     return (
         <section className="grid grid-cols-3">
             <div>
+                <Link href={`/contract/${contract.id}`}>
+                    <button className="text-gray-500 flex items-center gap-2 pb-4">
+                        <ArrowLeft />
+                    </button>
+                </Link>
+
                 <h2 className="font-semibold text-sm text-gray-500 leading-tight">
                     Contract - {contract.contract_name}
                 </h2>

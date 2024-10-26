@@ -42,11 +42,12 @@ class ContractItemController extends Controller
      public function showBidPage($contractId, $itemId)
      {
          $contract = ContractModel::findOrFail($contractId);
-         $item = ItemModel::with('prices')->findOrFail($itemId);
+         $item = ItemModel::with('bids')->findOrFail($itemId);
  
          return Inertia::render('Contract/ContractItem/BidPage', [
             'contractId' => $contractId,
             'item' => $item,
+            'bids' => $item->bids,
         ]);
         
      }
@@ -66,9 +67,20 @@ class ContractItemController extends Controller
          ]);
      
          // Redirect to the contract's items page with a success message
-         return redirect()->route('contract.items', ['contractId' => $contractId])
-             ->with('success', 'Bid placed successfully.');
+         return redirect()->route('item.contract.bid', ['contractId' => $contractId, 'itemId' => $itemId])
+         ->with('success', 'Bid placed successfully.');
      }
      
-     
+     //delete selected bids
+     public function deleteBids(Request $request, $contractId, $itemId)
+{
+    $bidIds = $request->input('bidIds');
+
+    if (is_array($bidIds) && !empty($bidIds)) {
+        Bid::whereIn('id', $bidIds)->where('item_id', $itemId)->delete();
+    }
+
+    return redirect()->back()->with('success', 'Selected bids deleted successfully.');
+}
+
 }

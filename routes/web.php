@@ -108,6 +108,10 @@ Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController
 
 Route::post('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
 
+Route::delete('/contracts/{contractId}/items/{itemId}/bids', [ContractItemController::class, 'deleteBids'])
+    ->name('item.contract.bids.delete');
+
+
 //project
     
 Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
