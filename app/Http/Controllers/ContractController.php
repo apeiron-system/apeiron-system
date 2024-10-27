@@ -13,15 +13,29 @@ class ContractController extends Controller
     //
 
 
-    public function view()
+    public function view(Request $request)
     {
-
-        // get all contracts from the ContractModel
-
-        $contracts = ContractModel::all();
-
-        return Inertia::render('Contract/ContractPage', ['contracts' => $contracts]);
+        $search = $request->input('search');
+    
+        // Active contracts (exclude completed and canceled)
+        $contracts = ContractModel::whereNotIn('status', ['completed', 'canceled'])->get();
+    
+        // Filter past contracts with status "completed"
+        $pastContractsQuery = ContractModel::where('status', 'completed');
+    
+        // Apply search filter if provided
+        if ($search) {
+            $pastContractsQuery->where('contract_name', 'like', '%' . $search . '%');
+        }
+    
+        $pastContracts = $pastContractsQuery->get();
+    
+        return Inertia::render('Contract/ContractPage', [
+            'contracts' => $contracts,
+            'pastContracts' => $pastContracts, // Use the correct data label
+        ]);
     }
+    
 
     public function add()
     {
@@ -90,7 +104,6 @@ class ContractController extends Controller
             'signingAuthorityEmployee' => $signingAuthorityEmployee,
         ]);
     }
-    
 
     public function edit($id)
     {
