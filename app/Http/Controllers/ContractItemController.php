@@ -67,7 +67,7 @@ class ContractItemController extends Controller
          ]);
      
          // Redirect to the contract's items page with a success message
-         return redirect()->route('item.contract.bid', ['contractId' => $contractId, 'itemId' => $itemId])
+         return redirect()->route('contract.item.bid', ['contractId' => $contractId, 'itemId' => $itemId])
          ->with('success', 'Bid placed successfully.');
      }
      

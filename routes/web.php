@@ -104,7 +104,7 @@ Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->m
 
 Route::get('/contracts/{contractId}/items', [ContractItemController::class, 'showItemsForContract'])->name('contract.items');
 
-Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('item.contract.bid');
+Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('contract.item.bid');
 
 Route::post('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
 
