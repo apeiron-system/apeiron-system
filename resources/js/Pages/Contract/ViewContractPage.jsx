@@ -3,8 +3,10 @@ import ProjectsTable from "@/Componentss/contract/project/ProjectsTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ContractHeader from "@/Componentss/contract/ContractHeader";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import AddProjectNavigation from "@/Componentss/contract/project/AddProjectNavigation";
+import { useState } from "react";
+import { Input } from "@/Components/ui/input";
+import { router } from "@inertiajs/react";
 
 export default function ViewContractPage({
     auth,
@@ -27,6 +29,18 @@ export default function ViewContractPage({
     //         $table->foreignId("authorized_representative_employee_id");
     //         $table->foreign("authorized_representative_employee_id")->references("id")->on("employee");
 
+    const [searchQuery, setSearchQuery] = useState("");
+
+    // Handle search input change
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        router.get(
+            route("contract.view", { id: contract.id }),
+            { search: e.target.value },
+            { preserveState: true, replace: true }
+        );
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -40,8 +54,20 @@ export default function ViewContractPage({
         >
             <Head title={`View Contract - ${contract.contract_name}`} />
 
-            <div className="flex justify-between"> 
+            <div>
                 <ProjectTabNavigation id={contract.id} />
+            </div>
+
+            <div className="flex items-center my-4 gap-4 justify-between">
+                {/* Search */}
+                <Input
+                    type="text"
+                    placeholder="Search projects..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="px-4 py-2 border rounded-md w-full max-w-sm"
+                />
+                {/*add project*/}
                 <AddProjectNavigation
                     className="flex justify-end"
                     id={contract.id}
