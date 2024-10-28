@@ -160,7 +160,7 @@ export default function ProgressReport({ auth }) {
 
                             <div
                                 onClick={handleAddContract}
-                                className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
+                                className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-12 cursor-pointer hover:bg-gray-100 transition-colors"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
