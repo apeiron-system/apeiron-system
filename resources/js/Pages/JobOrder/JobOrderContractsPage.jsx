@@ -124,9 +124,12 @@ export default function JobOrderContractsPage({ auth }) {
 
                     <div></div>
 
+                    {/* Header for Table  */}
                     <h3 className="text-xl font-semibold mb-4">
                         Past Contracts
-                    </h3>
+                    </h3> 
+
+                    {/* Table Contents */}
                     <div className="bg-white shadow rounded overflow-hidden">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
