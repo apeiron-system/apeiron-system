@@ -3,50 +3,38 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\Project;
 
 class ProjectSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run()
     {
-        DB::table('projects')->insert([
-            [
-                'name' => 'Building Construction',
-                'description' => 'Construction of a 5-story building.',
-                'start_date' => Carbon::now()->subMonths(6)->format('Y-m-d'),
-                'end_date' => Carbon::now()->addMonths(6)->format('Y-m-d'),
-                'budget' => 1000000.00,
-                'progress' => 50.5, // Example progress value
-                'status' => 'in-progress',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Road Renovation',
-                'description' => 'Renovation of a 10 km stretch of road.',
-                'start_date' => Carbon::now()->subMonths(2)->format('Y-m-d'),
-                'end_date' => Carbon::now()->addMonths(3)->format('Y-m-d'),
-                'budget' => 500000.00,
-                'progress' => 20.0,
-                'status' => 'pending',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Bridge Repair',
-                'description' => 'Repair of a 100-meter bridge.',
-                'start_date' => Carbon::now()->subMonth()->format('Y-m-d'),
-                'end_date' => Carbon::now()->addMonths(2)->format('Y-m-d'),
-                'budget' => 250000.00,
-                'progress' => 100.0,
-                'status' => 'completed',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
+        // Sample data for projects
+        Project::create([
+            'project_contract_id' => 1, // Assuming a contract with ID 1 exists
+            'name' => 'Project Alpha',
+            'description' => 'This is a description for Project Alpha.',
+            'start_date' => '2024-01-01',
+            'end_date' => '2024-06-30',
+            'budget' => 15000.00,
+            'progress' => 25.0,
+            'status' => 'in-progress',
         ]);
+
+        Project::create([
+            'project_contract_id' => 1, // Assuming a contract with ID 1 exists
+            'name' => 'Project Beta',
+            'description' => 'This is a description for Project Beta.',
+            'start_date' => '2024-02-01',
+            'end_date' => '2024-07-15',
+            'budget' => 20000.00,
+            'progress' => 50.0,
+            'status' => 'in-progress',
+        ]);
+
+        // Add more projects as needed
     }
 }

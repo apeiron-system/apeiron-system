@@ -71,7 +71,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
                                     <TableHead>Unit</TableHead>
                                     <TableHead>Qty</TableHead>
                                     <TableHead>Unit Cost</TableHead>
-                                    <TableHead>Amount</TableHead>
+                                    <TableHead>Budget</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -82,7 +82,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
                                         <TableCell>{item.unit}</TableCell>
                                         <TableCell>{item.qty}</TableCell>
                                         <TableCell>{item.unitCost}</TableCell>
-                                        <TableCell>{item.amount}</TableCell>
+                                        <TableCell>{item.budget}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
