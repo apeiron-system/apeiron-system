@@ -20,6 +20,8 @@ export default function JODetailsPage({ auth }) {
         joNumber: "",
         billNumber: ""
     });
+    
+    const [showForm, setShowForm] = useState(false); 
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -42,7 +44,6 @@ export default function JODetailsPage({ auth }) {
             dateAdded: new Date().toLocaleDateString(),
         };
         setJobOrders([...jobOrders, jobOrderData]);
-
         sessionStorage.setItem('jobOrderDetails', JSON.stringify([...jobOrders, jobOrderData]));
 
         setNewJobOrder({
@@ -56,6 +57,7 @@ export default function JODetailsPage({ auth }) {
             joNumber: "",
             billNumber: ""
         });
+        setShowForm(false);
     };
 
     const handleSortByChange = (e) => {
@@ -65,6 +67,19 @@ export default function JODetailsPage({ auth }) {
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewJobOrder((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleJobOrderClick = (jobOrder) => {
+        sessionStorage.setItem('selectedJobOrder', JSON.stringify(jobOrder));
+        window.location.href = route('../job-order');
+    };    
 
     return (
         <AuthenticatedLayout
@@ -118,7 +133,7 @@ export default function JODetailsPage({ auth }) {
                             ))}
 
                             <div
-                                onClick={handleAddJobOrder}
+                                onClick={() => setShowForm(true)}
                                 className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
                             >
                                 <svg
@@ -136,6 +151,118 @@ export default function JODetailsPage({ auth }) {
                             </div>
                         </div>
                     </div>
+
+                    {/* Modal for Adding Job Order */}
+                    {showForm && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                            <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
+                                <h2 className="text-lg font-bold mb-4">Add Job Order</h2>
+                                <form onSubmit={(e) => { e.preventDefault(); handleAddJobOrder(); }}>
+                                    {/* Project Code and Period Covered Fields Side by Side */}
+                                    <div className="mb-4 flex gap-4">
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Project Code</label>
+                                            <input
+                                                type="text"
+                                                name="projectCode"
+                                                value={newJobOrder.projectCode}
+                                                onChange={handleInputChange}
+                                                className="border border-gray-300 rounded w-full p-2"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Period Covered</label>
+                                            <input
+                                                type="text"
+                                                name="periodCovered"
+                                                value={newJobOrder.periodCovered}
+                                                onChange={handleInputChange}
+                                                className="border border-gray-300 rounded w-full p-2"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Type and Bill Number Fields Side by Side */}
+                                    <div className="mb-4 flex gap-4">
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Type</label>
+                                            <input
+                                                type="text"
+                                                name="type"
+                                                value={newJobOrder.type}
+                                                onChange={handleInputChange}
+                                                className="border border-gray-300 rounded w-full p-2"
+                                                // required
+                                            />
+                                        </div>
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Bill Number</label>
+                                            <input
+                                                type="text"
+                                                name="billNumber"
+                                                value={newJobOrder.billNumber}
+                                                onChange={handleInputChange}
+                                                className="border border-gray-300 rounded w-full p-2"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                     {/* Contractor and Address Fields */}
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700">Contractor</label>
+                                        <input
+                                            type="text"
+                                            name="contractor"
+                                            value={newJobOrder.contractor}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 rounded w-full p-2"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700">Address</label>
+                                        <input
+                                            type="text"
+                                            name="address"
+                                            value={newJobOrder.address}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 rounded w-full p-2"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-sm font-medium text-gray-700">Location</label>
+                                        <input
+                                            type="text"
+                                            name="location"
+                                            value={newJobOrder.location}
+                                            readOnly
+                                            className="border border-gray-300 rounded w-full p-2"
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowForm(false)}
+                                            className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150"
+                                        >
+                                            Add Job Order
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>
