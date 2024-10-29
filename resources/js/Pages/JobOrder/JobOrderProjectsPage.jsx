@@ -1,89 +1,28 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft } from 'lucide-react';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 
-export default function JobOrderProjectsPage({ auth }) {
-    const projectData = [
-        {
-            name: "Project A",
-            status: "pending",
-            items: [
-                {
-                    itemNo: 1,
-                    description: "Design Phase",
-                    unit: "hours",
-                    qty: 120,
-                    unitCost: 50,
-                    amount: 6000,
-                },
-                {
-                    itemNo: 2,
-                    description: "Development Phase",
-                    unit: "hours",
-                    qty: 300,
-                    unitCost: 75,
-                    amount: 22500,
-                },
-                {
-                    itemNo: 3,
-                    description: "Testing Phase",
-                    unit: "hours",
-                    qty: 100,
-                    unitCost: 60,
-                    amount: 6000,
-                },
-            ],
-            progress: 40,
-        },
-        {
-            name: "Project B",
-            status: "on-going",
-            items: [
-                {
-                    itemNo: 1,
-                    description: "Requirement Gathering",
-                    unit: "hours",
-                    qty: 80,
-                    unitCost: 55,
-                    amount: 4400,
-                },
-                {
-                    itemNo: 2,
-                    description: "Implementation",
-                    unit: "hours",
-                    qty: 200,
-                    unitCost: 70,
-                    amount: 14000,
-                },
-                {
-                    itemNo: 3,
-                    description: "Deployment",
-                    unit: "hours",
-                    qty: 50,
-                    unitCost: 65,
-                    amount: 3250,
-                },
-            ],
-            progress: 60,
-        },
-    ];
-
+export default function JobOrderProjectsPage({ auth, projectContracts }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <Link
-                        href={route("job-order-contracts")}
-                        className="text-grey-600 hover:text-grey-900 mr-4"
-                    >
+                    <Link href={route("job-order-contracts")} className="text-grey-600 hover:text-grey-900 mr-4">
                         <button>
-                            <ChevronLeft size={25} strokewidth={1.25} />
+                            <ChevronLeft size={25} strokeWidth={1.25} />
                         </button>
                     </Link>
-                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
-                        Job Order Projects
-                    </h2>
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">Job Order Projects</h2>
                 </div>
             }
         >
@@ -100,89 +39,70 @@ export default function JobOrderProjectsPage({ auth }) {
                     Search
                 </button>
                 <select className="ml-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none">
-                    <option value="most-recent">Previous</option>
-                    <option value="previous">Most Recent</option>
+                    <option value="most-recent">Most Recent</option>
+                    <option value="previous">Previous</option>
                 </select>
             </div>
 
             {/* Projects List */}
             <div className="space-y-4">
-                {projectData.map((project, index) => (
-                    <div
-                        key={index}
-                        className="p-4 bg-gray-50 rounded-md shadow-sm"
-                    >
+                {projectContracts.map((project, index) => (
+                    <div key={index} className="p-4 bg-gray-50 rounded-md shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-lg font-semibold">
-                                {project.name}
-                            </h3>
+                            <h3 className="text-lg font-semibold">{project.name}</h3>
                             <div className="relative">
                                 <select
-                                    className="px-5 py-2 text-sm font-medium bg-white border rounded-md shadow-sm focus:outline-none"
+                                    className="pr-8 px-3 py-1 text-sm font-medium bg-white border rounded-md shadow-sm focus:outline-none"
                                     defaultValue={project.status}
                                 >
-                                    <option value="pending">Pending</option>
+                                    <option value="done">Done</option>
                                     <option value="on-going">On-going</option>
                                 </select>
                             </div>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left text-gray-500">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-                                    <tr>
-                                        <th className="px-4 py-2">Item No.</th>
-                                        <th className="px-4 py-2">
-                                            Description
-                                        </th>
-                                        <th className="px-4 py-2">Unit</th>
-                                        <th className="px-4 py-2">Qty</th>
-                                        <th className="px-4 py-2">Unit Cost</th>
-                                        <th className="px-4 py-2">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {project.items.map((item, itemIndex) => (
-                                        <tr key={itemIndex}>
-                                            <td className="px-4 py-2">
-                                                {item.itemNo}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {item.description}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {item.unit}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {item.qty}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {item.unitCost}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                {item.amount}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        
+                        {/* Start of Table Section */}
+                        <Table>
+                            <TableCaption>Project Items for {project.name}</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Item No.</TableHead>
+                                    <TableHead>Description</TableHead>
+                                    <TableHead>Unit</TableHead>
+                                    <TableHead>Qty</TableHead>
+                                    <TableHead>Unit Cost</TableHead>
+                                    <TableHead>Amount</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {project.items.map((item, itemIndex) => (
+                                    <TableRow key={itemIndex}>
+                                        <TableCell>{item.itemNo}</TableCell>
+                                        <TableCell>{item.description}</TableCell>
+                                        <TableCell>{item.unit}</TableCell>
+                                        <TableCell>{item.qty}</TableCell>
+                                        <TableCell>{item.unitCost}</TableCell>
+                                        <TableCell>{item.amount}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                        {/* End of Table Section */}
 
-                        <div className="flex items-center justify-between mb-4 mr-5">
-                            <div className="flex items-center mb-4 mr-5">
-                                <span className="whitespace-nowrap">
-                                    Total Progress
-                                </span>
+                        {/* Progress Bar and View Details Button */}
+                        <div className="flex items-center justify-between mt-4">
+                            <div className="flex items-center mb-4">
+                                <span className="whitespace-nowrap">Total Progress</span>
                                 <div className="w-64 bg-gray-200 h-3 rounded mx-4">
                                     <div
-                                        className="w-64 bg-gray-900 h-full rounded"
-                                        style={{ width: "90%" }}
+                                        className="bg-gray-900 h-full rounded"
+                                        style={{ width: `${project.progress}%` }}
                                     ></div>
                                 </div>
-                                <span>90%</span>
+                                <span>{project.progress}%</span>
                             </div>
-
                             <Link href={route('job-order')}>
-                                <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
+                                <button className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
                                     View Details
                                 </button>
                             </Link>

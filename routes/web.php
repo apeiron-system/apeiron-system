@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectContractController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +33,10 @@ Route::get('/contract', function () {
         Route::get('/job-order-contracts', function () {
             return Inertia::render('JobOrder/JobOrderContractsPage');
         })->middleware(['auth', 'verified'])->name('job-order-contracts');
+
+    //Job Order Projects Page
+        Route::get('/job-order-projects', [ProjectContractController::class, 'index'])
+        ->middleware(['auth', 'verified'])->name('job-order-projects');
     
     //Job Order Details Page
         Route::get('/job-order-details', function () {
@@ -47,12 +52,6 @@ Route::get('/contract', function () {
         Route::get('/job-order', function () {
             return Inertia::render('JobOrder/JobOrderPage');
         })->middleware(['auth', 'verified'])->name('job-order');
-
-    //Job Order
-        Route::get('/job-order-projects', function () {
-            return Inertia::render('JobOrder/JobOrderProjectsPage');
-        })->middleware(['auth', 'verified'])->name('job-order-projects');
-
     
 
 Route::get('/item', function () {
