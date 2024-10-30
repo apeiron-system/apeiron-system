@@ -29,18 +29,19 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
             <Head title="Projects" />
 
             {/* Search */}
+            <h2 className="py-3 font-bold text-3xl text-gray-1000 leading-tight">Contract Name</h2>
             <div className="flex items-center mb-4">
                 <input
                     type="text"
-                    className="w-1/4 px-4 py-2 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Contract Name"
                 />
-                <button className="px-4 py-2 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">
+                <button className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">
                     Search
                 </button>
-                <select className="ml-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none">
-                    <option value="most-recent">Most Recent</option>
-                    <option value="previous">Previous</option>
+                <select className="ml-2 pr-8 px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none">
+                    <option value="most-recent">Latest</option>
+                    <option value="previous">Oldest</option>
                 </select>
             </div>
 
@@ -55,7 +56,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
                                     className="pr-8 px-3 py-1 text-sm font-medium bg-white border rounded-md shadow-sm focus:outline-none"
                                     defaultValue={project.status}
                                 >
-                                    <option value="done">Done</option>
+                                    <option value="done">Completed</option>
                                     <option value="on-going">On-going</option>
                                 </select>
                             </div>
