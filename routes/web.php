@@ -42,9 +42,9 @@ Route::get('/jo-details', function () {
     return Inertia::render('ProgressReport/JODetailsPage');
 })->middleware(['auth', 'verified'])->name('jo-details');
 
-Route::get('/job-order', function () {
-    return Inertia::render('JODetails/JobOrderPage');
-})->middleware(['auth', 'verified'])->name('job-order');
+Route::get('/par-job-order', function () {
+    return Inertia::render('ProgressReport/JobOrderPage');
+})->middleware(['auth', 'verified'])->name('par-job-order');
 
 //contract
 
