@@ -1,15 +1,71 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Button } from "@/Components/ui/button";
 import { Head, Link } from "@inertiajs/react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu";
-import Checkbox from "@/Components/Checkbox";
+} from "@/components/ui/dropdown-menu";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+} from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+const activeContracts = [
+    {
+        id: "ACT001",
+        name: "Contract Delta",
+        location: "Panabo, Davao City",
+        duration: "12 months",
+        budget: "₱ 1,500,000.00",
+        startDate: "2023-06-01",
+        endDate: "2024-06-01",
+    },
+    {
+        id: "ACT002",
+        name: "Contract Epsilon",
+        location: "Tagum, Davao del Norte",
+        duration: "18 months",
+        budget: "₱ 2,000,000.00",
+        startDate: "2023-02-15",
+        endDate: "2024-08-15",
+    },
+];
+
+const pastContracts = [
+    {
+        id: "PST001",
+        name: "Contract Alpha",
+        startDate: "2022-01-10",
+        endDate: "2023-01-10",
+    },
+    {
+        id: "PST002",
+        name: "Contract Beta",
+        startDate: "2022-03-20",
+        endDate: "2023-03-20",
+    },
+    {
+        id: "PST003",
+        name: "Contract Gamma",
+        startDate: "2021-09-01",
+        endDate: "2022-09-01",
+    },
+];
 
 export default function JobOrderContractsPage({ auth }) {
     return (
@@ -17,7 +73,7 @@ export default function JobOrderContractsPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex justify-between items-center">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="pl-4 font-bold text-3xl text-gray-1000 leading-tight">
                         Job Order Contracts
                     </h2>
                 </div>
@@ -25,171 +81,132 @@ export default function JobOrderContractsPage({ auth }) {
         >
             <Head title="Job Order Contracts" />
 
+            {/* Active Contracts Section */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h3 className="text-xl font-semibold pl-10">
+                    <h3 className="text-2xl font-semibold pl-10">
                         Active Contracts
                     </h3>
                 </div>
-                <div className="mt-1 border text-center rounded-lg">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger className="w-full px-4 py-1 hover:bg-slate-100">
-                            <button className="flex items-center">
-                                <span className="font-medium text-base text-gray-800">
-                                    Sort By
-                                </span>
-                                <svg
-                                    className="w-4 h-4 ml-1"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M10 13.586l4.293-4.293a1 1 0 0 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0l-5-5a1 1 0 0 1 1.414-1.414L10 13.586z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem>
-                                <Link className="w-full flex gap-2 items-center">
-                                    Most Recent
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Link className="w-full flex gap-2 items-center">
-                                    Most Oldest
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="px-4 py-1 hover:bg-slate-100"
+                        >
+                            Sort By
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>Most Recent</DropdownMenuItem>
+                        <DropdownMenuItem>Oldest</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
             <div className="py-5">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="flex space-x-4">
-                        <div class="bg-white rounded-lg shadow-lg mb-10 p-6 w-80">
-                            <div class="flex justify-between items-center">
-                                <h2 class="text-lg font-bold">Contract Name</h2>
-                                <span class="w-3 h-3 rounded-full bg-blue-600"></span>
-                            </div>
-                            <p class="text-gray-500 mb-4">Contract ID</p>
-                            <div class="mb-4">
-                                <p class="text-gray-700">Location:</p>
-                                <p class="text-gray-400">Panabo, Davao City</p>
-                            </div>
-                            <div class="mb-4">
-                                <p class="text-gray-700">Duration:</p>
-                                <p class="text-gray-400">12 months</p>
-                            </div>
-                            <div class="mb-6">
-                                <p class="text-gray-700">Amount:</p>
-                                <p class="text-gray-400">₱ 1,000,000.00</p>
-                            </div>
-                            <Link href={route("job-order-projects")}>
-                                <button class="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-800">
-                                    View
-                                </button>
-                            </Link>
-                        </div>
-
-                        <div class="bg-white rounded-lg shadow-md mb-10 p-6 w-80">
-                            <div class="flex justify-between items-center">
-                                <h2 class="text-lg font-bold">Contract Name</h2>
-                                <span class="w-3 h-3 rounded-full bg-yellow-600"></span>
-                            </div>
-                            <p class="text-gray-500 mb-4">Contract ID</p>
-                            <div class="mb-4">
-                                <p class="text-gray-700">Location:</p>
-                                <p class="text-gray-400">Panabo, Davao City</p>
-                            </div>
-                            <div class="mb-4">
-                                <p class="text-gray-700">Duration:</p>
-                                <p class="text-gray-400">12 months</p>
-                            </div>
-                            <div class="mb-6">
-                                <p class="text-gray-700">Amount:</p>
-                                <p class="text-gray-400">₱ 1,000,000.00</p>
-                            </div>
-                            <Link href={route("job-order-projects")}>
-                                <button class="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-800">
-                                    View
-                                </button>
-                            </Link>
-                        </div>
+                        {activeContracts.map((contract, index) => (
+                            <Card
+                                key={index}
+                                className="w-80 bg-white rounded-lg shadow-lg mb-10"
+                            >
+                                <CardHeader>
+                                    <CardTitle className="text-lg font-bold">
+                                        {contract.name}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Contract ID: {contract.id}
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="mb-4">
+                                        <p className="text-gray-700">
+                                            Location:
+                                        </p>
+                                        <p className="text-gray-400">
+                                            {contract.location}
+                                        </p>
+                                    </div>
+                                    <div className="mb-4">
+                                        <p className="text-gray-700">
+                                            Duration:
+                                        </p>
+                                        <p className="text-gray-400">
+                                            {contract.duration}
+                                        </p>
+                                    </div>
+                                    <div className="mb-6">
+                                        <p className="text-gray-700">Budget:</p>
+                                        <p className="text-gray-400">
+                                            {contract.budget}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <Link href={route("job-order-projects")}>
+                                        <Button
+                                            variant="primary"
+                                            className="w-full bg-slate-600 hover:bg-slate-800 text-white"
+                                        >
+                                            View
+                                        </Button>
+                                    </Link>
+                                </CardFooter>
+                            </Card>
+                        ))}
                     </div>
 
-                    <div></div>
-
-                    {/* Header for Table  */}
+                    {/* Past Contracts Section */}
                     <h3 className="text-xl font-semibold mb-4">
                         Past Contracts
-                    </h3> 
+                    </h3>
 
                     {/* Table Contents */}
-                    <div className="bg-white shadow rounded overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-2 py-2 text-left text-m font-medium text-gray-800 tracking-wider">
-                                        <Checkbox />
-                                    </th>
-                                    <th className="px-2 py-2 border-b border-gray-200">
-                                        Contract ID
-                                    </th>
-                                    <th className="px-2 py-2 border-b border-gray-200">
-                                        Contract Name
-                                    </th>
-                                    <th className="px-2 py-2 border-b border-gray-200">
-                                        Start Date
-                                    </th>
-                                    <th className="px-2 py-2 border-b border-gray-200">
-                                        End Date
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="hover:bg-gray-600 ">
-                                    <td className="px-2 py-2 whitespace-nowrap">
-                                        <Checkbox />
-                                    </td>
-                                    <td className="px-2 py-2 whitespace-nowrap"></td>
-                                    <td className="px-2 py-2 whitespace-nowrap">
-                                        {" "}
-                                    </td>
-                                    <td className="px-2 py-2 whitespace-nowrap"></td>
-                                    <td className="px-2 py-2 whitespace-nowrap text-right text-sm font-medium">
+                    <Table>
+                        <TableCaption>
+                            A list of past job order contracts.
+                        </TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Contract ID</TableHead>
+                                <TableHead>Contract Name</TableHead>
+                                <TableHead>Start Date</TableHead>
+                                <TableHead>End Date</TableHead>
+                                <TableHead className="text-right">
+                                    Actions
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {pastContracts.map((contract) => (
+                                <TableRow key={contract.id}>
+                                    <TableCell>{contract.id}</TableCell>
+                                    <TableCell>{contract.name}</TableCell>
+                                    <TableCell>{contract.startDate}</TableCell>
+                                    <TableCell>{contract.endDate}</TableCell>
+                                    <TableCell className="text-right">
                                         <DropdownMenu>
-                                            <DropdownMenuTrigger className="text-gray-500 hover:text-white">
-                                                &#8226;&#8226;&#8226;
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost">
+                                                    &#8226;&#8226;&#8226;
+                                                </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
-                                                <DropdownMenuItem>
-                                                    <Link
-                                                        href="#"
-                                                        className="w-full flex gap-2 items-center"
-                                                    >
-                                                        View
-                                                    </Link>
+                                                <DropdownMenuItem asChild>
+                                                    <Link href="#">View</Link>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <Link
-                                                        href="#"
-                                                        className="w-full flex gap-2 items-center"
-                                                    >
-                                                        Delete
-                                                    </Link>
+                                                <DropdownMenuItem asChild>
+                                                    <Link href="#">Delete</Link>
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
         </AuthenticatedLayout>

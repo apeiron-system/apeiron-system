@@ -19,7 +19,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
                 <div className="flex items-center">
                     <Link href={route("job-order-contracts")} className="text-grey-600 hover:text-grey-900 mr-4">
                         <button>
-                            <ChevronLeft size={25} strokeWidth={1.25} />
+                            <ChevronLeft size={30} strokeWidth={2} />
                         </button>
                     </Link>
                     <h2 className="font-bold text-3xl text-gray-1000 leading-tight">Job Order Projects</h2>
@@ -29,7 +29,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
             <Head title="Projects" />
 
             {/* Search */}
-            <h2 className="py-3 font-bold text-3xl text-gray-1000 leading-tight">Contract Name</h2>
+            <h2 className="py-3 font-bold text-2xl text-gray-1000 leading-tight">Contract Name</h2>
             <div className="flex items-center mb-4">
                 <input
                     type="text"
