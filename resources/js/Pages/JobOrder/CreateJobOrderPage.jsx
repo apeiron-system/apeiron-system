@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
@@ -117,14 +117,6 @@ export default function CreateJobOrderPage({ auth }) {
             return message; // Modern browsers
         }
     };
-
-    useEffect(() => {
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [isAnyFieldEmpty]);
 
     return (
         <AuthenticatedLayout

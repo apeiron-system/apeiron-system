@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectContractController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Welcome/Public Routes
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -15,54 +17,59 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Protected Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-Route::get('/contract', function () {
-    return Inertia::render('Contract/ContractPage');
-})->middleware(['auth', 'verified'])->name('contract');
+    // Contract
+    Route::get('/contract', function () {
+        return Inertia::render('Contract/ContractPage');
+    })->name('contract');
 
-//PROGRESS BILLING MODULE
-    //Job Order Contracts Page
-        Route::get('/job-order-contracts', function () {
-            return Inertia::render('JobOrder/JobOrderContractsPage');
-        })->middleware(['auth', 'verified'])->name('job-order-contracts');
+    // Job Order Contracts
+    Route::controller(ContractController::class)->group(function () {
+        Route::get('/job-order-contracts', 'index')
+            ->name('job-order-contracts');  // This matches the frontend route name
+    });
 
-    //Job Order Projects Page
-        Route::get('/job-order-projects', [ProjectContractController::class, 'index'])
-        ->middleware(['auth', 'verified'])->name('job-order-projects');
-    
-    //Job Order Details Page
-        Route::get('/job-order-details', function () {
-            return Inertia::render('JobOrder/JobOrderDetailsPage');
-        })->middleware(['auth', 'verified'])->name('job-order-details');
+    // Job Order Projects
+    Route::get('/job-order-projects', [ProjectContractController::class, 'index'])
+        ->name('job-order-projects');
 
-    //Create Job Order Page
-        Route::get('/create-job-order', function () {
-            return Inertia::render('JobOrder/CreateJobOrderPage');
-        })->middleware(['auth', 'verified'])->name('create-job-order');
+    // Job Order Details
+    Route::get('/job-order-details', function () {
+        return Inertia::render('JobOrder/JobOrderDetailsPage');
+    })->name('job-order-details');
 
-    //Job Order Item Billing Page
-        Route::get('/job-order-item-billing', function () {
-            return Inertia::render('JobOrder/JobOrderItemBillingPage');
-        })->middleware(['auth', 'verified'])->name('job-order-item-billing');
+    // Create Job Order
+    Route::get('/create-job-order', function () {
+        return Inertia::render('JobOrder/CreateJobOrderPage');
+    })->name('create-job-order');
 
-    //Job Order
-        Route::get('/job-order', function () {
-            return Inertia::render('JobOrder/JobOrderPage');
-        })->middleware(['auth', 'verified'])->name('job-order');
-    
+    // Job Order Item Billing
+    Route::get('/job-order-item-billing', function () {
+        return Inertia::render('JobOrder/JobOrderItemBillingPage');
+    })->name('job-order-item-billing');
 
-Route::get('/item', function () {
-    return Inertia::render('Item/ItemPage');
-})->middleware(['auth', 'verified'])->name('item');
+    // Job Order
+    Route::get('/job-order', function () {
+        return Inertia::render('JobOrder/JobOrderPage');
+    })->name('job-order');
 
-Route::get('/progress-report', function () {
-    return Inertia::render('ProgressReport/ProgressReportPage');
-})->middleware(['auth', 'verified'])->name('progress-report');
+    // Item Management
+    Route::get('/item', function () {
+        return Inertia::render('Item/ItemPage');
+    })->name('item');
 
-Route::middleware('auth')->group(function () {
+    // Progress Report
+    Route::get('/progress-report', function () {
+        return Inertia::render('ProgressReport/ProgressReportPage');
+    })->name('progress-report');
+
+    // Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
