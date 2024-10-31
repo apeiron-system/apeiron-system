@@ -31,7 +31,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
             <Head title="Projects" />
 
             {/* Search */}
-            <h2 className="py-3 font-bold text-2xl text-gray-1000 leading-tight">Contract Name</h2>
+            <h2 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">Contract Name</h2>
             <div className="flex items-center mb-4">
                 <input
                     type="text"

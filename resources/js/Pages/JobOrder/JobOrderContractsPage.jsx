@@ -38,7 +38,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             user={auth.user}
             header={
                 <div className="flex justify-between items-center">
-                    <h2 className="pl-4 font-bold text-3xl text-gray-1000 leading-tight">
+                    <h2 className="pl-10 font-bold text-3xl text-gray-1000 leading-tight">
                         Job Order Contracts
                     </h2>
                 </div>
@@ -49,7 +49,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             {/* Active Contracts Section */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h3 className="text-2xl font-semibold pl-10">
+                    <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">
                         Active Contracts
                     </h3>
                 </div>
@@ -73,8 +73,8 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                 </DropdownMenu>
             </div>
 
-            <div className="py-5">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="pb-5">
+                <div className="max-w-7xl mx-auto">
                     {activeContracts.length === 0 ? (
                         <div className="text-center py-10 text-gray-500">
                             No active contracts found
@@ -137,7 +137,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                     )}
 
                     {/* Past Contracts Section */}
-                    <h3 className="text-xl font-semibold mb-4 mt-8">
+                    <h3 className="font-bold text-2xl text-gray-1000 leading-tight mb-4 mt-8">
                         Past Contracts
                     </h3>
 
