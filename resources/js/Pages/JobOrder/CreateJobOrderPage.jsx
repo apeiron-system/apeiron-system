@@ -97,11 +97,10 @@ export default function CreateJobOrderPage({ auth }) {
 
     // Handle the Back Button click
     const handleBackButtonClick = (e) => {
-         // If all fields are empty, proceed with navigation; otherwise, show the exit modal
         if (areAllFieldsEmpty) {
-            handleReturn(); // Directly navigate back
+            handleReturn();
         } else {
-            setIsExitModalOpen(true); // Show the exit modal if there are filled fields
+            setIsExitModalOpen(true);
         }
     };
 
@@ -109,24 +108,15 @@ export default function CreateJobOrderPage({ auth }) {
         window.location.href = "job-order";
     };
 
-    // Safety net for navigating away from the page
-    const handleBeforeUnload = (event) => {
-        if (isAnyFieldEmpty) {
-            const message = "You have unsaved changes. Are you sure you want to leave?";
-            event.returnValue = message; // Legacy for some browsers
-            return message; // Modern browsers
-        }
-    };
-
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex">
-                    <button onClick={handleBackButtonClick}>
-                        <ChevronLeft size={25} strokeWidth={1.25} />
+                <div className="flex items-center">
+                    <button onClick={handleBackButtonClick} className="pb-1.5 text-grey-600 hover:text-grey-900 mr-4">
+                        <ChevronLeft size={30} strokeWidth={2} />
                     </button>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
                         Create Job Order
                     </h2>
                 </div>
@@ -134,35 +124,12 @@ export default function CreateJobOrderPage({ auth }) {
         >
             <Head title="Create Job Order" />
 
-            <div className="py-3">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="p-0">
+                <div className="max-w-7xl">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 bg-white border-b border-gray-200">
-                            <div className="mt-0">
-                                <h2 htmlFor="projectName" className="text-xl font-semibold text-gray-800">
-                                    Project Selection
-                                    <span className="text-red-500"> *</span>
-                                </h2>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Choose the project you're creating the job order for.
-                                </p>
-                                <select
-                                    id="projectName"
-                                    name="projectName"
-                                    required
-                                    value={formData.projectName}
-                                    onChange={handleChange}
-                                    className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
-                                >
-                                    <option value="">
-                                        Select Project Name
-                                    </option>
-                                    <option value="Project 1">Project 1</option>
-                                    <option value="Project 2">Project 2</option>
-                                </select>
-                            </div>
+                        <div className="bg-white border-b border-gray-200">
 
-                            <div className="mt-8">
+                            <div className="mt-0">
                                 <h2 className="text-xl font-semibold text-gray-800">
                                     New Job Order
                                 </h2>
@@ -170,6 +137,30 @@ export default function CreateJobOrderPage({ auth }) {
                                     Please provide the required information
                                     below:
                                 </p>
+
+                                <div className="mt-6">
+                                    <h2 htmlFor="projectName" className="block text-sm font-medium text-gray-700">
+                                        Project Name
+                                        <span className="text-red-500"> *</span>
+                                    </h2>
+                                    <p className="mt-1 text-sm text-gray-600">
+                                        Choose the project you're creating the job order for.
+                                    </p>
+                                    <select
+                                        id="projectName"
+                                        name="projectName"
+                                        required
+                                        value={formData.projectName}
+                                        onChange={handleChange}
+                                        className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
+                                    >
+                                        <option value="">
+                                            Select Project Name
+                                        </option>
+                                        <option value="Project 1">Project 1</option>
+                                        <option value="Project 2">Project 2</option>
+                                    </select>
+                                </div>
 
                                 <form className="mt-6" onSubmit={handleExit}>
                                     <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
@@ -315,7 +306,7 @@ export default function CreateJobOrderPage({ auth }) {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 flex items-center justify-between">
+                                    <div className="my-4 flex items-center justify-end gap-4">
                                         <Button
                                             type="button"
                                             onClick={handleCancel}

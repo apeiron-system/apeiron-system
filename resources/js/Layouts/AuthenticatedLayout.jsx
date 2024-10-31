@@ -126,7 +126,7 @@ export default function Authenticated({ user, header, children }) {
                         </div>
                     </header>
                 )}
-                <main className="p-4">{children}</main>
+                <main className="px-20 py-4">{children}</main>
             </div>
         </div>
     );

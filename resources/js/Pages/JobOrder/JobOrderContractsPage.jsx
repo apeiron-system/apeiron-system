@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,7 +24,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 export default function JobOrderContractsPage({ auth, activeContracts, pastContracts, sortBy }) {
     const formatCurrency = (amount) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
@@ -108,32 +108,15 @@ export default function JobOrderItemBillingPage({ auth }) {
         window.location.href = "job-order";
     };
 
-    // Safety net for navigating away from the page
-    const handleBeforeUnload = (event) => {
-        if (isAnyFieldEmpty) {
-            const message = "You have unsaved changes. Are you sure you want to leave?";
-            event.returnValue = message; // Legacy for some browsers
-            return message; // Modern browsers
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [isAnyFieldEmpty]);
-
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex">
-                    <button onClick={handleBackButtonClick}>
-                        <ChevronLeft size={25} strokeWidth={1.25} />
+                    <button onClick={handleBackButtonClick} className="pb-1.5 text-grey-600 hover:text-grey-900 mr-4">
+                        <ChevronLeft size={30} strokeWidth={2} />
                     </button>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
                         Item Billing
                     </h2>
                 </div>
@@ -142,9 +125,9 @@ export default function JobOrderItemBillingPage({ auth }) {
             <Head title="Job Order" />
 
             <div className="py-3">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 bg-white border-b border-gray-200">
+                        <div className="bg-white border-b border-gray-200">
                             <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
                                 New Pay Item
                             </h1>
@@ -318,7 +301,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 flex items-center justify-between">
+                                    <div className="my-4 flex items-center justify-end gap-4">
                                         <Button
                                             type="button"
                                             onClick={handleCancel}

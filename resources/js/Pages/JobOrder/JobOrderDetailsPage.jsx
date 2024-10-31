@@ -43,16 +43,13 @@ export default function JobOrderDetailsPage({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex">
-                    <Link
-                        href={route("job-order")}
-                        className="text-grey-600 hover:text-grey-900 mr-4"
-                    >
+                <div className="flex items-center">
+                    <Link href={route("job-order")} className="text-grey-600 hover:text-grey-900 mr-4">
                         <button>
-                            <ChevronLeft size={25} strokewidth={1.25} />
+                            <ChevronLeft size={30} strokewidth={2} />
                         </button>
                     </Link>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
                         Job Order Details
                     </h2>
                 </div>
@@ -62,7 +59,7 @@ export default function JobOrderDetailsPage({ auth }) {
 
             {/* JO Details Page */}
             <div className="py-3">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
                     <div className="text-gray-900">
                         <div className="pb-4">
                             <div className="flex mb-1">
@@ -143,9 +140,7 @@ export default function JobOrderDetailsPage({ auth }) {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-2 py-2 border-b border-gray-200">
-                                            
-                                        </th>
+                                        <th className="px-2 py-2 border-b border-gray-200"></th>
                                         <th className="px-2 py-2 border-b border-gray-200">
                                             Item No.
                                         </th>

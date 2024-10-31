@@ -22,7 +22,9 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
                             <ChevronLeft size={30} strokeWidth={2} />
                         </button>
                     </Link>
-                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">Job Order Projects</h2>
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
+                        Job Order Projects
+                    </h2>
                 </div>
             }
         >
