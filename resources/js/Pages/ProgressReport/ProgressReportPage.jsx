@@ -9,6 +9,7 @@ export default function ProgressReport({ auth }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredContracts, setFilteredContracts] = useState(contracts);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCancelConfirmationOpen, setIsCancelConfirmationOpen] = useState(false); // New state for cancel confirmation
     const [newContract, setNewContract] = useState({
         name: "",
         location: "",
@@ -16,6 +17,7 @@ export default function ProgressReport({ auth }) {
         endDate: "",
         dotColor: "green",
     });
+    const [showConfirmation, setShowConfirmation] = useState(false); // Confirmation message state
 
     useEffect(() => {
         applyFilters(sortBy, searchQuery);
@@ -79,6 +81,26 @@ export default function ProgressReport({ auth }) {
         setContracts([...contracts, newContractData]);
         setIsModalOpen(false);
         setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" });
+        setShowConfirmation(true); // Show confirmation message
+
+        // Hide the confirmation message after 3 seconds
+        setTimeout(() => {
+            setShowConfirmation(false);
+        }, 3000);
+    };
+
+    const handleCancel = () => {
+        setIsCancelConfirmationOpen(true); // Show cancel confirmation dialog
+    };
+
+    const confirmCancel = () => {
+        setIsModalOpen(false);
+        setIsCancelConfirmationOpen(false);
+        setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" }); // Reset form fields
+    };
+
+    const cancelCancel = () => {
+        setIsCancelConfirmationOpen(false); // Close cancel confirmation dialog
     };
 
     const handleContractClick = (contract) => {
@@ -102,6 +124,13 @@ export default function ProgressReport({ auth }) {
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">Contract Overview</h1>
                     </div>
+
+                    {/* Confirmation message */}
+                    {showConfirmation && (
+                        <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                            Contract added successfully!
+                        </div>
+                    )}
 
                     <div className="mb-6 flex items-center justify-between">
                         <div className="flex items-center gap-2 w-1/3">
@@ -183,8 +212,8 @@ export default function ProgressReport({ auth }) {
                         <div className="flex items-center justify-center min-h-screen">
                             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
                             <div className="bg-white rounded-lg shadow-lg p-6 z-20 w-1/3">
-                                <Dialog.Title className="text-lg font-bold">Add New Contract</Dialog.Title>
-                                <form onSubmit={handleSubmit} className="mt-4">
+                                <h2 className="text-xl font-semibold mb-4">Add New Contract</h2>
+                                <form onSubmit={handleSubmit}>
                                     <div className="mb-4">
                                         <label className="block text-sm font-medium text-gray-700">Contract Name</label>
                                         <input
@@ -235,7 +264,7 @@ export default function ProgressReport({ auth }) {
                                         <button
                                             type="button"
                                             className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
-                                            onClick={() => setIsModalOpen(false)}
+                                            onClick={handleCancel}
                                         >
                                             Cancel
                                         </button>
@@ -247,6 +276,33 @@ export default function ProgressReport({ auth }) {
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </Dialog>
+
+                    {/* Cancel confirmation dialog */}
+                    <Dialog open={isCancelConfirmationOpen} onClose={() => setIsCancelConfirmationOpen(false)} className="fixed z-20 inset-0 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen">
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                            <div className="bg-white rounded-lg shadow-lg p-6 z-30 w-1/3">
+                                <h2 className="text-lg font-semibold mb-4">Confirm Cancel</h2>
+                                <p className="mb-6">Are you sure you want to cancel adding this contract? Any unsaved information will be lost.</p>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
+                                        onClick={cancelCancel}
+                                    >
+                                        No
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition duration-150"
+                                        onClick={confirmCancel}
+                                    >
+                                        Yes, Cancel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </Dialog>
