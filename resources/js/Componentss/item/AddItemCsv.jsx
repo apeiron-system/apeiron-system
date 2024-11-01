@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Papa from "papaparse";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/Components/ui/input";
 import {
     Table,
     TableBody,
@@ -8,7 +8,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import { router } from "@inertiajs/react";
 
 export default function AddItemCsv({ contract }) {

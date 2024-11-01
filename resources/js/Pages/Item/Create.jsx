@@ -4,7 +4,7 @@ import AddItemSection from "@/Componentss/item/AddItemSection";
 import ItemTabNavigation from "@/Componentss/item/ItemTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 
 export default function AddContractPage({ auth, contract }) {
     return (

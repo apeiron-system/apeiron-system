@@ -8,19 +8,30 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+} from "@/Components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import _ from "lodash";
 import PastContractsTable from "@/Componentss/contract/PastContractsTable";
 import ContractCard from "@/Componentss/contract/ContractCard";
+import { Input } from "@/Components/ui/input";
+import { router } from "@inertiajs/react";
 
-export default function ContractPage({ auth, contracts }) {
+export default function ContractPage({ auth, contracts, pastContracts }) {
     const [statusFilter, setStatusFilter] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const changeStatusFilter = (status) => {
         setStatusFilter(status);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        router.get(
+            route("contract"), // Using the "contract" route
+            { search: e.target.value }, // Pass search as a query parameter
+            { preserveState: true, replace: true }
+        );
     };
 
     // $table->id();
@@ -117,7 +128,18 @@ export default function ContractPage({ auth, contracts }) {
 
             <section className="mt-4">
                 <h1 className="font-bold text-lg">Past Contracts</h1>
-                <div className="mt-4">
+
+                <div className="my-4">
+                    <Input
+                        type="text"
+                        placeholder="Search past contracts..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="px-4 py-2 border rounded-md w-full max-w-sm"
+                    />
+                </div>
+
+                {/* <div className="mt-4">
                     {contracts && (
                         <PastContractsTable
                             contracts={contracts.filter(
@@ -126,6 +148,14 @@ export default function ContractPage({ auth, contracts }) {
                         />
                     )}
                     {!contracts && <p>No past contracts found.</p>}
+                </div> */}
+
+                <div className="mt-4">
+                    {pastContracts.length > 0 ? (
+                        <PastContractsTable contracts={pastContracts} />
+                    ) : (
+                        <p>No past contracts found.</p>
+                    )}
                 </div>
             </section>
         </AuthenticatedLayout>

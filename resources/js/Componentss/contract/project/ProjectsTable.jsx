@@ -6,7 +6,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import _ from "lodash";
 
 export default function ProjectsTable({ projects, contract }) {
