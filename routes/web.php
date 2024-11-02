@@ -30,10 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('contract');
 
     // Job Order Contracts
-    Route::controller(ContractController::class)->group(function () {
-        Route::get('/job-order-contracts', 'index')
-            ->name('job-order-contracts');  // This matches the frontend route name
-    });
+    Route::get('/job-order-contracts', [ContractController::class, 'index'])
+        ->name('job-order-contracts');
 
     // Job Order Projects
     Route::get('/job-order-projects', [ProjectContractController::class, 'index'])

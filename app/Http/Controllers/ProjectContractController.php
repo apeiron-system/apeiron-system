@@ -3,15 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProjectContract;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ProjectContractController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // Get all project contracts
+            // Get the contract name from the request
+            $contractName = $request->query('contractName');
+
+            // Load projects associated with the contract name
+            $projectContracts = ProjectContract::where('contract_name', $contractName)->get();
+
+            // Query project contracts, filtering by contract name if given
             $projectContracts = ProjectContract::with([
                 'submittedByEmployee',
                 'signingAuthorityEmployee',
@@ -46,6 +53,7 @@ class ProjectContractController extends Controller
 
             return Inertia::render('JobOrder/JobOrderProjectsPage', [
                 'projectContracts' => $formattedProjects,
+                'contractName' => $contractName,
             ]);
 
         } catch (\Exception $e) {

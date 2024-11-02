@@ -11,7 +11,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-export default function JobOrderProjectsPage({ auth, projectContracts }) {
+export default function JobOrderProjectsPage({ auth, projectContracts, contractName }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -30,8 +30,10 @@ export default function JobOrderProjectsPage({ auth, projectContracts }) {
         >
             <Head title="Projects" />
 
+            {/* Display Contract Name */}
+            <h2 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">{contractName}</h2>
+
             {/* Search */}
-            <h2 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">Contract Name</h2>
             <div className="flex items-center mb-4">
                 <input
                     type="text"

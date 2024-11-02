@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-export default function JobOrderContractsPage({ auth, activeContracts, pastContracts, sortBy }) {
+export default function JobOrderContractsPage({ auth, activeContracts, pastContracts }) {
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-PH', {
             style: 'currency',
@@ -102,7 +102,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     </CardContent>
                                     <CardFooter>
                                         <Link
-                                            href={route("job-order-projects")}
+                                            href={route("job-order-projects", { contractName: contract.name })}
                                             className="w-full"
                                         >
                                             <Button
