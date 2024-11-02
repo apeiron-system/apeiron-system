@@ -113,7 +113,7 @@ export default function CreateJobOrderPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <button onClick={handleBackButtonClick} className="pb-1.5 text-grey-600 hover:text-grey-900 mr-4">
+                    <button onClick={handleBackButtonClick} className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                         <ChevronLeft size={30} strokeWidth={2} />
                     </button>
                     <h2 className="font-bold text-3xl text-gray-1000 leading-tight">

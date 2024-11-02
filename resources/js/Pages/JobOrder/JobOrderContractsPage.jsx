@@ -38,7 +38,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             user={auth.user}
             header={
                 <div className="flex justify-between items-center">
-                    <h2 className="pl-10 font-bold text-3xl text-gray-1000 leading-tight">
+                    <h2 className="ml-0.5 pl-11 font-bold text-3xl text-gray-1000 leading-tight">
                         Job Order Contracts
                     </h2>
                 </div>
@@ -53,24 +53,6 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                         Active Contracts
                     </h3>
                 </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="outline"
-                            className="px-4 py-1 hover:bg-slate-100"
-                        >
-                            Sort By: {sortBy === 'recent' ? 'Most Recent' : 'Oldest'}
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => handleSort('recent')}>
-                            Most Recent
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleSort('oldest')}>
-                            Oldest
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
             </div>
 
             <div className="pb-5">

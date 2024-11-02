@@ -44,8 +44,8 @@ export default function JobOrderDetailsPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <Link href={route("job-order")} className="text-grey-600 hover:text-grey-900 mr-4">
-                        <button>
+                    <Link href={route("job-order")}>
+                        <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                             <ChevronLeft size={30} strokewidth={2} />
                         </button>
                     </Link>
