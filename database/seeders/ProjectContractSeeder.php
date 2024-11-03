@@ -12,7 +12,7 @@ class ProjectContractSeeder extends Seeder
         DB::table('project_contract')->insert([
             [
                 'id' => 1, // Ensure this ID aligns with the JobOrderSeeder reference
-                'contract_name' => 'Contract A',
+                'contract_name' => 'Project A',
                 'description' => 'Description for Contract A',
                 'location' => 'Location A',
                 'designation' => 'Designation A',
@@ -25,7 +25,7 @@ class ProjectContractSeeder extends Seeder
             ],
             [
                 'id' => 2, // Ensure this ID aligns with the JobOrderSeeder reference
-                'contract_name' => 'Contract B',
+                'contract_name' => 'Project B',
                 'description' => 'Description for Contract B',
                 'location' => 'Location B',
                 'designation' => 'Designation B',
@@ -38,7 +38,7 @@ class ProjectContractSeeder extends Seeder
             ],
             [
                 'id' => 3, // Ensure this ID aligns with the JobOrderSeeder reference
-                'contract_name' => 'Contract C',
+                'contract_name' => 'Project C',
                 'description' => 'Description for Contract C',
                 'location' => 'Location C',
                 'designation' => 'Designation C',

@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
             JobOrderPartSeeder::class,    // Then this
             PayItemSeeder::class,
             PayItemJobOrderSeeder::class,
-            ContractSeeder::class,
-            ProjectSeeder::class,
+            ContractSeeder::class, // Make sure this runs first
+            ProjectSeeder::class, // Then this
         ]);
     }
 }

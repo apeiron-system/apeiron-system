@@ -10,8 +10,35 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { useState } from "react";
 
 export default function JobOrderProjectsPage({ auth, projectContracts, contractName }) {
+    // State for sorting
+    const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+
+    const sortedItems = (items) => {
+        if (sortConfig.key) {
+            return [...items].sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return items;
+    };
+
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -38,7 +65,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
                 <input
                     type="text"
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Contract Name"
+                    placeholder="Project Name"
                 />
                 <button className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">
                     Search
@@ -65,22 +92,34 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
                                 </select>
                             </div>
                         </div>
-                        
+
                         {/* Start of Table Section */}
                         <Table>
                             <TableCaption>Project Items for {project.name}</TableCaption>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Item No.</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead>Unit</TableHead>
-                                    <TableHead>Qty</TableHead>
-                                    <TableHead>Unit Cost</TableHead>
-                                    <TableHead>Budget</TableHead>
+                                    <TableHead onClick={() => requestSort('itemNo')}>
+                                        Item No.
+                                    </TableHead>
+                                    <TableHead onClick={() => requestSort('description')}>
+                                        Description
+                                    </TableHead>
+                                    <TableHead onClick={() => requestSort('unit')}>
+                                        Unit
+                                    </TableHead>
+                                    <TableHead onClick={() => requestSort('qty')}>
+                                        Qty
+                                    </TableHead>
+                                    <TableHead onClick={() => requestSort('unitCost')}>
+                                        Unit Cost
+                                    </TableHead>
+                                    <TableHead onClick={() => requestSort('budget')}>
+                                        Budget
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {project.items.map((item, itemIndex) => (
+                                {sortedItems(project.items).map((item, itemIndex) => (
                                     <TableRow key={itemIndex}>
                                         <TableCell>{item.itemNo}</TableCell>
                                         <TableCell>{item.description}</TableCell>
