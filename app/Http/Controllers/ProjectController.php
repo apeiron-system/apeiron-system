@@ -2,74 +2,101 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
     /**
-     * Display a listing of the projects.
+     * Display a listing of projects for a specific contract.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::all();
-        return Inertia::render('JobOrderProjectsPage', [
-            'auth' => auth()->user(), // Pass authenticated user data
-            'projects' => $projects, // Pass the projects data
-        ]);
-    }
+        try {
+            // Get the contract ID from the request
+            $contractId = $request->query('contract_id');
 
-    /**
-     * Store a newly created project in storage.
-     */
-    public function store(Request $request)
-    {
-        $project = Project::create($request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date',
-            'budget' => 'nullable|numeric',
-            'progress' => 'nullable|numeric|min:0|max:100', // Validate progress as percentage
-            'status' => 'required|string',
-        ]));
+            // Validate contract_id
+            if (!$contractId) {
+                throw new \InvalidArgumentException('Contract ID is required');
+            }
 
-        return response()->json($project, 201);
-    }
+            // Retrieve the contract by ID with its projects
+            $contract = Contract::with(['projects' => function ($query) {
+                $query->orderBy('item_no', 'asc')
+                    ->select([
+                        'id',
+                        'contract_id',
+                        'item_no',
+                        'description',
+                        'unit',
+                        'qty',
+                        'unit_cost',
+                        'budget',
+                        'progress',
+                        'status'
+                    ]);
+            }])->findOrFail($contractId);
 
-    /**
-     * Display the specified project.
-     */
-    public function show(Project $project)
-    {
-        return response()->json($project);
-    }
+            // Format projects data
+            $formattedProjects = $contract->projects->map(function ($project) {
+                Log::info('Processing project item: ' . $project->item_no);
 
-    /**
-     * Update the specified project in storage.
-     */
-    public function update(Request $request, Project $project)
-    {
-        $project->update($request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date',
-            'budget' => 'nullable|numeric',
-            'progress' => 'nullable|numeric|min:0|max:100', // Ensure progress is a valid percentage
-            'status' => 'required|string',
-        ]));
+                return [
+                    'id' => $project->id,
+                    'item_no' => $project->item_no,
+                    'description' => $project->description,
+                    'unit' => $project->unit,
+                    'qty' => $project->qty,
+                    'unit_cost' => $project->unit_cost,
+                    'budget' => $project->budget,
+                    'progress' => $project->progress,
+                    'status' => $project->status,
+                ];
+            });
 
-        return response()->json($project);
-    }
+            Log::info('Project items count: ' . $formattedProjects->count());
 
-    /**
-     * Remove the specified project from storage.
-     */
-    public function destroy(Project $project)
-    {
-        $project->delete();
-        return response()->json(null, 204);
+            if ($formattedProjects->isEmpty()) {
+                Log::warning('No project items found for contract ID: ' . $contractId);
+            }
+
+            return Inertia::render('JobOrder/JobOrderProjectsPage', [
+                'auth' => [
+                    'user' => $request->user() ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                    ] : null
+                ],
+                'projects' => $formattedProjects,
+                'contractName' => $contract->contract_name,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in ProjectController@index: ' . $e->getMessage(), [
+                'contract_id' => $request->query('contract_id'),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return Inertia::render('JobOrder/JobOrderProjectsPage', [
+                'auth' => [
+                    'user' => $request->user() ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                    ] : null
+                ],
+                'projects' => [],
+                'contractName' => null,
+                'error' => 'Failed to load projects. Please try again later.'
+            ]);
+        }
     }
 }

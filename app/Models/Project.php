@@ -2,28 +2,40 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
-    // Fillable attributes for mass assignment
     protected $fillable = [
-        'project_contract_id',
-        'name',
+        'contract_id',
+        'item_no',
         'description',
-        'start_date',
-        'end_date',
+        'unit',
+        'qty',
+        'unit_cost',
         'budget',
         'progress',
-        'status',
+        'status'
     ];
 
-    public function projectContract(): BelongsTo
+    protected $casts = [
+        'unit_cost' => 'decimal:2',
+        'budget' => 'decimal:2',
+        'progress' => 'float',
+        'qty' => 'integer',
+        'item_no' => 'integer'
+    ];
+
+    /**
+     * Get the contract that owns the project.
+     */
+    public function contract()
     {
-        return $this->belongsTo(ProjectContract::class, 'project_contract_id');
+        return $this->belongsTo(Contract::class);
     }
 }

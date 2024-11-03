@@ -20,7 +20,7 @@ class ContractFactory extends Factory
 
         return [
             'contract_id' => $prefix . $number,
-            'name' => 'Contract ' . $this->faker->word,
+            'contract_name' => 'Contract ' . $this->faker->word,
             'location' => $isActive ? $this->faker->city . ', ' . $this->faker->state : null,
             'duration' => $isActive ? $this->faker->numberBetween(6, 24) . ' months' : null,
             'budget' => $isActive ? $this->faker->numberBetween(500000, 5000000) : null,

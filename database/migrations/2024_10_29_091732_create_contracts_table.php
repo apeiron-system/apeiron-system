@@ -11,7 +11,7 @@ class CreateContractsTable extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->string('contract_id')->unique(); // ACT001, PST001 format
-            $table->string('name');
+            $table->string('contract_name');
             $table->string('location')->nullable();
             $table->string('duration')->nullable();
             $table->decimal('budget', 12, 2)->nullable();
