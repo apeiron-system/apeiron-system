@@ -78,7 +78,7 @@ export default function JODetailsPage({ auth }) {
 
     const handleJobOrderClick = (jobOrder) => {
         sessionStorage.setItem('selectedJobOrder', JSON.stringify(jobOrder));
-        window.location.href = route('../job-order');
+        window.location.href = route('par-job-order');
     };    
 
     return (
@@ -124,7 +124,8 @@ export default function JODetailsPage({ auth }) {
                             {jobOrders.map(jobOrder => (
                                 <div
                                     key={jobOrder.id}
-                                    className="bg-white rounded-lg shadow-md p-6 relative transition-transform transform hover:scale-105 hover:shadow-lg"
+                                    onClick={() => handleJobOrderClick(jobOrder)}
+                                    className="bg-white rounded-lg shadow-md p-6 relative transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
                                 >
                                     <h2 className="text-lg font-bold">Job Order {jobOrder.id}</h2>
                                     <p className="text-gray-600">Project Code: {jobOrder.projectCode}</p>
