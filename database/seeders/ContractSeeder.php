@@ -9,6 +9,6 @@ class ContractSeeder extends Seeder
 {
     public function run()
     {
-        Contract::factory()->count(5)->create();
+        Contract::factory()->count(count: 5)->create();
     }
 }
