@@ -4,39 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contract extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'description',
+        'contract_id',
         'contract_name',
         'location',
-        'designation',
-        'date_signed',
-        'submitted_by',
-        'signing_authority',
-        'authorized_representative',
+        'duration',
+        'budget',
+        'start_date',
+        'end_date',
+        'status'
     ];
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'budget' => 'decimal:2'
+    ];
 
-    //CHILDREN:
-    //(Contract has many) Job Orders
-    public function jobOrders()
+    public function scopeActive($query)
     {
-        return $this->hasMany(JobOrder::class, 'jo_contract_id', 'contract_id');
+        return $query->where('status', 'active');
     }
 
-    //(Contract has many) Item Works
-    public function itemWorks()
+    public function scopePast($query)
     {
-        return $this->hasMany(ItemWork::class, 'iw_contract_id', 'contract_id');
-    }
-    
-    //(Contract has many) Equipment Needed
-    public function equipmentNeeded()
-    {
-        return $this->hasMany(EquipmentNeeded::class, 'en_contract_id', 'contract_id');
+        return $query->where('status', 'past');
     }
 }

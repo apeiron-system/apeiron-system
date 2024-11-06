@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PayItem extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'date_modified',
+        'item_no',
         'description',
-        'location',
         'unit',
-        'unit_bid_cost',
+        'qty',
+        'unit_cost',
+        'amount'
     ];
-    
 }

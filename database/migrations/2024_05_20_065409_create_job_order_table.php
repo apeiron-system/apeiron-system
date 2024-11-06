@@ -22,12 +22,17 @@ return new class extends Migration
             $table->string('checked_by');
             $table->string('approved_by');
             $table->string('piece_work_subcontractor');
-            $table->decimal('grand_total');
+            $table->decimal('grand_total', 10, 2);
             $table->timestamp('failed_at')->useCurrent();
-
+            
             $table->unsignedBigInteger('jo_contract_id');
-            $table->foreign('jo_contract_id')->references('id')->on('project_contract')->onDelete('cascade')->onUpdate('cascade');
-       
+            $table->foreign('jo_contract_id')
+                ->references('id')
+                ->on('project_contract') // Changed from 'project_contracts' to 'project_contract'
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->timestamps();
         });
     }
 

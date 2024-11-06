@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
-import { Head, Link } from "@inertiajs/react";
+import ExitJobOrderModal from "@/Components/ExitJobOrderModal";
 import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
@@ -19,10 +20,17 @@ export default function JobOrderItemBillingPage({ auth }) {
         payItemNumber: "",
     });
 
+    const [isExitModalOpen, setIsExitModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
+
+    // Helper function to check if any field is empty
+    const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
+
+    // Check if all input fields are empty
+    const areAllFieldsEmpty = Object.values(formData).every(value => value === "");
 
     const handleChange = (e) => {
         setFormData({
@@ -35,9 +43,23 @@ export default function JobOrderItemBillingPage({ auth }) {
         setIsCancelModalOpen(true);
     };
 
+    const resetForm = () => {
+        setFormData({
+            jobOrderNo: "",
+            quantity: "",
+            jobOrderPart: "",
+            unitPrice: "",
+            dateModified: "",
+            weight: "",
+            payItemNumber: "",
+        });
+        setIsCancelModalOpen(false);
+    };
+
     const handleSave = (e) => {
         e.preventDefault();
         setIsSaveModalOpen(true);
+        setIsExitModalOpen(false);
     };
 
     const handleConfirmCancel = () => {
@@ -65,30 +87,36 @@ export default function JobOrderItemBillingPage({ auth }) {
     };
 
     const closeModal = () => {
+        setIsExitModalOpen(false);
         setIsSaveModalOpen(false);
         setIsCancelModalOpen(false);
         setIsSubmitModalOpen(false);
         setIsSubmittedModalOpen(false);
     };
 
-    const isAnyFieldEmpty = Object.values(formData).some(
-        (value) => value === ""
-    );
+    // Handle the Back Button click
+    const handleBackButtonClick = (e) => {
+        // If all fields are empty, proceed with navigation; otherwise, show the exit modal
+        if (areAllFieldsEmpty) {
+           handleReturn(); // Directly navigate back
+        } else {
+           setIsExitModalOpen(true); // Show the exit modal if there are filled fields
+        }
+    };
+
+    const handleReturn = () => {
+        window.location.href = "job-order";
+    };
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex">
-                    <Link
-                        href={route("job-order-details")}
-                        className="text-grey-600 hover:text-grey-900 mr-4"
-                    >
-                        <button>
-                            <ChevronLeft size={25} strokewidth={1.25} />
-                        </button>
-                    </Link>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <button onClick={handleBackButtonClick} className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
+                        <ChevronLeft size={30} strokeWidth={2} />
+                    </button>
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
                         Item Billing
                     </h2>
                 </div>
@@ -97,9 +125,9 @@ export default function JobOrderItemBillingPage({ auth }) {
             <Head title="Job Order" />
 
             <div className="py-3">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 bg-white border-b border-gray-200">
+                        <div className="bg-white border-b border-gray-200">
                             <h1 className="font-semibold text-2xl text-gray-800 leading-tight">
                                 New Pay Item
                             </h1>
@@ -116,6 +144,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block w-full text-sm font-medium text-gray-700"
                                             >
                                                 Job Order No.
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <select
                                                 id="jobOrderNo"
@@ -143,6 +172,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block w-full text-sm font-medium text-gray-700"
                                             >
                                                 Quantity
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <input
                                                 id="quantity"
@@ -161,6 +191,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Job Order Part
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <select
                                                 id="jobOrderPart"
@@ -188,6 +219,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Unit Price
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <input
                                                 id="unitPrice"
@@ -207,6 +239,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Date Modified
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <input
                                                 id="dateModified"
@@ -224,6 +257,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Weight
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <input
                                                 id="weight"
@@ -243,6 +277,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                                 className="block text-sm font-medium text-gray-700"
                                             >
                                                 Pay Item No.
+                                                <span className="text-red-500"> *</span>
                                             </label>
                                             <select
                                                 id="payItemNumber"
@@ -266,7 +301,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 flex items-center justify-between">
+                                    <div className="my-4 flex items-center justify-end gap-4">
                                         <Button
                                             type="button"
                                             onClick={handleCancel}
@@ -275,12 +310,6 @@ export default function JobOrderItemBillingPage({ auth }) {
                                             Cancel
                                         </Button>
                                         <div className="flex space-x-4">
-                                            <Button
-                                                type="submit"
-                                                className="bg-[rgb(15,23,42)] hover:bg-[rgb(47,60,78)] text-white font-bold py-2 px-4 rounded"
-                                            >
-                                                Save
-                                            </Button>
                                             <Button
                                                 type="button"
                                                 onClick={handleSubmit}
@@ -297,6 +326,14 @@ export default function JobOrderItemBillingPage({ auth }) {
                     </div>
                 </div>
             </div>
+            {isExitModalOpen && (
+                <ExitJobOrderModal
+                    show={isExitModalOpen}
+                    onClose={closeModal}
+                    onSaveDraft={handleSave}
+                    onDiscard={handleReturn}
+                />
+            )}
             {isSaveModalOpen && (
                 <SaveJobOrderModal
                     show={isSaveModalOpen}
@@ -321,6 +358,7 @@ export default function JobOrderItemBillingPage({ auth }) {
                 <JobOrderSubmittedModal
                     show={isSubmittedModalOpen}
                     onClose={closeModal}
+                    onCreateAnother={resetForm}
                 />
             )}
         </AuthenticatedLayout>

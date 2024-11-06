@@ -73,16 +73,13 @@ export default function JobOrderPage({ auth }) {
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex">
-                    <Link
-                        href={route("job-order-projects")}
-                        className="text-grey-600 hover:text-grey-900 mr-4"
-                    >
-                        <button>
-                            <ChevronLeft size={25} strokewidth={1.25} />
+                <div className="flex items-center">
+                    <Link href={route("job-order-projects")}>
+                        <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
+                            <ChevronLeft size={30} strokeWidth={2} />
                         </button>
                     </Link>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
                         Job Orders
                     </h2>
                 </div>
@@ -98,9 +95,8 @@ export default function JobOrderPage({ auth }) {
                         </span>
 
                         <select className="w-30 px-7 py-2 block bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                            <option value="ON-GOING">ON-GOING</option>
-                            <option value="PENDING">PENDING</option>
-                            <option value="FINISHED">FINISHED</option>
+                            <option value="ON-GOING">On-Going</option>
+                            <option value="FINISHED">Completed</option>
                         </select>
                     </div>
 
@@ -133,9 +129,6 @@ export default function JobOrderPage({ auth }) {
             <div className="flex items-end justify-end mb-4">
                 <div className="mr-4">
                     <select className="px-5 py-2 bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-gray-500 text-sm mg-2">
-                        <option value="Filter" disabled>
-                            Filter
-                        </option>
                         <option className="border-0" value="ascending">
                             Ascending
                         </option>
