@@ -171,22 +171,7 @@ export default function ProgressReport({ auth }) {
 
                     <div className="scrollable-container">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredContracts.map(contract => (
-                                <div
-                                    key={contract.id}
-                                    className="bg-white rounded-lg shadow-md p-6 block transition-transform transform hover:scale-105 cursor-pointer"
-                                    onClick={() => handleContractClick(contract)} 
-                                >
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-lg font-bold">{contract.name}</h2>
-                                        <div className={`w-3 h-3 rounded-full ${contract.dotColor === 'green' ? 'bg-green-500' : contract.dotColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
-                                    </div>
-                                    <p className="text-gray-600">Contract ID: {contract.id}</p>
-                                    <p className="text-gray-600">Location: {contract.location}</p>
-                                    <p className="text-gray-600">Duration: {contract.startDate} - {contract.endDate}</p>
-                                </div>
-                            ))}
-
+                            {/* Add Contract card always at the beginning */}
                             <div
                                 onClick={handleAddContract}
                                 className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-12 cursor-pointer hover:bg-gray-100 transition-colors"
@@ -204,6 +189,23 @@ export default function ProgressReport({ auth }) {
                                 </svg>
                                 <p className="mt-2 text-gray-600 hover:text-gray-800">Add Contract</p>
                             </div>
+
+                            {/* Render filtered contracts */}
+                            {filteredContracts.map(contract => (
+                                <div
+                                    key={contract.id}
+                                    className="bg-white rounded-lg shadow-md p-6 block transition-transform transform hover:scale-105 cursor-pointer"
+                                    onClick={() => handleContractClick(contract)} 
+                                >
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-lg font-bold">{contract.name}</h2>
+                                        <div className={`w-3 h-3 rounded-full ${contract.dotColor === 'green' ? 'bg-green-500' : contract.dotColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
+                                    </div>
+                                    <p className="text-gray-600">Contract ID: {contract.id}</p>
+                                    <p className="text-gray-600">Location: {contract.location}</p>
+                                    <p className="text-gray-600">Duration: {contract.startDate} - {contract.endDate}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
 

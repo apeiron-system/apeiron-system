@@ -121,19 +121,6 @@ export default function JODetailsPage({ auth }) {
                     
                     <div className="scrollable-container">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {jobOrders.map(jobOrder => (
-                                <div
-                                    key={jobOrder.id}
-                                    onClick={() => handleJobOrderClick(jobOrder)}
-                                    className="bg-white rounded-lg shadow-md p-6 relative transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
-                                >
-                                    <h2 className="text-lg font-bold">Job Order {jobOrder.id}</h2>
-                                    <p className="text-gray-600">Project Code: {jobOrder.projectCode}</p>
-                                    <p className="text-gray-600">Contractor: {jobOrder.contractor}</p>
-                                    <p className="text-gray-600">Date Added: {jobOrder.dateAdded}</p>
-                                </div>
-                            ))}
-
                             <div
                                 onClick={() => setShowForm(true)}
                                 className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-6 cursor-pointer hover:bg-gray-100 transition-colors"
@@ -151,6 +138,19 @@ export default function JODetailsPage({ auth }) {
                                 </svg>
                                 <p className="mt-2 text-gray-600 hover:text-gray-800">Add Job Order</p>
                             </div>
+
+                            {jobOrders.map(jobOrder => (
+                                <div
+                                    key={jobOrder.id}
+                                    onClick={() => handleJobOrderClick(jobOrder)}
+                                    className="bg-white rounded-lg shadow-md p-6 relative transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
+                                >
+                                    <h2 className="text-lg font-bold">Job Order {jobOrder.id}</h2>
+                                    <p className="text-gray-600">Project Code: {jobOrder.projectCode}</p>
+                                    <p className="text-gray-600">Contractor: {jobOrder.contractor}</p>
+                                    <p className="text-gray-600">Date Added: {jobOrder.dateAdded}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
