@@ -82,7 +82,7 @@ export default function ParDetails({ auth }) {
             return (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-                    <div className="bg-white rounded-lg p-6 z-10 w-1/4">
+                    <div className="bg-white rounded-lg p-6 z-10 w-1/3">
                         <h2 className="text-lg font-bold mb-4">Add New Progress Detail</h2>
                         <form onSubmit={handleSubmit}>
                             {['description', 'date', 'checkedBy', 'reviewedBy', 'approvedBy', 'preparedBy'].map((field, index) => (
