@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
-export default function JODetailsPage({ auth }) {
+export default function JODetails({ auth }) {
     const [contract, setContract] = useState(() => {
         const savedContract = sessionStorage.getItem('contractDetails');
         return savedContract ? JSON.parse(savedContract) : null;

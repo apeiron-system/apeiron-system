@@ -157,25 +157,25 @@ export default function ParDetails({ auth }) {
                                         <div className="relative group">
                                             <button
                                                 onClick={handleDeleteSelected}
-                                                className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                                className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 p-2 rounded-full hover:bg-gray-200"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M10 6V4a2 2 0 114 0v2" />
                                                 </svg>
                                             </button>
-                                            <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Delete</span>
+                                            <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-2 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Delete</span>
                                         </div>
                                     )}
                                     <div className="relative group">
                                         <button
                                             onClick={() => setShowForm(true)}
-                                            className="inline-flex justify-center items-center p-0"
+                                            className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                                             </svg>
                                         </button>
-                                        <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Add</span>
+                                        <span className="absolute left-1/2 transform -translate-x-1/2 -translate-y-full text-sm text-gray-600 bg-white p-2 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">Add</span>
                                     </div>
                                 </div>
                             </div>

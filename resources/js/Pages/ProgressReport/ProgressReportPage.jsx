@@ -9,7 +9,7 @@ export default function ProgressReport({ auth }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredContracts, setFilteredContracts] = useState(contracts);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCancelConfirmationOpen, setIsCancelConfirmationOpen] = useState(false); // New state for cancel confirmation
+    const [isCancelConfirmationOpen, setIsCancelConfirmationOpen] = useState(false);
     const [newContract, setNewContract] = useState({
         name: "",
         location: "",
@@ -17,7 +17,7 @@ export default function ProgressReport({ auth }) {
         endDate: "",
         dotColor: "green",
     });
-    const [showConfirmation, setShowConfirmation] = useState(false); // Confirmation message state
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     useEffect(() => {
         applyFilters(sortBy, searchQuery);
@@ -81,26 +81,25 @@ export default function ProgressReport({ auth }) {
         setContracts([...contracts, newContractData]);
         setIsModalOpen(false);
         setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" });
-        setShowConfirmation(true); // Show confirmation message
+        setShowConfirmation(true);
 
-        // Hide the confirmation message after 3 seconds
         setTimeout(() => {
             setShowConfirmation(false);
         }, 3000);
     };
 
     const handleCancel = () => {
-        setIsCancelConfirmationOpen(true); // Show cancel confirmation dialog
+        setIsCancelConfirmationOpen(true);
     };
 
     const confirmCancel = () => {
         setIsModalOpen(false);
         setIsCancelConfirmationOpen(false);
-        setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" }); // Reset form fields
+        setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" });
     };
 
     const cancelCancel = () => {
-        setIsCancelConfirmationOpen(false); // Close cancel confirmation dialog
+        setIsCancelConfirmationOpen(false);
     };
 
     const handleContractClick = (contract) => {
@@ -125,7 +124,6 @@ export default function ProgressReport({ auth }) {
                         <h1 className="text-2xl font-bold">Contract Overview</h1>
                     </div>
 
-                    {/* Confirmation message */}
                     {showConfirmation && (
                         <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">
                             Contract added successfully!
@@ -153,13 +151,13 @@ export default function ProgressReport({ auth }) {
                             <label htmlFor="sort-by" className="sr-only">Sort By</label>
                             <select
                                 id="sort-by"
-                                className="px-2 py-1 bg-gray-600 text-white rounded appearance-none"
+                                className="px-3 py-1 bg-gray-500 text-white rounded appearance-none"
                                 value={sortBy}
                                 onChange={handleSortByChange}
                             >
                                 <option value="Most Recent">Most Recent</option>
                                 <option value="Active Contracts">Active Contracts</option>
-                                <option value="Pending Contracts">Pending Contracts</option>
+                                <option value="Pending Contracts">Complete Contracts</option>
                             </select>
                             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -171,7 +169,6 @@ export default function ProgressReport({ auth }) {
 
                     <div className="scrollable-container">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {/* Add Contract card always at the beginning */}
                             <div
                                 onClick={handleAddContract}
                                 className="flex flex-col items-center justify-center border border-dashed border-gray-400 rounded-lg p-12 cursor-pointer hover:bg-gray-100 transition-colors"
