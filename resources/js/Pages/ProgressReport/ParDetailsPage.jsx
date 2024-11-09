@@ -202,7 +202,7 @@ export default function ParDetails({ auth }) {
                                                     type="checkbox"
                                                     checked={selectedDetails.includes(index)}
                                                     onChange={() => handleCheckboxChange(index)}
-                                                    className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                                    className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
                                                 />
                                             </td>
                                             <td className="px-4 py-2 border-b border-gray-200">{index + 1}</td>
@@ -215,7 +215,7 @@ export default function ParDetails({ auth }) {
                                             <td className="px-4 py-2 relative">
                                                     <button
                                                         onClick={() => toggleOptionsDropdown(index)}
-                                                        className="text-gray-600 hover:text-gray-900"
+                                                        className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
                                                     >
                                                         <span className="text-lg">⋮</span>
                                                     </button>

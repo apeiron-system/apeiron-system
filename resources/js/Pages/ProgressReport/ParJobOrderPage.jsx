@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 export default function ParJobOrder({ auth }) {
     const [jobOrder, setJobOrder] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const buttonRef = useRef(null); // Ref to the button for positioning
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         const savedJobOrder = sessionStorage.getItem('selectedJobOrder');
@@ -47,7 +47,7 @@ export default function ParJobOrder({ auth }) {
                                 <button
                                     ref={buttonRef}
                                     onClick={handlePopupToggle}
-                                    className="p-2 rounded focus:outline-none"
+                                    className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
