@@ -6,6 +6,7 @@ use App\Models\ItemModel;
 use App\Models\ItemPriceModel;
 use App\Models\ContractModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ItemService
 {
@@ -50,6 +51,8 @@ class ItemService
 
     public function storeItems($contractId, $items)
     {
+
+        Log::info($items);
         foreach ($items as $item) {
             $existingItem = ItemModel::where('contract_id', $contractId)
                 ->where('description', $item['description'])
