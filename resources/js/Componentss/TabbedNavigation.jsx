@@ -5,7 +5,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@/Components/ui/navigation-menu";
 
 export default function TabNavigation({ routeObject }) {
     //accepts props that is formatted like
@@ -15,7 +15,7 @@ export default function TabNavigation({ routeObject }) {
         <NavigationMenu>
             <NavigationMenuList>
                 {routeObject.map((route) => (
-                    <NavigationMenuItem key={route.routeName}>
+                    <NavigationMenuItem className="border rounded-md" key={route.routeName}>
                         <NavigationMenuLink
                             href={route.route}
                             className={navigationMenuTriggerStyle()}

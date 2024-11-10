@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import { ArrowLeft } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/Components/ui/input";
 import {
     Select,
     SelectContent,
@@ -11,9 +11,9 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "@/Components/ui/select";
 import _ from "lodash";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/Components/ui/label";
 
 export default function Edit({ auth, item, contractId }) {
     const [formData, setFormData] = useState({

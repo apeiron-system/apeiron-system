@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, Link } from "@inertiajs/react";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
-import ItemTabNavigation from "@/Componentss/item/ItemTabNavigation";
+import ContractItemHeader from "@/Componentss/contract/contractitem/ContractItemHeader";
+import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
 import {
     Table,
     TableBody,
@@ -21,34 +21,25 @@ import {
     SelectValue,
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button"; // Assuming you have a Button component
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/Components/ui/dialog"; // Assuming you have a Modal component
-import {
-    FilterIcon,
-    MoveRight,
-    SearchIcon,
-    SlidersHorizontalIcon,
-    Trash2,
-} from "lucide-react";
+import { SlidersHorizontalIcon } from "lucide-react";
 
-export default function Index({ auth, contract, items, filters }) {
+export default function Index({
+    auth,
+    contract,
+    items,
+    filters,
+    signingAuthorityEmployee,
+}) {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("date_desc");
     const [selectedItems, setSelectedItems] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+
 
     // Handle search input change
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
         router.get(
-            route("item.contract", contract.id),
+            `/contracts/${contract.id}/items`, // Explicit route
             { search: e.target.value, sort: sortOrder },
             { preserveState: true, replace: true }
         );
@@ -58,7 +49,7 @@ export default function Index({ auth, contract, items, filters }) {
     const handleSortChange = (value) => {
         setSortOrder(value);
         router.get(
-            route("item.contract", contract.id),
+            `/contracts/${contract.id}/items`, // Explicit route
             { search: searchQuery, sort: value },
             { preserveState: true, replace: true }
         );
@@ -73,42 +64,22 @@ export default function Index({ auth, contract, items, filters }) {
         );
     };
 
-    // Handle Delete action
-    const handleDelete = () => {
-        setIsModalOpen(true);
-    };
-
-    // Confirm deletion
-    const confirmDelete = () => {
-        // Send a request to delete the selected items
-
-        router.post(
-            route("item.contract.destroy", contract.id),
-            selectedItems,
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    setSelectedItems([]); // Clear selection after deletion
-                    setIsModalOpen(false); // Close modal
-                },
-            }
-        );
-    };
-
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Item
-                </h2>
+                <ContractItemHeader
+                    contract={contract}
+                    signingAuthorityEmployee={signingAuthorityEmployee}
+                />
             }
         >
             <Head title="View Items" />
-            <ContractHeader contract={contract} />
-            <div className="mt-4">
-                <ItemTabNavigation contractId={contract.id} />
+
+            <div className="flex justify-between m-">
+                <ProjectTabNavigation id={contract.id} />
             </div>
+
             {/* Search and Sort Controls */}
             <section className=" max-w-[1400px]">
                 <div className="flex items-center my-4 gap-4">
@@ -146,77 +117,26 @@ export default function Index({ auth, contract, items, filters }) {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    {/* Delete Button */}
-                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        <DialogTrigger
-                            asChild
-                            disabled={selectedItems.length === 0}
-                        >
-                            <Button
-                                variant="outline"
-                                onClick={handleDelete}
-                                className="text-red-500 ml-auto"
-                            >
-                                <Trash2 className="mr-2" /> Delete
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>
-                                    Are you sure you want to delete the selected
-                                    items?
-                                </DialogTitle>
-                            </DialogHeader>
-                            <DialogFooter>
-                                <DialogClose asChild>
-                                    <Button type="button" variant="secondary">
-                                        Cancel
-                                    </Button>
-                                </DialogClose>
-                                <Button
-                                    onClick={confirmDelete}
-                                    className="bg-red-500 text-white"
-                                >
-                                    Confirm
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
                 </div>
                 <div className="py-4 w-full">
                     {/* Table for Items */}
-                    <Table className="w-full bg-white border border-gray-300">
+                    <Table className="w-full bg-white border border-gray-300 text-center">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="py-2 px-4 border-b">
-                                    <input
-                                        type="checkbox"
-                                        onChange={(e) =>
-                                            setSelectedItems(
-                                                e.target.checked
-                                                    ? items.data.map(
-                                                          (item) => item.id
-                                                      )
-                                                    : []
-                                            )
-                                        }
-                                        checked={
-                                            selectedItems.length ===
-                                            items.data.length
-                                        }
-                                    />
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Description
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Type
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Unit
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead className="py-2 px-4 border-b text-center">
                                     Latest Price
+                                </TableHead>
+                                <TableHead className="py-2 px-4 border-b text-center">
+                                    Bid Price
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -226,17 +146,6 @@ export default function Index({ auth, contract, items, filters }) {
                                     key={item.id}
                                     className="hover:bg-gray-100"
                                 >
-                                    <TableCell className="py-2 px-4 border-b">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedItems.includes(
-                                                item.id
-                                            )}
-                                            onChange={() =>
-                                                handleCheckboxChange(item.id)
-                                            }
-                                        />
-                                    </TableCell>
                                     <TableCell className="py-2 px-4 border-b">
                                         {item.description}
                                     </TableCell>
@@ -250,17 +159,29 @@ export default function Index({ auth, contract, items, filters }) {
                                         {item.prices.length !== 0 &&
                                             (item.prices[item.prices.length - 1]
                                                 .unit_cost
-                                                ? item.prices[
-                                                      item.prices.length - 1
-                                                  ].unit_cost
+                                                ? parseFloat(
+                                                      item.prices[
+                                                          item.prices.length - 1
+                                                      ].unit_cost
+                                                  ).toFixed(2)
                                                 : "N/A")}
                                     </TableCell>
-                                    <TableCell className=" w-[10px] py-2 px-4">
+
+                                    {/* Bid Column */}
+                                    <TableCell>
+                                        {/* Display the latest bid if available */}
+                                        {item.bids?.length > 0
+                                            ? item.bids[item.bids.length - 1]
+                                                  .bid_amount
+                                            : "No Bids"}
+                                    </TableCell>
+                                    {/* Bid Button */}
+                                    <TableCell>
                                         <Link
-                                            href={`/item/contracts/${contract.id}/${item.id}`}
+                                            href={`/contracts/${contract.id}/items/${item.id}/bid`}
                                         >
                                             <Button variant="outline">
-                                                <MoveRight className="text-gray-600" />
+                                                Bid
                                             </Button>
                                         </Link>
                                     </TableCell>

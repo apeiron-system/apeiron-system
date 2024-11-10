@@ -1,16 +1,25 @@
 import ContractForm from "@/Componentss/contract/ContractForm";
 import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
+import { ArrowLeft } from "lucide-react";
 
 export default function EditContractPage({ auth, contract, employees }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Edit Contract - {contract.contract_name}
-                </h2>
+                <div className="flex items-center gap-2">
+                    <Link href={`/contract/${contract.id}`}>
+                        <button className="text-gray-500">
+                            <ArrowLeft />
+                        </button>
+                    </Link>
+
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Edit Contract - {contract.contract_name}
+                    </h2>
+                </div>
             }
         >
             <Head title="Contract" />

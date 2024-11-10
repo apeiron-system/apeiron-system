@@ -17,15 +17,17 @@ class ItemService
 
     public function getItemsForContract(Request $request, $contractId)
     {
-        $query = ItemModel::where('contract_id', $contractId)->with('prices');
-
+        $query = ItemModel::where('contract_id', $contractId)
+            ->with(['prices', 'bids']); // Eager load prices and bids
+    
+        // Apply filters like search or sorting here if needed
         if ($request->has('search') && !empty($request->search)) {
             $query->where(function ($q) use ($request) {
                 $q->where('description', 'like', '%' . $request->search . '%')
                     ->orWhere('type', 'like', '%' . $request->search . '%');
             });
         }
-
+    
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'az':
@@ -45,9 +47,10 @@ class ItemService
         } else {
             $query->orderBy('created_at', 'desc');
         }
-
+    
         return $query->paginate(10);
     }
+    
 
     public function storeItems($contractId, $items)
     {
@@ -114,4 +117,31 @@ class ItemService
             $query->orderBy('created_at', 'desc');
         }])->where('contract_id', $contractId)->findOrFail($id);
     }
+
+    //update price for the item
+    public function updateItemPrice($contractId, $itemId, $newPrice)
+    {
+        // Find the item by its ID and contract_id
+        $item = ItemModel::where('id', $itemId)
+            ->where('contract_id', $contractId)
+            ->firstOrFail();
+
+        // Get the latest price
+        $latestPrice = $item->prices()->where('is_current', true)->first();
+
+        // If the new price is different, create a new price entry
+        if ($latestPrice->unit_cost != $newPrice) {
+            // Mark the old price as not current
+            $latestPrice->is_current = false;
+            $latestPrice->save();
+
+            // Save the new price as current
+            $priceModel = new ItemPriceModel();
+            $priceModel->unit_cost = $newPrice;
+            $priceModel->is_current = true;
+            $priceModel->item_id = $item->id;
+            $priceModel->save();
+        }
+    }
+
 }

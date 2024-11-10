@@ -8,8 +8,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
+} from "@/Components/ui/table";
+import { Button } from "@/Components/ui/button"; // Assuming you have a Button component
 import { router } from "@inertiajs/react";
 import { DialogDeleteEmployee } from "./DialogDeleteEmployee";
 
