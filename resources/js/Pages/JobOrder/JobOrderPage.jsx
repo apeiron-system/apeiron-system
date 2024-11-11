@@ -76,10 +76,10 @@ export default function JobOrderPage({ auth }) {
                 <div className="flex items-center">
                     <Link href={route("job-order-projects")}>
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
-                            <ChevronLeft size={30} strokeWidth={2} />
+                            <ChevronLeft size={20} strokeWidth={2} />
                         </button>
                     </Link>
-                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Job Orders
                     </h2>
                 </div>
