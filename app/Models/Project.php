@@ -23,19 +23,11 @@ class Project extends Model
         'status'
     ];
 
-    protected $casts = [
-        'unit_cost' => 'decimal:2',
-        'budget' => 'decimal:2',
-        'progress' => 'float',
-        'qty' => 'integer',
-        'item_no' => 'integer'
-    ];
-
     /**
      * Get the contract that owns the project.
      */
     public function contract()
     {
-        return $this->belongsTo(Contract::class);
+        return $this->belongsTo(Contract::class, 'contract_id');
     }
 }

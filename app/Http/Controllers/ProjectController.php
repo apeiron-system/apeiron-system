@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contract;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -27,25 +26,25 @@ class ProjectController extends Controller
                 throw new \InvalidArgumentException('Contract ID is required');
             }
 
-            // Retrieve the contract by ID with its projects
-            $contract = Contract::with(['projects' => function ($query) {
-                $query->orderBy('item_no', 'asc')
-                    ->select([
-                        'id',
-                        'contract_id',
-                        'item_no',
-                        'description',
-                        'unit',
-                        'qty',
-                        'unit_cost',
-                        'budget',
-                        'progress',
-                        'status'
-                    ]);
-            }])->findOrFail($contractId);
+            // Fetch projects directly by contract ID
+            $projects = Project::where('contract_id', $contractId)
+                ->orderBy('item_no', 'asc')
+                ->select([
+                    'id',
+                    'contract_id',
+                    'item_no',
+                    'description',
+                    'unit',
+                    'qty',
+                    'unit_cost',
+                    'budget',
+                    'progress',
+                    'status',
+                ])
+                ->get();
 
-            // Format projects data
-            $formattedProjects = $contract->projects->map(function ($project) {
+            // Log and map projects data
+            $formattedProjects = $projects->map(function ($project) {
                 Log::info('Processing project item: ' . $project->item_no);
 
                 return [
@@ -76,7 +75,7 @@ class ProjectController extends Controller
                     ] : null
                 ],
                 'projects' => $formattedProjects,
-                'contractName' => $contract->contract_name,
+                'contractName' => optional($projects->first())->contract->contract_name ?? 'Unknown Contract',
             ]);
 
         } catch (\Exception $e) {
