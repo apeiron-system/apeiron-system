@@ -7,7 +7,7 @@ export default function ProgressReport({ auth }) {
     const [contracts, setContracts] = useState([]);
     const [sortBy, setSortBy] = useState("Most Recent");
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredContracts, setFilteredContracts] = useState(contracts);
+    const [filteredContracts, setFilteredContracts] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCancelConfirmationOpen, setIsCancelConfirmationOpen] = useState(false);
     const [newContract, setNewContract] = useState({
@@ -19,15 +19,19 @@ export default function ProgressReport({ auth }) {
     });
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    // Load contracts from localStorage on page load
+    const formatDate = (date) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString(undefined, options);
+    };
+
     useEffect(() => {
         const storedContracts = JSON.parse(localStorage.getItem("contracts"));
         if (storedContracts) {
             setContracts(storedContracts);
+            setFilteredContracts(storedContracts);
         }
     }, []);
 
-    // Filter contracts whenever sorting or searching changes
     useEffect(() => {
         applyFilters(sortBy, searchQuery);
     }, [sortBy, searchQuery, contracts]);
@@ -91,7 +95,8 @@ export default function ProgressReport({ auth }) {
         };
         const updatedContracts = [...contracts, newContractData];
         setContracts(updatedContracts);
-        localStorage.setItem("contracts", JSON.stringify(updatedContracts)); // Save to localStorage
+        setFilteredContracts(updatedContracts);
+        localStorage.setItem("contracts", JSON.stringify(updatedContracts));
         setIsModalOpen(false);
         setNewContract({ name: "", location: "", startDate: "", endDate: "", dotColor: "green" });
         setShowConfirmation(true);
@@ -170,7 +175,8 @@ export default function ProgressReport({ auth }) {
                             >
                                 <option value="Most Recent">Most Recent</option>
                                 <option value="Active Contracts">Active Contracts</option>
-                                <option value="Pending Contracts">Complete Contracts</option>
+                                <option value="Pending Contracts">Pending Contracts</option>
+                                <option value="Complete Contracts">Complete Contracts</option>
                             </select>
                             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -200,7 +206,6 @@ export default function ProgressReport({ auth }) {
                                 <p className="mt-2 text-gray-600 hover:text-gray-800">Add Contract</p>
                             </div>
 
-                            {/* Render filtered contracts */}
                             {filteredContracts.map(contract => (
                                 <div
                                     key={contract.id}
@@ -213,7 +218,7 @@ export default function ProgressReport({ auth }) {
                                     </div>
                                     <p className="text-gray-600">Contract ID: {contract.id}</p>
                                     <p className="text-gray-600">Location: {contract.location}</p>
-                                    <p className="text-gray-600">Duration: {contract.startDate} - {contract.endDate}</p>
+                                    <p className="text-gray-600">Duration: {formatDate(contract.startDate)} - {formatDate(contract.endDate)}</p>
                                 </div>
                             ))}
                         </div>
@@ -292,7 +297,6 @@ export default function ProgressReport({ auth }) {
                         </div>
                     </Dialog>
 
-                    {/* Cancel Confirmation Modal */}
                     <Dialog open={isCancelConfirmationOpen} onClose={cancelCancel} className="fixed z-10 inset-0 overflow-y-auto">
                         <div className="flex items-center justify-center min-h-screen">
                             <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
