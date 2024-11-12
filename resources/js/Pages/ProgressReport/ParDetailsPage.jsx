@@ -8,21 +8,18 @@ export default function ParDetails({ auth }) {
     const [optionsDropdownOpen, setOptionsDropdownOpen] = useState(null);
     const [selectedDetails, setSelectedDetails] = useState([]);
 
-
-
     useEffect(() => {
         const savedContract = localStorage.getItem("contractDetails");
         if (savedContract) {
             setContract(JSON.parse(savedContract));
         }
-    }, []); // This will run once when the component is mounted
+    }, []);
 
     useEffect(() => {
         if (contract) {
             localStorage.setItem("contractDetails", JSON.stringify(contract));
         }
-    }, [contract]); // This will run whenever contract state changes
-
+    }, [contract]);
     const toggleOptionsDropdown = (index) => {
         setOptionsDropdownOpen((prevIndex) => (prevIndex === index ? null : index));
     };
@@ -33,7 +30,7 @@ export default function ParDetails({ auth }) {
                 ...prevContract,
                 details: [...(prevContract?.details || []), newDetail],
             };
-            localStorage.setItem("contractDetails", JSON.stringify(updatedContract)); // Save to localStorage
+            localStorage.setItem("contractDetails", JSON.stringify(updatedContract));
             return updatedContract;
         });
     };
@@ -151,10 +148,10 @@ export default function ParDetails({ auth }) {
                     <>
                         <div className="flex justify-between items-center mb-6">
                             <h1 className="text-2xl font-bold">
-                                {contract.name ? contract.name : ""} (ID: {contract.id ? contract.id : ""})
+                                {contract.name} (ID: {contract.id})
                             </h1>
                             <InertiaLink
-                                // href={route('jo-details', { id: contract.id })}
+                                href={route('jo-details', { id: contract.id })}
                                 className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 View Job Order
@@ -162,9 +159,9 @@ export default function ParDetails({ auth }) {
                         </div>
 
                         <div className="mb-6">
-                            <p><strong>Location:</strong> {contract.location ? contract.location : ""}</p>
-                            <p><strong>Start Date:</strong> {contract.startDate ? contract.startDate : ""}</p>
-                            <p><strong>End Date:</strong> {contract.endDate ? contract.endDate : ""}</p>
+                            <p><strong>Location:</strong> {contract.location}</p>
+                            <p><strong>Start Date:</strong> {contract.startDate}</p>
+                            <p><strong>End Date:</strong> {contract.endDate}</p>
                         </div>
 
                         <div className="flex justify-between items-center mb-4">
