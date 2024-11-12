@@ -1,10 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export default function ParContractDetails({ auth }) {
     const [selectedDetail, setSelectedDetail] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [menuVisible, setMenuVisible] = useState({}); // To track visibility of menu for each container
     const buttonRef = useRef(null);
 
     useEffect(() => {
@@ -34,6 +35,22 @@ export default function ParContractDetails({ auth }) {
                 {`As of ${parsedDate.toLocaleDateString(undefined, options)}`}
             </span>
         );
+    };
+
+    const handleMenuToggle = (container) => {
+        setMenuVisible((prev) => ({
+            ...prev,
+            [container]: !prev[container]
+        }));
+    };
+
+    const closeMenu = useCallback(() => {
+        setMenuVisible({});
+    }, []);
+
+    const handleMenuClick = (action) => {
+        console.log(`${action} clicked`); // Handle the "Update" action here
+        closeMenu();
     };
 
     return (
@@ -82,6 +99,57 @@ export default function ParContractDetails({ auth }) {
 
                 <div className="ml-12 mr-12 mt-4 text-sm">
                     <h2>{formatDate(selectedDetail?.date)}</h2>
+                </div>
+
+                <div className="flex ml-12 mr-12 mt-6 space-x-6">
+                    <div className="w-1/2 p-6 border border-gray-300 rounded-lg shadow-md relative">
+                        <h3 className="text-lg font-semibold mb-2">Bill of Quantities</h3>
+                        <div className="absolute top-2 right-2">
+                            <button
+                                onClick={() => handleMenuToggle('boq')}
+                                className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
+                                </svg>
+                            </button>
+                            {menuVisible['boq'] && (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-50">
+                                    <ul className="space-y-2 text-sm">
+                                        <li>
+                                            <button onClick={() => handleMenuClick('Update')} className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                                Update
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="w-1/2 p-6 border border-gray-300 rounded-lg shadow-md relative">
+                        <h3 className="text-lg font-semibold mb-2">Accomplishments</h3>
+                        <div className="absolute top-2 right-2">
+                            <button
+                                onClick={() => handleMenuToggle('accomplishments')}
+                                className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
+                                </svg>
+                            </button>
+                            {menuVisible['accomplishments'] && (
+                                <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-50">
+                                    <ul className="space-y-2 text-sm">
+                                        <li>
+                                            <button onClick={() => handleMenuClick('Update')} className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                                Update
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 

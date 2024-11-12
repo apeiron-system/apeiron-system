@@ -2,7 +2,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link as InertiaLink } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-// Utility function to format dates
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
@@ -179,23 +178,33 @@ export default function ParDetails({ auth }) {
                                 <h2 className="text-xl font-bold">Progress Accomplishment</h2>
                                 <div className="flex space-x-2">
                                     {selectedDetails.length > 0 && (
-                                        <button
-                                            onClick={handleDeleteSelected}
-                                            className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 p-2 rounded-full hover:bg-gray-200"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M10 6V4a2 2 0 114 0v2" />
-                                            </svg>
-                                        </button>
+                                        <div className="relative group">
+                                            <button
+                                                onClick={handleDeleteSelected}
+                                                className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 p-2 rounded-full hover:bg-gray-200"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M10 6V4a2 2 0 114 0v2" />
+                                                </svg>
+                                            </button>
+                                            <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                Delete
+                                            </span>
+                                        </div>
                                     )}
-                                    <button
-                                        onClick={() => setShowForm(true)}
-                                        className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </button>
+                                        <div className="relative group">
+                                            <button
+                                                onClick={() => setShowForm(true)}
+                                                className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </button>
+                                            <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                Add
+                                            </span>
+                                        </div>
                                 </div>
                             </div>
 
@@ -221,7 +230,7 @@ export default function ParDetails({ auth }) {
                                                     type="checkbox"
                                                     checked={selectedDetails.includes(index)}
                                                     onChange={() => handleCheckboxChange(index)}
-                                                    className="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                                                    className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
                                                 />
                                             </td>
                                             <td className="px-4 py-2">{index + 1}</td>
@@ -234,17 +243,25 @@ export default function ParDetails({ auth }) {
                                             <td className="px-4 py-2 relative">
                                                 <button
                                                     onClick={() => toggleOptionsDropdown(index)}
-                                                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                    className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
                                                 >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path d="M6 10a2 2 0 114 0 2 2 0 01-4 0zm6 0a2 2 0 114 0 2 2 0 01-4 0zM4 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                    </svg>
+                                                    <span className="text-lg">⋮</span>
                                                 </button>
                                                 {optionsDropdownOpen === index && (
-                                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                                    <div className="absolute right-0 mt-2 w-20 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                                                        <InertiaLink
+                                                            href={route('par-contract-details', { id: contract.id, detailId: detail.id })}
+                                                            onClick={() => {
+                                                                sessionStorage.setItem('selectedDetail', JSON.stringify(detail));
+                                                            }}
+                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                        >
+                                                            View
+                                                        </InertiaLink>
+
                                                         <button
                                                             onClick={() => handleDeleteSingleDetail(index)}
-                                                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                                            className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
                                                         >
                                                             Delete
                                                         </button>

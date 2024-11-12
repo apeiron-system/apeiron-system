@@ -18,6 +18,7 @@ export default function ProgressReport({ auth }) {
         dotColor: "green",
     });
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [selectedContracts, setSelectedContracts] = useState([]);
 
     const formatDate = (date) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -58,9 +59,23 @@ export default function ProgressReport({ auth }) {
         }
     };
 
+    const handleSelectContract = (contractId) => {
+        setSelectedContracts((prevSelected) =>
+            prevSelected.includes(contractId)
+                ? prevSelected.filter(id => id !== contractId)
+                : [...prevSelected, contractId]
+        );
+    };    
+
+    const handleDeleteSelected = () => {
+        setContracts((prevContracts) => prevContracts.filter(contract => !selectedContracts.includes(contract.id)));
+        setFilteredContracts((prevFiltered) => prevFiltered.filter(contract => !selectedContracts.includes(contract.id)));
+        setSelectedContracts([]);
+    };
+    
     const applyFilters = (sortBy, searchQuery) => {
         let filtered = [...contracts];
-
+    
         if (sortBy === "Active Contracts") {
             filtered = filtered.filter(contract => contract.dotColor === "green");
         } else if (sortBy === "Pending Contracts") {
@@ -68,19 +83,19 @@ export default function ProgressReport({ auth }) {
         } else if (sortBy === "Complete Contracts") {
             filtered = filtered.filter(contract => contract.dotColor === "red");
         }
-
+    
         if (searchQuery) {
             const lowercasedQuery = searchQuery.toLowerCase();
             filtered = filtered.filter(contract =>
                 contract.name.toLowerCase().includes(lowercasedQuery) ||
                 contract.location.toLowerCase().includes(lowercasedQuery) ||
                 contract.startDate.includes(lowercasedQuery) ||
-                contract.endDate.includes(lowercasedQuery)
+                contract.endDate.includes(lowercQuery)
             );
         }
-
+    
         setFilteredContracts(filtered);
-    };
+    };    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -165,7 +180,23 @@ export default function ProgressReport({ auth }) {
                             </button>
                         </div>
 
-                        <div className="relative">
+                        <div className="flex items-center gap-4">
+                            {selectedContracts.length > 0 && (
+                                <div className="relative group">
+                                    <button
+                                        onClick={handleDeleteSelected}
+                                        className="text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 p-2 rounded-full hover:bg-gray-200"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M6 6v12a2 2 0 002 2h8a2 2 0 002-2V6M10 6V4a2 2 0 114 0v2" />
+                                        </svg>
+                                    </button>
+                                    <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        Delete
+                                    </span>
+                                </div>
+                            )}
+
                             <label htmlFor="sort-by" className="sr-only">Sort By</label>
                             <select
                                 id="sort-by"
@@ -210,9 +241,21 @@ export default function ProgressReport({ auth }) {
                                 <div
                                     key={contract.id}
                                     className="bg-white rounded-lg shadow-md p-6 block transition-transform transform hover:scale-105 cursor-pointer"
-                                    onClick={() => handleContractClick(contract)} 
+                                    onClick={(e) => {
+                                        if (e.target.type !== 'checkbox') {
+                                            handleContractClick(contract);
+                                        }
+                                    }} 
                                 >
                                     <div className="flex justify-between items-center mb-4">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedContracts.includes(contract.id)}
+                                            onChange={(e) => {
+                                                handleSelectContract(contract.id);
+                                            }}
+                                            className="h-4 w-4 text-gray-600"
+                                        />
                                         <h2 className="text-lg font-bold">{contract.name}</h2>
                                         <div className={`w-3 h-3 rounded-full ${contract.dotColor === 'green' ? 'bg-green-500' : contract.dotColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                                     </div>
