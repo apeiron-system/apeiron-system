@@ -1,5 +1,5 @@
-import ApplicationLogo from "@/Componentss/ApplicationLogo";
-import NavLink from "@/Componentss/NavLink";
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import NavLink from "@/Components/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -49,8 +49,8 @@ export default function Authenticated({ user, header, children }) {
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
                         <NavLink
-                            href={route("job-order")}
-                            active={route().current("job-order")}
+                            // href={route("job-order")}
+                            // active={route().current("job-order")}
                         >
                             <NotebookPen className="mr-2" /> Job Order
                         </NavLink>

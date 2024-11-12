@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
     Table,
     TableBody,
@@ -7,71 +8,99 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/Components/ui/table";
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button"; // Assuming you have a Button component
+import { router } from "@inertiajs/react";
+import { DialogDeleteEmployee } from "./DialogDeleteEmployee";
 
 export default function EmployeeTable({ employees }) {
-    // $table->id();
-    //         $table->timestamps();
-    //         $table->string("first_name", length: 255);
-    //         $table->string("middle_name");
-    //         $table->string("last_name", length: 255);
-
-    //         //columns for address, in the philippines
-    //         $table->string("street_address");
-    //         $table->string("barangay");
-    //         $table->string("city");
-    //         $table->string("province");
-    //         $table->string("zip_code");
-    //         $table->string("country");
-
-    //         //columns for contact information
-    //         $table->string("phone_number");
-    //         $table->string("email_address");
-
-    //         //columns for employee information
-    //         $table->string("employee_role");
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
     if (!employees) {
         return <div>No employees found</div>;
     }
 
+    const handleEdit = () => {
+        if (selectedEmployeeId) {
+            router.get(`/employees/edit/${selectedEmployeeId}`);
+        } else {
+            alert("Please select an employee to edit");
+        }
+    };
+
+    const handleDelete = () => {
+        if (selectedEmployeeId) {
+            // Perform delete action with selectedEmployeeId
+            router.delete(`/employees/delete/${selectedEmployeeId}`);
+        } else {
+            alert("Please select an employee to delete");
+        }
+    };
+
     return (
-        <Table>
-            <TableCaption>Employee</TableCaption>
-            <TableHead>
-                <TableRow>
-                    <TableHeader>First Name</TableHeader>
-                    <TableHeader>Middle Name</TableHeader>
-                    <TableHeader>Last Name</TableHeader>
-                    <TableHeader>Street Address</TableHeader>
-                    <TableHeader>Barangay</TableHeader>
-                    <TableHeader>City</TableHeader>
-                    <TableHeader>Province</TableHeader>
-                    <TableHeader>Zip Code</TableHeader>
-                    <TableHeader>Country</TableHeader>
-                    <TableHeader>Phone Number</TableHeader>
-                    <TableHeader>Email Address</TableHeader>
-                    <TableHeader>Employee Role</TableHeader>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {employees.map((employee) => (
-                    <TableRow key={employee.id}>
-                        <TableCell>{employee.first_name}</TableCell>
-                        <TableCell>{employee.middle_name}</TableCell>
-                        <TableCell>{employee.last_name}</TableCell>
-                        <TableCell>{employee.street_address}</TableCell>
-                        <TableCell>{employee.barangay}</TableCell>
-                        <TableCell>{employee.city}</TableCell>
-                        <TableCell>{employee.province}</TableCell>
-                        <TableCell>{employee.zip_code}</TableCell>
-                        <TableCell>{employee.country}</TableCell>
-                        <TableCell>{employee.phone_number}</TableCell>
-                        <TableCell>{employee.email_address}</TableCell>
-                        <TableCell>{employee.employee_role}</TableCell>
+        <div>
+            <Table>
+                <TableCaption>Employees</TableCaption>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Select</TableHead>
+                        <TableHead>First Name</TableHead>
+                        <TableHead>Middle Name</TableHead>
+                        <TableHead>Last Name</TableHead>
+                        <TableHead>Street Address</TableHead>
+                        <TableHead>Barangay</TableHead>
+                        <TableHead>City</TableHead>
+                        <TableHead>Province</TableHead>
+                        <TableHead>Zip Code</TableHead>
+                        <TableHead>Country</TableHead>
+                        <TableHead>Phone Number</TableHead>
+                        <TableHead>Email Address</TableHead>
+                        <TableHead>Employee Role</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+                <TableBody>
+                    {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                            <TableCell>
+                                <input
+                                    type="radio"
+                                    name="selectedEmployee"
+                                    value={employee.id}
+                                    checked={selectedEmployeeId === employee.id}
+                                    onChange={() =>
+                                        setSelectedEmployeeId(employee.id)
+                                    }
+                                />
+                            </TableCell>
+                            <TableCell>{employee.first_name}</TableCell>
+                            <TableCell>{employee.middle_name}</TableCell>
+                            <TableCell>{employee.last_name}</TableCell>
+                            <TableCell>{employee.street_address}</TableCell>
+                            <TableCell>{employee.barangay}</TableCell>
+                            <TableCell>{employee.city}</TableCell>
+                            <TableCell>{employee.province}</TableCell>
+                            <TableCell>{employee.zip_code}</TableCell>
+                            <TableCell>{employee.country}</TableCell>
+                            <TableCell>{employee.phone_number}</TableCell>
+                            <TableCell>{employee.email_address}</TableCell>
+                            <TableCell>{employee.employee_role}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            {employees.length !== 0 && (
+                <div className="flex justify-end mt-4">
+                    <Button onClick={handleEdit} className="mr-2">
+                        Edit
+                    </Button>
+                    <DialogDeleteEmployee
+                        onDelete={handleDelete}
+                        employee={employees.find(
+                            (employee) => employee.id === selectedEmployeeId
+                        )}
+                    />
+                </div>
+            )}
+        </div>
     );
 }
