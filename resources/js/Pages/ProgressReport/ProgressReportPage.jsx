@@ -116,7 +116,7 @@ export default function ProgressReport({ auth }) {
     };
 
     const handleContractClick = (contract) => {
-        sessionStorage.setItem('contractDetails', JSON.stringify(contract));
+        localStorage.setItem('contractDetails', JSON.stringify(contract));
         window.location.href = '/par-details';
     };
 
