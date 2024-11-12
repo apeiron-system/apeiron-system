@@ -270,7 +270,7 @@ export default function ProgressReport({ auth }) {
                                                 required
                                                 className="border border-gray-300 rounded w-full p-2"
                                             />
-                                        </div>
+                           </div>
                                     </div>
                                     <div className="flex justify-end">
                                         <button
