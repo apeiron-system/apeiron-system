@@ -222,68 +222,69 @@ export default function ProgressReport({ auth }) {
                     {/* Modal for adding a new contract */}
                     <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="fixed z-10 inset-0 overflow-y-auto">
                         <div className="flex items-center justify-center min-h-screen">
-                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
-                            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-                                <Dialog.Title className="text-2xl font-bold mb-4">Add New Contract</Dialog.Title>
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                            <div className="bg-white rounded-lg shadow-lg p-6 z-20 w-1/3">
+                                <h2 className="text-xl font-semibold mb-4">Add New Contract</h2>
                                 <form onSubmit={handleSubmit}>
                                     <div className="mb-4">
-                                        <label htmlFor="name" className="block font-medium">Contract Name</label>
+                                        <label className="block text-sm font-medium text-gray-700">Contract Name</label>
                                         <input
                                             type="text"
-                                            id="name"
                                             name="name"
-                                            className="w-full border border-gray-300 rounded p-2 mt-1"
                                             value={newContract.name}
                                             onChange={handleInputChange}
                                             required
+                                            className="border border-gray-300 rounded w-full p-2"
                                         />
                                     </div>
                                     <div className="mb-4">
-                                        <label htmlFor="location" className="block font-medium">Location</label>
+                                        <label className="block text-sm font-medium text-gray-700">Location</label>
                                         <input
                                             type="text"
-                                            id="location"
                                             name="location"
-                                            className="w-full border border-gray-300 rounded p-2 mt-1"
                                             value={newContract.location}
                                             onChange={handleInputChange}
                                             required
+                                            className="border border-gray-300 rounded w-full p-2"
                                         />
                                     </div>
-                                    <div className="mb-4">
-                                        <label htmlFor="startDate" className="block font-medium">Start Date</label>
-                                        <input
-                                            type="date"
-                                            id="startDate"
-                                            name="startDate"
-                                            className="w-full border border-gray-300 rounded p-2 mt-1"
-                                            value={newContract.startDate}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
+                                    <div className="flex mb-4">
+                                        <div className="flex-1 mr-2">
+                                            <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                                            <input
+                                                type="date"
+                                                name="startDate"
+                                                value={newContract.startDate}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="border border-gray-300 rounded w-full p-2"
+                                            />
+                                        </div>
+                                        <div className="flex-1 ml-2">
+                                            <label className="block text-sm font-medium text-gray-700">End Date</label>
+                                            <input
+                                                type="date"
+                                                name="endDate"
+                                                value={newContract.endDate}
+                                                onChange={handleInputChange}
+                                                required
+                                                className="border border-gray-300 rounded w-full p-2"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="mb-4">
-                                        <label htmlFor="endDate" className="block font-medium">End Date</label>
-                                        <input
-                                            type="date"
-                                            id="endDate"
-                                            name="endDate"
-                                            className="w-full border border-gray-300 rounded p-2 mt-1"
-                                            value={newContract.endDate}
-                                            onChange={handleInputChange}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded">
-                                            Add Contract
-                                        </button>
+                                    <div className="flex justify-end">
                                         <button
                                             type="button"
-                                            className="bg-gray-500 text-white px-6 py-2 rounded"
+                                            className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
                                             onClick={handleCancel}
                                         >
                                             Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150"
+                                        >
+                                            Add Contract
                                         </button>
                                     </div>
                                 </form>
