@@ -10,7 +10,7 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained('contracts')->onDelete('cascade'); // Foreign key to contracts
+            $table->foreignId('contract_id')->constrained('contracts')->onDelete('cascade'); // Foreign key to contracts table
             $table->integer('item_no')->unsigned(); // Item No.
             $table->string('description'); // Description of the project item
             $table->string('unit'); // Unit of measurement, e.g., "pcs", "meters", "kg"

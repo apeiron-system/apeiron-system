@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 
-export default function JobOrderProjectsPage({ auth, projectContracts, contractName }) {
+export default function JobOrderProjectsPage({ auth, projects, contractName }) {
     // State for sorting
     const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
 
@@ -28,7 +28,7 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
                 return 0;
             });
         }
-        return items;
+        return items || [];
     };
 
     const requestSort = (key) => {
@@ -78,10 +78,10 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
 
             {/* Projects List */}
             <div className="space-y-4">
-                {projectContracts.map((project, index) => (
+                {projects.map((project, index) => (
                     <div key={index} className="p-4 bg-gray-50 rounded-md shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-lg font-semibold">{project.name}</h3>
+                            <h3 className="text-lg font-semibold">{project.description}</h3>
                             <div className="relative">
                                 <select
                                     className="pr-8 px-3 py-1 text-sm font-medium bg-white border rounded-md shadow-sm focus:outline-none"
@@ -95,10 +95,10 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
 
                         {/* Start of Table Section */}
                         <Table>
-                            <TableCaption>Project Items for {project.name}</TableCaption>
+                            <TableCaption>Project Items for {project.description}</TableCaption>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead onClick={() => requestSort('itemNo')}>
+                                    <TableHead onClick={() => requestSort('item_no')}>
                                         Item No.
                                     </TableHead>
                                     <TableHead onClick={() => requestSort('description')}>
@@ -119,13 +119,13 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {sortedItems(project.items).map((item, itemIndex) => (
+                                {sortedItems([project]).map((item, itemIndex) => (
                                     <TableRow key={itemIndex}>
-                                        <TableCell>{item.itemNo}</TableCell>
+                                        <TableCell>{item.item_no}</TableCell>
                                         <TableCell>{item.description}</TableCell>
                                         <TableCell>{item.unit}</TableCell>
                                         <TableCell>{item.qty}</TableCell>
-                                        <TableCell>{item.unitCost}</TableCell>
+                                        <TableCell>{item.unit_cost}</TableCell>
                                         <TableCell>{item.budget}</TableCell>
                                     </TableRow>
                                 ))}
@@ -145,7 +145,9 @@ export default function JobOrderProjectsPage({ auth, projectContracts, contractN
                                 </div>
                                 <span>{project.progress}%</span>
                             </div>
-                            <Link href={route('job-order')}>
+                            <Link
+                                href={route("job-order", { project_id: project.id })}
+                            >
                                 <button className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
                                     View Details
                                 </button>

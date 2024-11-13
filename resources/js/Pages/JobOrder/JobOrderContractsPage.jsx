@@ -73,7 +73,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                             {contract.contract_name}
                                         </CardTitle>
                                         <CardDescription>
-                                            Contract ID: {contract.contract_id}
+                                            Contract ID: {contract.id}
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
@@ -102,7 +102,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     </CardContent>
                                     <CardFooter>
                                         <Link
-                                            href={route("job-order-projects", { contractName: contract.contract_name })}
+                                            href={route("job-order-projects", { contract_id: contract.id })}
                                             className="w-full"
                                         >
                                             <Button
@@ -152,7 +152,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                             ) : (
                                 pastContracts.data.map((contract) => (
                                     <TableRow key={contract.id}>
-                                        <TableCell>{contract.contract_id}</TableCell>
+                                        <TableCell>{contract.id}</TableCell>
                                         <TableCell>{contract.contract_name}</TableCell>
                                         <TableCell>
                                             {new Date(contract.start_date).toLocaleDateString()}

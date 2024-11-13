@@ -12,7 +12,6 @@ class ContractSeeder extends Seeder
          // Hardcoded data for active contracts
         $activeContracts = [
             [
-                'contract_id' => 'ACT001',
                 'contract_name' => 'Active Contract 1',
                 'location' => 'Toril',
                 'duration' => '12 months',
@@ -22,7 +21,6 @@ class ContractSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'contract_id' => 'ACT002',
                 'contract_name' => 'Active Contract 2',
                 'location' => 'Nabunturan',
                 'duration' => '24 months',
@@ -32,7 +30,6 @@ class ContractSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'contract_id' => 'ACT003',
                 'contract_name' => 'Active Contract 3',
                 'location' => 'Sta. Cruz',
                 'duration' => '6 months',
@@ -41,22 +38,11 @@ class ContractSeeder extends Seeder
                 'end_date' => '2024-08-31',
                 'status' => 'active',
             ],
-            [
-                'contract_id' => 'ACT004',
-                'contract_name' => 'Active Contract 4',
-                'location' => 'Digos',
-                'duration' => '18 months',
-                'budget' => 1500000,
-                'start_date' => '2024-04-01',
-                'end_date' => '2025-09-30',
-                'status' => 'active',
-            ],
         ];
 
         // Hardcoded data for past contracts
         $pastContracts = [
             [
-                'contract_id' => 'PAST001',
                 'contract_name' => 'Past Contract 1',
                 'location' => 'Panabo',
                 'duration' => '10 months',
@@ -66,7 +52,6 @@ class ContractSeeder extends Seeder
                 'status' => 'past',
             ],
             [
-                'contract_id' => 'PAST002',
                 'contract_name' => 'Past Contract 2',
                 'location' => 'Seattle, WA',
                 'duration' => '8 months',
@@ -76,7 +61,6 @@ class ContractSeeder extends Seeder
                 'status' => 'past',
             ],
             [
-                'contract_id' => 'PAST003',
                 'contract_name' => 'Past Contract 3',
                 'location' => 'San Francisco, CA',
                 'duration' => '5 months',
@@ -86,7 +70,6 @@ class ContractSeeder extends Seeder
                 'status' => 'past',
             ],
             [
-                'contract_id' => 'PAST004',
                 'contract_name' => 'Past Contract 4',
                 'location' => 'Atlanta, GA',
                 'duration' => '12 months',
@@ -96,7 +79,6 @@ class ContractSeeder extends Seeder
                 'status' => 'past',
             ],
             [
-                'contract_id' => 'PAST005',
                 'contract_name' => 'Past Contract 5',
                 'location' => 'Boston, MA',
                 'duration' => '15 months',

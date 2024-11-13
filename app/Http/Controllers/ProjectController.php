@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -21,32 +22,18 @@ class ProjectController extends Controller
             // Get the contract ID from the request
             $contractId = $request->query('contract_id');
 
-            // Validate contract_id
+            // Validate the presence of contract_id
             if (!$contractId) {
-                throw new \InvalidArgumentException('Contract ID is required');
+                throw new \InvalidArgumentException('Contract ID is required.');
             }
 
-            // Fetch projects directly by contract ID
-            $projects = Project::where('contract_id', $contractId)
-                ->orderBy('item_no', 'asc')
-                ->select([
-                    'id',
-                    'contract_id',
-                    'item_no',
-                    'description',
-                    'unit',
-                    'qty',
-                    'unit_cost',
-                    'budget',
-                    'progress',
-                    'status',
-                ])
-                ->get();
+            // Fetch the contract with the specified contract ID and its associated projects
+            $contract = Contract::with(['projects' => function ($query) {
+                $query->orderBy('item_no', 'asc');
+            }])->findOrFail($contractId);
 
-            // Log and map projects data
-            $formattedProjects = $projects->map(function ($project) {
-                Log::info('Processing project item: ' . $project->item_no);
-
+            // Map project data to pass to the view
+            $projects = $contract->projects->map(function ($project) {
                 return [
                     'id' => $project->id,
                     'item_no' => $project->item_no,
@@ -60,12 +47,6 @@ class ProjectController extends Controller
                 ];
             });
 
-            Log::info('Project items count: ' . $formattedProjects->count());
-
-            if ($formattedProjects->isEmpty()) {
-                Log::warning('No project items found for contract ID: ' . $contractId);
-            }
-
             return Inertia::render('JobOrder/JobOrderProjectsPage', [
                 'auth' => [
                     'user' => $request->user() ? [
@@ -74,8 +55,8 @@ class ProjectController extends Controller
                         'email' => $request->user()->email,
                     ] : null
                 ],
-                'projects' => $formattedProjects,
-                'contractName' => optional($projects->first())->contract->contract_name ?? 'Unknown Contract',
+                'projects' => $projects,
+                'contractName' => $contract->contract_name,
             ]);
 
         } catch (\Exception $e) {

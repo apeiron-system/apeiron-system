@@ -10,8 +10,9 @@ class ProjectSeeder extends Seeder
 {
     public function run()
     {
-        $projectsByContract = [
-            'ACT001' => [
+        $projectsData = [
+            // Projects for contract with ID 1
+            1 => [
                 [
                     'item_no' => 1,
                     'description' => 'Foundation Excavation',
@@ -43,7 +44,8 @@ class ProjectSeeder extends Seeder
                     'status' => 'on-going',
                 ],
             ],
-            'ACT002' => [
+            // Projects for contract with ID 2
+            2 => [
                 [
                     'item_no' => 1,
                     'description' => 'Electrical Wiring',
@@ -75,7 +77,8 @@ class ProjectSeeder extends Seeder
                     'status' => 'on-going',
                 ],
             ],
-            'ACT003' => [
+            // Projects for contract with ID 3
+            3 => [
                 [
                     'item_no' => 1,
                     'description' => 'Roof Framing',
@@ -107,46 +110,11 @@ class ProjectSeeder extends Seeder
                     'status' => 'on-going',
                 ],
             ],
-            'ACT004' => [
-                [
-                    'item_no' => 1,
-                    'description' => 'Interior Painting',
-                    'unit' => 'liters',
-                    'qty' => 100,
-                    'unit_cost' => 150.00,
-                    'budget' => 15000.00,
-                    'progress' => 50.0,
-                    'status' => 'on-going',
-                ],
-                [
-                    'item_no' => 2,
-                    'description' => 'Floor Tiling',
-                    'unit' => 'sq meters',
-                    'qty' => 200,
-                    'unit_cost' => 250.00,
-                    'budget' => 50000.00,
-                    'progress' => 35.0,
-                    'status' => 'on-going',
-                ],
-                [
-                    'item_no' => 3,
-                    'description' => 'Fixture Installation',
-                    'unit' => 'pcs',
-                    'qty' => 50,
-                    'unit_cost' => 500.00,
-                    'budget' => 25000.00,
-                    'progress' => 10.0,
-                    'status' => 'on-going',
-                ],
-            ],
         ];
 
-        // Insert projects for each contract
-        foreach ($projectsByContract as $contractCode => $projects) {
-            $contract = Contract::where('contract_id', $contractCode)->first();
-
+        foreach ($projectsData as $contractId => $projects) {
             foreach ($projects as $project) {
-                Project::create(array_merge(['contract_id' => $contract->id], $project));
+                Project::create(array_merge(['contract_id' => $contractId], $project));
             }
         }
     }

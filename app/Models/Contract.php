@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contract extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'contract_id',
         'contract_name',
         'location',
         'duration',
@@ -35,5 +35,10 @@ class Contract extends Model
     public function scopePast($query)
     {
         return $query->where('status', 'past');
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'contract_id');
     }
 }

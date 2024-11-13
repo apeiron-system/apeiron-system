@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
@@ -12,7 +13,6 @@ class Project extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'contract_id',
         'item_no',
         'description',
         'unit',
@@ -26,7 +26,7 @@ class Project extends Model
     /**
      * Get the contract that owns the project.
      */
-    public function contract()
+    public function contract(): BelongsTo
     {
         return $this->belongsTo(Contract::class, 'contract_id');
     }
