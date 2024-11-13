@@ -17,6 +17,8 @@ import Checkbox from "@/Components/Checkbox";
 export default function JobOrderDetailsPage({ auth }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
+
+        //Hard-coded, to be replaced with variables to retrieve data from database
         projectId: "PROJECT-A/B",
         jobOrderNo: "UNIT 21/22",
         contractId: "#00000",
@@ -46,10 +48,10 @@ export default function JobOrderDetailsPage({ auth }) {
                 <div className="flex items-center">
                     <Link href={route("job-order")}>
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
-                            <ChevronLeft size={30} strokewidth={2} />
+                            <ChevronLeft size={20} strokewidth={2} />
                         </button>
                     </Link>
-                    <h2 className="font-bold text-3xl text-gray-1000 leading-tight">
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Job Order Details
                     </h2>
                 </div>
@@ -77,6 +79,7 @@ export default function JobOrderDetailsPage({ auth }) {
                                         className={`bg-yellow-500 text-white text-center w-28 py-1 px-2 rounded-lg`}
                                     >
                                         {formData.status}
+
                                     </div>
                                 </div>
                                 <Button

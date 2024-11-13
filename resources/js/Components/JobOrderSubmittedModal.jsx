@@ -28,7 +28,7 @@ const JobOrderSubmittedModal = ({ show, onClose, onCreateAnother }) => {
                     }}
                 />
                 <p className="text-lg mt-4">
-                    Job Order has been successfully created!
+                    Successfully Created!
                 </p>
                 <div className="mt-6 flex justify-center space-x-4">
                     <button

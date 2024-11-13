@@ -22,7 +22,7 @@ class EquipmentNeeded extends Model
         return $this->belongsTo(JobOrder::class, 'en_job_order_id', 'job_order_id');
     }
 
-    //PARENT: (EquipmentNeeded belongs to) Job Order
+    //PARENT: (EquipmentNeeded belongs to) Contract
     public function contract()
     {
         return $this->belongsTo(Contract::class, 'en_contract_id', 'contract_id');
