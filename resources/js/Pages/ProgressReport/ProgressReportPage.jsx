@@ -259,9 +259,9 @@ export default function ProgressReport({ auth }) {
                                         <h2 className="text-lg font-bold">{contract.name}</h2>
                                         <div className={`w-3 h-3 rounded-full ${contract.dotColor === 'green' ? 'bg-green-500' : contract.dotColor === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                                     </div>
-                                    <p className="text-gray-600">Contract ID: {contract.id}</p>
-                                    <p className="text-gray-600">Location: {contract.location}</p>
-                                    <p className="text-gray-600">Duration: {formatDate(contract.startDate)} - {formatDate(contract.endDate)}</p>
+                                    <p className="text-sm text-gray-600">Contract ID: {contract.id}</p>
+                                    <p className="text-sm text-gray-600">Location: {contract.location}</p>
+                                    <p className="text-sm text-gray-600">Duration: {formatDate(contract.startDate)} - {formatDate(contract.endDate)}</p>
                                 </div>
                             ))}
                         </div>
