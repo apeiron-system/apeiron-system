@@ -272,11 +272,12 @@ export default function ParDetails({ auth }) {
                                     ))}
                                 </tbody>
                             </table>
+
+                            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
                         </>
                     )}
                 </div>
             </div>
-            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
         </AuthenticatedLayout>
     );
 }
