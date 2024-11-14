@@ -38,6 +38,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/job-order-projects', [ProjectController::class, 'index'])
         ->name('job-order-projects');
 
+    // Job Order
+    Route::get('/job-order', function () {
+        return Inertia::render('JobOrder/JobOrderPage');
+    })->name('job-order');
+
     // Job Order Details
     Route::get('/job-order-details', function () {
         return Inertia::render('JobOrder/JobOrderDetailsPage');
@@ -52,11 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/job-order-item-billing', function () {
         return Inertia::render('JobOrder/JobOrderItemBillingPage');
     })->name('job-order-item-billing');
-
-    // Job Order
-    Route::get('/job-order', function () {
-        return Inertia::render('JobOrder/JobOrderPage');
-    })->name('job-order');
 
     // Item Management
     Route::get('/item', function () {
