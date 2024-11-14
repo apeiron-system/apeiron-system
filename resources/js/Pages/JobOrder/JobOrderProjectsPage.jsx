@@ -13,8 +13,9 @@ import {
 import { useState } from "react";
 
 export default function JobOrderProjectsPage({ auth, projects, contractName }) {
+    const [sortConfig, setSortConfig] = useState({ key: 'item_no', direction: 'asc' });
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('oldest'); // Default to 'oldest' for ascending sort
+    const [sortOrder, setSortOrder] = useState('latest'); // Sorting state for the dropdown
 
     const sortedItems = (items) => {
         let sortedItems = [...items];
@@ -26,10 +27,10 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
 
         // Sorting logic based on selected sort order
         if (sortOrder === 'latest') {
-            // Sort by item_no in descending order for "Latest" (Latest first)
+            // Sort by item_no in descending order for "Latest"
             sortedItems.sort((a, b) => (a.item_no < b.item_no ? 1 : -1));
         } else if (sortOrder === 'oldest') {
-            // Sort by item_no in ascending order for "Oldest" (Oldest first)
+            // Sort by item_no in ascending order for "Oldest"
             sortedItems.sort((a, b) => (a.item_no > b.item_no ? 1 : -1));
         }
 
@@ -38,6 +39,8 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
 
     // Handle change in dropdown for ascending/descending order
     const handleSortOrderChange = (e) => {
+        const direction = e.target.value === 'latest' ? 'desc' : 'asc';
+        setSortConfig({ key: 'item_no', direction });
         setSortOrder(e.target.value);
     };
 
@@ -78,8 +81,8 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     onChange={handleSortOrderChange}
                     value={sortOrder}
                 >
-                    <option value="oldest">Oldest</option>
                     <option value="latest">Latest</option>
+                    <option value="oldest">Oldest</option>
                 </select>
             </div>
 

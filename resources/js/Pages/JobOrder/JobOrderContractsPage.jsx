@@ -24,14 +24,23 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export default function JobOrderContractsPage({ auth, activeContracts, pastContracts }) {
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Function to format currency
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-PH', {
-            style: 'currency',
-            currency: 'PHP'
+        return new Intl.NumberFormat("en-PH", {
+            style: "currency",
+            currency: "PHP",
         }).format(amount);
     };
+
+    // Filter active contracts based on the search term
+    const filteredActiveContracts = activeContracts.filter((contract) =>
+        contract.contract_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <AuthenticatedLayout
@@ -47,23 +56,40 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             <Head title="Job Order Contracts" />
 
             {/* Active Contracts Section */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h3 className="pb-4 font-semibold text-xl text-gray-800 leading-tight">
+                    <h3 className="font-semibold text-xl text-gray-800 leading-tight">
                         Active Contracts
                     </h3>
                 </div>
             </div>
 
+            {/* Search Bar Section */}
+            <div className="flex items-center mb-4">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Contract Name"
+                />
+                <button
+                    className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                    onClick={() => setSearchTerm("")} // Clears search term
+                >
+                    Search
+                </button>
+            </div>
+
             <div className="pb-5">
                 <div className="max-w-7xl mx-auto">
-                    {activeContracts.length === 0 ? (
+                    {filteredActiveContracts.length === 0 ? (
                         <div className="text-center py-10 text-gray-500">
                             No active contracts found
                         </div>
                     ) : (
                         <div className="flex flex-wrap gap-4">
-                            {activeContracts.map((contract) => (
+                            {filteredActiveContracts.map((contract) => (
                                 <Card
                                     key={contract.id}
                                     className="w-80 bg-white rounded-lg shadow-lg"
@@ -78,17 +104,13 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     </CardHeader>
                                     <CardContent>
                                         <div className="mb-4">
-                                            <p className="text-gray-700">
-                                                Location:
-                                            </p>
+                                            <p className="text-gray-700">Location:</p>
                                             <p className="text-gray-400">
                                                 {contract.location}
                                             </p>
                                         </div>
                                         <div className="mb-4">
-                                            <p className="text-gray-700">
-                                                Duration:
-                                            </p>
+                                            <p className="text-gray-700">Duration:</p>
                                             <p className="text-gray-400">
                                                 {contract.duration}
                                             </p>
@@ -102,7 +124,9 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     </CardContent>
                                     <CardFooter>
                                         <Link
-                                            href={route("job-order-projects", { contract_id: contract.id })}
+                                            href={route("job-order-projects", {
+                                                contract_id: contract.id,
+                                            })}
                                             className="w-full"
                                         >
                                             <Button
@@ -125,27 +149,20 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
 
                     {/* Table Contents */}
                     <Table>
-                        <TableCaption>
-                            A list of past job order contracts.
-                        </TableCaption>
+                        <TableCaption>A list of past job order contracts.</TableCaption>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Contract ID</TableHead>
                                 <TableHead>Contract Name</TableHead>
                                 <TableHead>Start Date</TableHead>
                                 <TableHead>End Date</TableHead>
-                                <TableHead className="text-right">
-                                    Actions
-                                </TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {pastContracts.data.length === 0 ? (
                                 <TableRow>
-                                    <TableCell
-                                        colSpan={5}
-                                        className="text-center text-gray-500"
-                                    >
+                                    <TableCell colSpan={5} className="text-center text-gray-500">
                                         No past contracts found
                                     </TableCell>
                                 </TableRow>
