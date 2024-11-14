@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use App\Models\Contract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -36,12 +35,6 @@ class ProjectController extends Controller
             $projects = $contract->projects->map(function ($project) {
                 return [
                     'id' => $project->id,
-                    'item_no' => $project->item_no,
-                    'description' => $project->description,
-                    'unit' => $project->unit,
-                    'qty' => $project->qty,
-                    'unit_cost' => $project->unit_cost,
-                    'budget' => $project->budget,
                     'progress' => $project->progress,
                     'status' => $project->status,
                 ];
