@@ -28,19 +28,14 @@ class ProjectController extends Controller
 
             // Fetch the contract with the specified contract ID and its associated projects
             $contract = Contract::with(['projects' => function ($query) {
-                $query->orderBy('item_no', 'asc');
+                $query->orderBy('id', 'asc');
             }])->findOrFail($contractId);
 
             // Map project data to pass to the view
             $projects = $contract->projects->map(function ($project) {
                 return [
                     'id' => $project->id,
-                    'item_no' => $project->item_no,
                     'description' => $project->description,
-                    'unit' => $project->unit,
-                    'qty' => $project->qty,
-                    'unit_cost' => $project->unit_cost,
-                    'budget' => $project->budget,
                     'progress' => $project->progress,
                     'status' => $project->status,
                 ];

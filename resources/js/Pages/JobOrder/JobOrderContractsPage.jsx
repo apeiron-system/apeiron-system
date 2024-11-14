@@ -47,7 +47,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             user={auth.user}
             header={
                 <div className="flex justify-between items-center">
-                    <h2 className="pl-11 font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="m-0.5 pl-12 font-semibold text-xl text-gray-800 leading-tight">
                         Job Order Contracts
                     </h2>
                 </div>

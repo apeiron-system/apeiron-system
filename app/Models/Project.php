@@ -13,12 +13,7 @@ class Project extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'item_no',
         'description',
-        'unit',
-        'qty',
-        'unit_cost',
-        'budget',
         'progress',
         'status'
     ];

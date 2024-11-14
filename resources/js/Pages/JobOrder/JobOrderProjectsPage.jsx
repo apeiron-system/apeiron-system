@@ -1,46 +1,31 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft } from 'lucide-react';
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function JobOrderProjectsPage({ auth, projects, contractName }) {
-    const [sortConfig, setSortConfig] = useState({ key: 'item_no', direction: 'asc' });
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('latest'); // Sorting state for the dropdown
+    const [sortOrder, setSortOrder] = useState('latest');
 
     const sortedItems = (items) => {
         let sortedItems = [...items];
         
-        // Filter by search term
         sortedItems = sortedItems.filter(project =>
             project.description.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-        // Sorting logic based on selected sort order
         if (sortOrder === 'latest') {
-            // Sort by item_no in descending order for "Latest"
-            sortedItems.sort((a, b) => (a.item_no < b.item_no ? 1 : -1));
+            sortedItems.sort((a, b) => (a.id < b.id ? 1 : -1));  // Using id instead of item_no
         } else if (sortOrder === 'oldest') {
-            // Sort by item_no in ascending order for "Oldest"
-            sortedItems.sort((a, b) => (a.item_no > b.item_no ? 1 : -1));
+            sortedItems.sort((a, b) => (a.id > b.id ? 1 : -1));  // Using id instead of item_no
         }
 
         return sortedItems;
     };
 
-    // Handle change in dropdown for ascending/descending order
     const handleSortOrderChange = (e) => {
-        const direction = e.target.value === 'latest' ? 'desc' : 'asc';
-        setSortConfig({ key: 'item_no', direction });
         setSortOrder(e.target.value);
     };
 
@@ -87,73 +72,39 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
             </div>
 
             {/* Projects List */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {sortedItems(projects).length > 0 ? (
                     sortedItems(projects).map((project, index) => (
-                        <div
-                            key={index}
-                            className="p-4 bg-gray-50 rounded-md shadow-sm transition-opacity duration-300 opacity-100"
-                        >
-                            <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-semibold">{project.description}</h3>
-                                <div className="relative">
-                                    <select
-                                        className="pr-8 px-3 py-1 text-sm font-medium bg-white border rounded-md shadow-sm focus:outline-none"
-                                        defaultValue={project.status}
-                                    >
-                                        <option value="done">Completed</option>
-                                        <option value="on-going">On-going</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <Table>
-                                <TableCaption>Project Items for {project.description}</TableCaption>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead onClick={() => requestSort('item_no')}>Item No.</TableHead>
-                                        <TableHead onClick={() => requestSort('description')}>Description</TableHead>
-                                        <TableHead onClick={() => requestSort('unit')}>Unit</TableHead>
-                                        <TableHead onClick={() => requestSort('qty')}>Qty</TableHead>
-                                        <TableHead onClick={() => requestSort('unitCost')}>Unit Cost</TableHead>
-                                        <TableHead onClick={() => requestSort('budget')}>Budget</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {sortedItems([project]).map((item, itemIndex) => (
-                                        <TableRow key={itemIndex}>
-                                            <TableCell>{item.item_no}</TableCell>
-                                            <TableCell>{item.description}</TableCell>
-                                            <TableCell>{item.unit}</TableCell>
-                                            <TableCell>{item.qty}</TableCell>
-                                            <TableCell>{item.unit_cost}</TableCell>
-                                            <TableCell>{item.budget}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-
-                            <div className="flex items-center justify-between mt-4">
-                                <div className="flex items-center mb-4">
-                                    <span className="whitespace-nowrap">Total Progress</span>
-                                    <div className="w-64 bg-gray-200 h-3 rounded mx-4">
-                                        <div
-                                            className="bg-gray-900 h-full rounded"
-                                            style={{ width: `${project.progress}%` }}
-                                        ></div>
+                        <Card key={index} className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <CardHeader>
+                                <CardTitle className="text-lg font-semibold text-gray-800">{project.description}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {/* Total Progress Bar with Color Based on Status */}
+                                <div className="flex items-center justify-between mt-4">
+                                    <div className="flex items-center w-full">
+                                        <span className="whitespace-nowrap">Total Progress</span>
+                                        <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
+                                            <div
+                                                className={`h-full rounded-lg ${project.status === 'on-going' ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                                style={{ width: `${project.progress}%` }}
+                                            ></div>
+                                        </div>
+                                        <span className="text-sm">{project.progress}%</span>
                                     </div>
-                                    <span>{project.progress}%</span>
                                 </div>
+                            </CardContent>
+                            <CardFooter>
                                 <Link href={route("job-order", { project_id: project.id })}>
-                                    <button className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded">
+                                    <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
                                         View Details
-                                    </button>
+                                    </Button>
                                 </Link>
-                            </div>
-                        </div>
+                            </CardFooter>
+                        </Card>
                     ))
                 ) : (
-                    <div className="flex items-center justify-center h-64">
+                    <div className="text-center col-span-full">
                         <p className="text-gray-900">No projects found matching "{searchTerm}".</p>
                     </div>
                 )}
