@@ -5,8 +5,16 @@ import { useEffect, useState, useRef, useCallback } from "react";
 export default function ParContractDetails({ auth }) {
     const [selectedDetail, setSelectedDetail] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [menuVisible, setMenuVisible] = useState({}); // To track visibility of menu for each container
-    const buttonRef = useRef(null);
+    const [menuVisible, setMenuVisible] = useState({});
+    const [activeTab, setActiveTab] = useState('boq'); // State to track the active tab (boq or accom)
+    
+    // Pagination state for Bill of Quantities
+    const [boqPage, setBoqPage] = useState(1);
+    const [boqItemsPerPage] = useState(5);
+
+    // Pagination state for Accomplishments
+    const [accomPage, setAccomPage] = useState(1);
+    const [accomItemsPerPage] = useState(5);
 
     useEffect(() => {
         const detail = sessionStorage.getItem('selectedDetail');
@@ -48,10 +56,14 @@ export default function ParContractDetails({ auth }) {
         setMenuVisible({});
     }, []);
 
-    const handleMenuClick = (action) => {
-        console.log(`${action} clicked`); // Handle the "Update" action here
-        closeMenu();
+    // Function to paginate data for each table
+    const paginateData = (data, page, itemsPerPage) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        return data.slice(startIndex, startIndex + itemsPerPage);
     };
+
+    const totalBoqPages = Math.ceil(selectedDetail?.billOfQuantities?.length / boqItemsPerPage);
+    const totalAccomPages = Math.ceil(selectedDetail?.accomplishments?.length / accomItemsPerPage);
 
     return (
         <AuthenticatedLayout
@@ -63,7 +75,7 @@ export default function ParContractDetails({ auth }) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <h2 className="font-bold text-2xl text-gray-900 flex-1">
+                    <h2 className="font-bold text-xl text-gray-900 flex-1">
                         Progress Accomplishment Report Details
                     </h2>
                 </div>
@@ -76,20 +88,6 @@ export default function ParContractDetails({ auth }) {
                     <h2 className="font-semibold">
                         <span className="font-semibold">Contract Name:</span> {selectedDetail?.contractName}
                     </h2>
-                    <div className="relative group">
-                        <button
-                            ref={buttonRef}
-                            onClick={handlePopupToggle}
-                            className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
-                            </svg>
-                        </button>
-                        <span className="absolute left-1/2 top-[-20px] transform -translate-x-1/2 text-xs text-black bg-white p-1 rounded shadow-md whitespace-nowrap hidden group-hover:block">
-                            See more details
-                        </span>
-                    </div>
                 </div>
 
                 <div className="flex space-x-8 text-sm ml-12 mr-12">
@@ -101,99 +99,108 @@ export default function ParContractDetails({ auth }) {
                     <h2>{formatDate(selectedDetail?.date)}</h2>
                 </div>
 
-                <div className="flex ml-12 mr-12 mt-6 space-x-6">
-                    <div className="w-1/2 p-6 border border-gray-300 rounded-lg shadow-md relative">
-                        <h3 className="text-lg font-semibold mb-2">Bill of Quantities</h3>
-                        <div className="absolute top-2 right-2">
-                            <button
-                                onClick={() => handleMenuToggle('boq')}
-                                className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
+                {/* <div classname="">See more</div> */}
+
+                {/* Tabs for Bill of Quantities and Accomplishments */}
+                <div className="tabs mt-6 ml-12 mr-12">
+                    <div className="tabs mt-6 flex items-center justify-between">
+                        <ul className="flex space-x-4 border-b">
+                            <li
+                                onClick={() => setActiveTab('boq')}
+                                className={`cursor-pointer py-2 px-4 ${activeTab === 'boq' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
-                                </svg>
-                            </button>
-                            {menuVisible['boq'] && (
-                                <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-50">
-                                    <ul className="space-y-2 text-sm">
-                                        <li>
-                                            <button onClick={() => handleMenuClick('Update')} className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
-                                                Update
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="w-1/2 p-6 border border-gray-300 rounded-lg shadow-md relative">
-                        <h3 className="text-lg font-semibold mb-2">Accomplishments</h3>
-                        <div className="absolute top-2 right-2">
-                            <button
-                                onClick={() => handleMenuToggle('accomplishments')}
-                                className="p-2 rounded focus:outline-none text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
+                                Bill of Quantities
+                            </li>
+                            <li
+                                onClick={() => setActiveTab('accom')}
+                                className={`cursor-pointer py-2 px-4 ${activeTab === 'accom' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 5a2 2 0 100-4 2 2 0 000 4zM12 14a2 2 0 100-4 2 2 0 000 4zM12 23a2 2 0 100-4 2 2 0 000 4z" />
-                                </svg>
-                            </button>
-                            {menuVisible['accomplishments'] && (
-                                <div className="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-50">
-                                    <ul className="space-y-2 text-sm">
-                                        <li>
-                                            <button onClick={() => handleMenuClick('Update')} className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
-                                                Update
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
+                                Accomplishments
+                            </li>
+                        </ul>
+
+                        {activeTab === 'accom' && (
+                            <div className="relative group">
+                                <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
+                                        <path d="M 40.5 6 C 40.11625 6 39.732453 6.1464531 39.439453 6.4394531 L 21.462891 24.417969 L 20 28 L 23.582031 26.537109 L 41.560547 8.5605469 C 42.145547 7.9745469 42.145547 7.0254531 41.560547 6.4394531 C 41.267547 6.1464531 40.88375 6 40.5 6 z M 12.5 7 C 9.4802259 7 7 9.4802259 7 12.5 L 7 35.5 C 7 38.519774 9.4802259 41 12.5 41 L 35.5 41 C 38.519774 41 41 38.519774 41 35.5 L 41 18.5 A 1.50015 1.50015 0 1 0 38 18.5 L 38 35.5 C 38 36.898226 36.898226 38 35.5 38 L 12.5 38 C 11.101774 38 10 36.898226 10 35.5 L 10 12.5 C 10 11.101774 11.101774 10 12.5 10 L 29.5 10 A 1.50015 1.50015 0 1 0 29.5 7 L 12.5 7 z"></path>
+                                    </svg>
+                                </button>
+                                <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Edit
+                                </span>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Bill of Quantities Table */}
+                    {activeTab === 'boq' && (
+                        <div className="mt-4">
+                            <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-1 py-2 text-center">ITEM NO.</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">DESCRIPTION</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">UNIT</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">QTY.</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">UNIT COST (PhP)</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">AMOUNT (PhP)</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {selectedDetail?.billOfQuantities && paginateData(selectedDetail.billOfQuantities, boqPage, boqItemsPerPage).map((item, index) => (
+                                        <tr key={index}>
+                                            <td className="border border-gray-300 px-4 py-2">{item.itemNo}</td>
+                                            <td className="border border-gray-300 px-4 py-2">{item.description}</td>
+                                            <td className="border border-gray-300 px-4 py-2">{item.unit}</td>
+                                            <td className="border border-gray-300 px-4 py-2">{item.qty}</td>
+                                            <td className="border border-gray-300 px-4 py-2">{item.unitCost}</td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">{item.amount}</td>
+                                            <td className="border border-gray-300 px-4 py-2 text-right">{item.weightPercentage}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {/* Accomplishments Table */}
+                    {activeTab === 'accom' && (
+                        <div className="mt-4">
+                            <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="4">QUANTITY</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="4">AMOUNT</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="1">TO DATE %</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="2">BALANCE %</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">REMARKS</th>
+                                    </tr>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Previous</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">This Period</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">To Date</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Balance</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Previous</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">This Period</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">To Date</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Balance</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {selectedDetail?.accomplishments && paginateData(selectedDetail.accomplishments, accomPage, accomItemsPerPage).map((item, index) => (
+                                        <tr key={index}>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
-
-            {/* Details Modal */}
-            {isPopupVisible && selectedDetail && (
-                <div
-                    className="fixed inset-0 z-50 flex justify-center items-center"
-                    style={{ top: -300, left: `${buttonRef.current?.getBoundingClientRect().left - 280}px` }}
-                >
-                    <div className="bg-white p-5 rounded-lg shadow-lg w-130 relative">
-                        <button
-                            onClick={handlePopupToggle}
-                            className="absolute top-2 right-2 p-1 text-gray-700 hover:text-gray-900"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        <div className="space-y-4 text-sm text-gray-700">
-                            <div>
-                                <p className="font-semibold">Duration</p>
-                                <p>{getDuration(selectedDetail.startDate, selectedDetail.endDate)}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Checked By</p>
-                                <p>{selectedDetail.checkedBy}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Reviewed By</p>
-                                <p>{selectedDetail.reviewedBy}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Approved By</p>
-                                <p>{selectedDetail.approvedBy}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold">Prepared By</p>
-                                <p>{selectedDetail.preparedBy}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </AuthenticatedLayout>
     );
 }

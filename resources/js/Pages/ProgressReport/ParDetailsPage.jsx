@@ -30,10 +30,6 @@ export default function ParDetails({ auth }) {
         }
     }, [contract]);
 
-    const toggleOptionsDropdown = (index) => {
-        setOptionsDropdownOpen((prevIndex) => (prevIndex === index ? null : index));
-    };
-
     const handleAddDetail = (newDetail) => {
         setContract((prevContract) => {
             const updatedContract = {
@@ -61,14 +57,6 @@ export default function ParDetails({ auth }) {
             return { ...prevContract, details: updatedDetails };
         });
         setSelectedDetails([]);
-    };
-
-    const handleDeleteSingleDetail = (index) => {
-        setContract((prevContract) => {
-            const updatedDetails = prevContract.details.filter((_, i) => i !== index);
-            return { ...prevContract, details: updatedDetails };
-        });
-        setOptionsDropdownOpen(null);
     };
 
     function Modal({ isOpen, onClose, onSubmit }) {
@@ -134,6 +122,15 @@ export default function ParDetails({ auth }) {
         return null;
     }
 
+    const handleRowClick = (event, detail) => {
+        if (event.target.type === "checkbox") {
+            return;
+        }
+
+        sessionStorage.setItem('selectedDetail', JSON.stringify(detail));
+        window.location.href = route('par-contract-details', { id: contract.id, detailId: detail.id });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -157,9 +154,14 @@ export default function ParDetails({ auth }) {
                     {contract && (
                         <>
                             <div className="flex justify-between items-center mb-6">
-                                <h1 className="text-2xl font-bold">
-                                    {contract.name} (ID: {contract.id})
-                                </h1>
+                                <div>
+                                    <h1 className="text-2xl font-bold">
+                                        Project Name
+                                    </h1>
+                                    <h3>
+                                        {contract.name} (ID: {contract.id})
+                                    </h3>
+                                </div>
                                 <InertiaLink
                                     href={route('jo-details', { id: contract.id })}
                                     className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -192,92 +194,70 @@ export default function ParDetails({ auth }) {
                                             </span>
                                         </div>
                                     )}
-                                        <div className="relative group">
-                                            <button
-                                                onClick={() => setShowForm(true)}
-                                                className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-800 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                                </svg>
-                                            </button>
-                                            <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                Add
-                                            </span>
-                                        </div>
+                                    <div className="relative group">
+                                        <button
+                                            onClick={() => setShowForm(true)}
+                                            className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </button>
+                                        <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Add New Detail
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                                <thead>
-                                    <tr>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">PAR #</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Description</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Date</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Checked By</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Reviewed By</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Approved By</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left">Prepared By</th>
-                                        <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {contract.details?.map((detail, index) => (
-                                        <tr key={index} className="border-b border-gray-200">
-                                            <td className="px-4 py-2">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={selectedDetails.includes(index)}
-                                                    onChange={() => handleCheckboxChange(index)}
-                                                    className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
-                                                />
-                                            </td>
-                                            <td className="px-4 py-2">{index + 1}</td>
-                                            <td className="px-4 py-2">{detail.description}</td>
-                                            <td className="px-4 py-2">{formatDate(detail.date)}</td>
-                                            <td className="px-4 py-2">{detail.checkedBy}</td>
-                                            <td className="px-4 py-2">{detail.reviewedBy}</td>
-                                            <td className="px-4 py-2">{detail.approvedBy}</td>
-                                            <td className="px-4 py-2">{detail.preparedBy}</td>
-                                            <td className="px-4 py-2 relative">
-                                                <button
-                                                    onClick={() => toggleOptionsDropdown(index)}
-                                                    className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
-                                                >
-                                                    <span className="text-lg">⋮</span>
-                                                </button>
-                                                {optionsDropdownOpen === index && (
-                                                    <div className="absolute right-0 mt-2 w-20 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                                                        <InertiaLink
-                                                            href={route('par-contract-details', { id: contract.id, detailId: detail.id })}
-                                                            onClick={() => {
-                                                                sessionStorage.setItem('selectedDetail', JSON.stringify(detail));
-                                                            }}
-                                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                        >
-                                                            View
-                                                        </InertiaLink>
-
-                                                        <button
-                                                            onClick={() => handleDeleteSingleDetail(index)}
-                                                            className="block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 w-full text-left"
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </td>
+                            <div className="overflow-x-auto">
+                                <table className="table-auto w-full border-collapse border border-gray-300">
+                                    <thead>
+                                        <tr>
+                                            <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
+                                            <th className="px-4 py-2 border-b border-gray-200 text-left">PAR #</th>
+                                            <th className="px-4 py-2 text-left">Description</th>
+                                            <th className="px-4 py-2 text-left">Date</th>
+                                            <th className="px-4 py-2 text-left">Checked By</th>
+                                            <th className="px-4 py-2 text-left">Reviewed By</th>
+                                            <th className="px-4 py-2 text-left">Approved By</th>
+                                            <th className="px-4 py-2 text-left">Prepared By</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-
-                            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
+                                    </thead>
+                                    <tbody>
+                                        {contract.details &&
+                                            contract.details.map((detail, index) => (
+                                                <tr
+                                                    key={index}
+                                                    className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                                                    onClick={(event) => handleRowClick(event, detail)}
+                                                >
+                                                    <td className="px-4 py-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedDetails.includes(index)}
+                                                            onChange={() => handleCheckboxChange(index)}
+                                                            className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
+                                                        />
+                                                    </td>
+                                                    <td className="px-4 py-2">{index + 1}</td>
+                                                    <td className="px-4 py-2">{detail.description}</td>
+                                                    <td className="px-4 py-2">{formatDate(detail.date)}</td>
+                                                    <td className="px-4 py-2">{detail.checkedBy}</td>
+                                                    <td className="px-4 py-2">{detail.reviewedBy}</td>
+                                                    <td className="px-4 py-2">{detail.approvedBy}</td>
+                                                    <td className="px-4 py-2">{detail.preparedBy}</td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </>
                     )}
                 </div>
             </div>
+
+            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
         </AuthenticatedLayout>
     );
 }
