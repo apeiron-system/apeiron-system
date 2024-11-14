@@ -214,14 +214,14 @@ export default function ParDetails({ auth }) {
                                 <table className="table-auto w-full border-collapse border border-gray-300">
                                     <thead>
                                         <tr>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left"></th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-left">PAR #</th>
-                                            <th className="px-4 py-2 text-left">Description</th>
-                                            <th className="px-4 py-2 text-left">Date</th>
-                                            <th className="px-4 py-2 text-left">Checked By</th>
-                                            <th className="px-4 py-2 text-left">Reviewed By</th>
-                                            <th className="px-4 py-2 text-left">Approved By</th>
-                                            <th className="px-4 py-2 text-left">Prepared By</th>
+                                            <th className="px-4 py-2 border-b border-gray-200 text-center"></th>
+                                            <th className="px-4 py-2 border-b border-gray-200 text-center">PAR #</th>
+                                            <th className="px-4 py-2 text-center">Description</th>
+                                            <th className="px-4 py-2 text-center">Date</th>
+                                            <th className="px-4 py-2 text-center">Checked By</th>
+                                            <th className="px-4 py-2 text-center">Reviewed By</th>
+                                            <th className="px-4 py-2 text-center">Approved By</th>
+                                            <th className="px-4 py-2 text-center">Prepared By</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -240,13 +240,13 @@ export default function ParDetails({ auth }) {
                                                             className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
                                                         />
                                                     </td>
-                                                    <td className="px-4 py-2">{index + 1}</td>
-                                                    <td className="px-4 py-2">{detail.description}</td>
-                                                    <td className="px-4 py-2">{formatDate(detail.date)}</td>
-                                                    <td className="px-4 py-2">{detail.checkedBy}</td>
-                                                    <td className="px-4 py-2">{detail.reviewedBy}</td>
-                                                    <td className="px-4 py-2">{detail.approvedBy}</td>
-                                                    <td className="px-4 py-2">{detail.preparedBy}</td>
+                                                    <td className="px-4 py-2 text-center">{index + 1}</td>
+                                                    <td className="px-4 py-2 text-center">{detail.description}</td>
+                                                    <td className="px-4 py-2 text-center">{formatDate(detail.date)}</td>
+                                                    <td className="px-4 py-2 text-center">{detail.checkedBy}</td>
+                                                    <td className="px-4 py-2 text-center">{detail.reviewedBy}</td>
+                                                    <td className="px-4 py-2 text-center">{detail.approvedBy}</td>
+                                                    <td className="px-4 py-2 text-center">{detail.preparedBy}</td>
                                                 </tr>
                                             ))}
                                     </tbody>

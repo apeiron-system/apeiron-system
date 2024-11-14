@@ -6,7 +6,7 @@ export default function ParContractDetails({ auth }) {
     const [selectedDetail, setSelectedDetail] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [menuVisible, setMenuVisible] = useState({});
-    const [activeTab, setActiveTab] = useState('boq'); // State to track the active tab (boq or accom)
+    const [activeTab, setActiveTab] = useState('boq');
     
     // Pagination state for Bill of Quantities
     const [boqPage, setBoqPage] = useState(1);
@@ -44,17 +44,6 @@ export default function ParContractDetails({ auth }) {
             </span>
         );
     };
-
-    const handleMenuToggle = (container) => {
-        setMenuVisible((prev) => ({
-            ...prev,
-            [container]: !prev[container]
-        }));
-    };
-
-    const closeMenu = useCallback(() => {
-        setMenuVisible({});
-    }, []);
 
     // Function to paginate data for each table
     const paginateData = (data, page, itemsPerPage) => {
@@ -98,8 +87,6 @@ export default function ParContractDetails({ auth }) {
                 <div className="ml-12 mr-12 mt-4 text-sm">
                     <h2>{formatDate(selectedDetail?.date)}</h2>
                 </div>
-
-                {/* <div classname="">See more</div> */}
 
                 {/* Tabs for Bill of Quantities and Accomplishments */}
                 <div className="tabs mt-6 ml-12 mr-12">
@@ -198,7 +185,26 @@ export default function ParContractDetails({ auth }) {
                                 </tbody>
                             </table>
                         </div>
-                    )}
+                    )}    
+                </div>
+
+                {/* Authorized Representatives Section */}
+                <div className="ml-12 mr-12 mt-20">
+                    <h3 className="text-md font-bold mb-4">Authorized Representatives:</h3>
+                    <div className="grid grid-cols-4 gap-4">
+                        <div>
+                            <h4 className="font-bold">Prepared by:</h4>
+                        </div>
+                        <div>
+                            <h4 className="font-bold">Reviewed by:</h4>
+                        </div>
+                        <div>
+                            <h4 className="font-bold">Checked by:</h4>
+                        </div>
+                        <div>
+                            <h4 className="font-bold">Approved by:</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>
