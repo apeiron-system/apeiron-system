@@ -20,7 +20,7 @@ class JobOrderController extends Controller
     public function index(Request $request)
     {
         try {
-            // Get project ID from the request (URL parameter)
+            // Get project ID from the request (URL parameters)
             $projectId = $request->query('project_id');
 
             // Validate the presence of project_id
@@ -28,13 +28,19 @@ class JobOrderController extends Controller
                 throw new \InvalidArgumentException('Project ID is required.');
             }
 
-            // Fetch the project, its contract, and associated job orders
-            $project = Project::with(['contract', 'jobOrders' => function ($query) {
+            // Fetch the project and its associated job orders
+            $project = Project::with(['jobOrders' => function ($query) {
                 $query->orderBy('jo_no', 'asc'); // Sort job orders by jo_no
             }])->findOrFail($projectId);
 
+            // Ensure there are job orders
+            $jobOrders = $project->jobOrders;
+
+            // If there are job orders, get the contract_id from the first job order
+            $contractId = $jobOrders->isNotEmpty() ? $jobOrders->first()->contract_id : $project->contract_id;
+
             // Map the job orders to match the frontend's required structure
-            $jobOrders = $project->jobOrders->map(function ($jobOrder) {
+            $jobOrders = $jobOrders->map(function ($jobOrder) {
                 return [
                     'jo_no' => $jobOrder->jo_no,
                     'jo_name' => $jobOrder->jo_name,
@@ -47,11 +53,15 @@ class JobOrderController extends Controller
                     'checkedBy' => $jobOrder->checkedBy,
                     'approvedBy' => $jobOrder->approvedBy,
                     'itemWorks' => $jobOrder->itemWorks,
-                    'dateNeeded' => $jobOrder->dateNeeded->format('Y-m-d'),
+                    'dateNeeded' => $jobOrder->dateNeeded ? $jobOrder->dateNeeded->format('Y-m-d') : null, // Handle null dates
                     'progress' => $jobOrder->progress,
                     'status' => $jobOrder->status,
                 ];
             });
+
+            // Extract project name and location from the project
+            $projectName = $project->description;
+            $projectLocation = $project->location;
 
             return Inertia::render('JobOrder/JobOrderPage', [
                 'auth' => [
@@ -61,9 +71,10 @@ class JobOrderController extends Controller
                         'email' => $request->user()->email,
                     ] : null
                 ],
+                'contractId' => $contractId, // Pass contract_id of the first job order
                 'jobOrders' => $jobOrders,
-                'contractName' => $project->contract->contract_name,
-                'projectName' => $project->description,
+                'projectName' => $projectName, // Pass the project name to the frontend
+                'projectLocation' => $projectLocation, // Pass the project location to the frontend
             ]);
 
         } catch (\Exception $e) {
@@ -82,10 +93,10 @@ class JobOrderController extends Controller
                         'email' => $request->user()->email,
                     ] : null
                 ],
+                'contractId' => null, // Pass null if no job orders are found
                 'jobOrders' => [],
-                'contractName' => null,
-                'projectName' => null,
-                'error' => 'Failed to load job orders. Please try again later.'
+                'projectName' => null, // Pass null if no project is found
+                'projectLocation' => null, // Pass null if no project is found
             ]);
         }
     }

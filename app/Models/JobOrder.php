@@ -33,7 +33,9 @@ class JobOrder extends Model
     ];
 
     // Specify the date format if needed
-    protected $dateFormat = 'Y-m-d H:i:s';
+    protected $casts = [
+        'dateNeeded' => 'datetime',  // Automatically cast to a Carbon instance
+    ];
 
     // Define relationships (if any)
 

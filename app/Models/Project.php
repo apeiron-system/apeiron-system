@@ -28,7 +28,7 @@ class Project extends Model
         return $this->belongsTo(Contract::class, 'contract_id');
     }
 
-    public function jobOrder(): HasMany
+    public function jobOrders(): HasMany
     {
         return $this->hasMany(JobOrder::class, 'project_id');
     }

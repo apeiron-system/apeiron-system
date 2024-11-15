@@ -60,7 +60,7 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search Project Name"
+                    placeholder="Search Project"
                 />
                 <button 
                     onClick={handleClearSearch} 
@@ -108,11 +108,11 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Link href={route("job-order", { project_id: project.id })}>
-                                    <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
-                                        View Details
-                                    </Button>
-                                </Link>
+                            <Link href={route("job-order", { contract_id: project.contract_id, project_id: project.id })}>
+                                <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
+                                    View Details
+                                </Button>
+                            </Link>
                             </CardFooter>
                         </Card>
                     ))
