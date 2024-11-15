@@ -38,6 +38,7 @@ class ProjectController extends Controller
                     'description' => $project->description,
                     'progress' => $project->progress,
                     'status' => $project->status,
+                    'location' => $project->location,
                 ];
             });
 

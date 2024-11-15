@@ -38,6 +38,11 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
         >
             <Head title="Job Order Contracts" />
 
+            {/* Active Contracts Section */}
+            <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">
+                Active Contracts
+            </h3>
+            
             {/* Search Bar Section */}
             <div className="flex items-center mb-6">
                 <input
@@ -55,10 +60,6 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                 </button>
             </div>
 
-            {/* Active Contracts Section */}
-            <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">
-                Active Contracts
-            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredActiveContracts.length > 0 ? (
                     filteredActiveContracts.map((contract) => (

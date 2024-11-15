@@ -14,6 +14,7 @@ class CreateProjectsTable extends Migration
             $table->string('description'); // Description of the project item
             $table->float('progress')->default(0); // Progress as a percentage (0-100)
             $table->enum('status', ['completed', 'on-going'])->default('on-going'); // Status
+            $table->string('location'); // Location of the project
             $table->timestamps();
             $table->softDeletes(); // Soft delete support
         });

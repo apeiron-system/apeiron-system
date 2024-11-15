@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\ProjectContractController;
+use App\Http\Controllers\JobOrderController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -39,9 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('job-order-projects');
 
     // Job Order
-    Route::get('/job-order', function () {
-        return Inertia::render('JobOrder/JobOrderPage');
-    })->name('job-order');
+    Route::get('/job-order', [JobOrderController::class, 'index'])
+        ->name('job-order');
 
     // Job Order Details
     Route::get('/job-order-details', function () {

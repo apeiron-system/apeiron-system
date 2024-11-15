@@ -29,6 +29,10 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
         setSortOrder(e.target.value);
     };
 
+    const handleClearSearch = () => {
+        setSearchTerm('');
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -50,16 +54,19 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
             <h2 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">{contractName}</h2>
 
             {/* Search and Sort */}
-            <div className="flex items-center mb-4">
+            <div className="pb-4 flex items-center mb-4">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Project Name"
+                    placeholder="Search Project Name"
                 />
-                <button className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600">
-                    Search
+                <button 
+                    onClick={handleClearSearch} 
+                    className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
+                >
+                    Clear
                 </button>
                 <select
                     className="ml-2 pr-8 px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none"
@@ -80,10 +87,10 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                                 <CardTitle className="text-xl font-semibold text-gray-800">{project.description}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                {/* Total Progress Bar with Color Based on Status */}
+                                {/* Progress Bar with Color Based on Status */}
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center w-full">
-                                        <span className="whitespace-nowrap">Total Progress</span>
+                                        <span className="whitespace-nowrap">Progress</span>
                                         <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
                                             <div
                                                 className={`h-full rounded-lg ${

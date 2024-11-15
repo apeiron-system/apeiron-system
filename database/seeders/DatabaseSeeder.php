@@ -10,7 +10,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ContractSeeder::class, // Make sure this runs first
-            ProjectSeeder::class, // Then this
+            ProjectSeeder::class,
+            JobOrderSeeder::class,
         ]);
     }
 }
