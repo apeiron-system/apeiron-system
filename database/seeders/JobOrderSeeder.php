@@ -24,7 +24,7 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Jane Doe',
                         'approvedBy' => 'Mark Smith',
                         'itemWorks' => 'Work Item A1 description',
-                        'progress' => 60,
+                        'progress' => 100,
                         'status' => 'on-going',
                     ],
                     [

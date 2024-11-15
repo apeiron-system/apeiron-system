@@ -13,10 +13,16 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
     const filteredJobOrders = (jobOrders || []).filter((jobOrder) =>
         jobOrder.jo_name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
 
     const handleClearSearch = () => {
         setSearchTerm("");
+    };
+
+    // Function to determine the color of the progress bar based on the progress percentage
+    const getProgressBarColor = (progress) => {
+        if (progress >= 100) return "bg-green-500"; // Green for 100%
+        if (progress >= 50) return "bg-yellow-500"; // Yellow for below 100%
+        return "bg-red-500"; // Red for below 50%
     };
 
     return (
@@ -83,11 +89,19 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                 {filteredJobOrders.map((jobOrder, index) => (
                     <Card
                         key={index}
-                        className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                        style={{ height: "350px" }} // Fixed height for all cards
+                        className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                        style={{ height: "290px" }} // Adjusted height for card to fit progress bar
                     >
                         <CardHeader>
                             <CardTitle className="text-lg font-semibold text-gray-800">{jobOrder.jo_name}</CardTitle>
+
+                            {/* Progress Bar placed below Job Order Name */}
+                            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                                <div
+                                    className={`h-2.5 rounded-full ${getProgressBarColor(jobOrder.progress)}`}
+                                    style={{ width: `${jobOrder.progress || 0}%` }}
+                                ></div>
+                            </div>
                         </CardHeader>
                         <CardContent className="text-sm text-gray-600">
                             <div className="mb-1">
@@ -99,7 +113,7 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                             <div className="mb-1">
                                 <strong>Supplier:</strong> {jobOrder.supplier}
                             </div>
-                            <div className="mb-1">
+                            <div>
                                 <strong>Date Needed:</strong> {jobOrder.dateNeeded}
                             </div>
                         </CardContent>
@@ -117,7 +131,7 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                 <Link href={route("create-job-order", { contract_id: contractId })}>
                     <Card
                         className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
-                        style={{ height: "350px" }} // Matching height with other cards
+                        style={{ height: "290px" }} // Matching height with other cards
                     >
                         <Plus size={48} className="text-gray-500" />
                     </Card>
