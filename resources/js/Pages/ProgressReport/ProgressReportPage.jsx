@@ -137,7 +137,7 @@ export default function ProgressReport({ auth }) {
 
     const handleContractClick = (contract) => {
         localStorage.setItem('contractDetails', JSON.stringify(contract));
-        window.location.href = '/par-details';
+        window.location.href = '/project-par';
     };
 
     return (

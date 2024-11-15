@@ -11,42 +11,32 @@ const formatDate = (dateStr) => {
     });
 };
 
-export default function ParDetails({ auth }) {
+export default function ProjectPAR({ auth }) {
     const [contract, setContract] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [selectedDetails, setSelectedDetails] = useState([]);
 
     useEffect(() => {
-        const savedContract = localStorage.getItem("contractDetails");
+        const savedContract = sessionStorage.getItem("contractDetails");
         if (savedContract) {
             setContract(JSON.parse(savedContract));
         }
     }, []);
-
+    
     useEffect(() => {
         if (contract) {
-            localStorage.setItem("contractDetails", JSON.stringify(contract));
+            sessionStorage.setItem("contractDetails", JSON.stringify(contract));
         }
     }, [contract]);
 
-    const handleAddDetail = (newDetail) => {
+    const handleAddProject = (newProject) => {
         setContract((prevContract) => {
             const updatedContract = {
                 ...prevContract,
-                details: [...(prevContract?.details || []), newDetail],
+                details: [...(prevContract?.details || []), newProject],
             };
-            localStorage.setItem("contractDetails", JSON.stringify(updatedContract));
+            sessionStorage.setItem("contractDetails", JSON.stringify(updatedContract));
             return updatedContract;
-        });
-    };
-
-    const handleCheckboxChange = (index) => {
-        setSelectedDetails((prevSelected) => {
-            if (prevSelected.includes(index)) {
-                return prevSelected.filter((i) => i !== index);
-            } else {
-                return [...prevSelected, index];
-            }
         });
     };
 
@@ -59,8 +49,8 @@ export default function ParDetails({ auth }) {
     };
 
     function Modal({ isOpen, onClose, onSubmit }) {
-        const [newDetail, setNewDetail] = useState({
-            description: "",
+        const [newProject, setNewProject] = useState({
+            projectName: "",
             date: "",
             checkedBy: "",
             reviewedBy: "",
@@ -70,16 +60,16 @@ export default function ParDetails({ auth }) {
 
         const handleInputChange = (e) => {
             const { name, value } = e.target;
-            setNewDetail((prevDetail) => ({
-                ...prevDetail,
+            setNewProject((prevProject) => ({
+                ...prevProject,
                 [name]: value,
             }));
         };
 
         const handleSubmit = (e) => {
             e.preventDefault();
-            onSubmit(newDetail);
-            setNewDetail({ description: "", date: "", checkedBy: "", reviewedBy: "", approvedBy: "", preparedBy: "" });
+            onSubmit(newProject);
+            setNewProject({ projectName: ""});
             onClose();
         };
 
@@ -88,9 +78,9 @@ export default function ParDetails({ auth }) {
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
                     <div className="bg-white rounded-lg p-6 z-10 w-1/3">
-                        <h2 className="text-lg font-bold mb-4">Add New Progress Detail</h2>
+                        <h2 className="text-lg font-bold mb-4">Add New Project</h2>
                         <form onSubmit={handleSubmit}>
-                            {["description", "date", "checkedBy", "reviewedBy", "approvedBy", "preparedBy"].map((field, index) => (
+                            {["projectName"].map((field, index) => (
                                 <div className="mb-4" key={index}>
                                     <label className="block text-sm font-medium text-gray-700 capitalize">
                                         {field.replace(/([A-Z])/g, " $1")}
@@ -98,7 +88,7 @@ export default function ParDetails({ auth }) {
                                     <input
                                         type={field === "date" ? "date" : "text"}
                                         name={field}
-                                        value={newDetail[field]}
+                                        value={newProject[field]}
                                         onChange={handleInputChange}
                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                                         required
@@ -127,7 +117,7 @@ export default function ParDetails({ auth }) {
         }
 
         sessionStorage.setItem('selectedDetail', JSON.stringify(detail));
-        window.location.href = route('par-contract-details', { id: contract.id, detailId: detail.id });
+        window.location.href = route('par-details', { id: contract.id, detailId: detail.id });
     };
 
     return (
@@ -135,13 +125,13 @@ export default function ParDetails({ auth }) {
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <button onClick={() => window.location.href = route('project-par')}>
+                    <button onClick={() => window.location.href = route('progress-report')}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                        Contract Progress Accomplishment Report
+                        Contract Projects
                     </h2>
                 </div>
             }
@@ -152,21 +142,12 @@ export default function ParDetails({ auth }) {
                 <div className="container mx-auto bg-white p-6 rounded-lg shadow-md">
                     {contract && (
                         <>
-                            <div className="flex justify-between items-center mb-6">
+                            <div className="flex justify-between items-center mb-2">
                                 <div>
-                                    <h1 className="text-2xl font-bold">
-                                        Project Name
-                                    </h1>
-                                    <h3>
+                                    <h1 className="text-xl font-bold">
                                         {contract.name} (ID: {contract.id})
-                                    </h3>
+                                    </h1>
                                 </div>
-                                <InertiaLink
-                                    href={route('jo-details', { id: contract.id })}
-                                    className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                >
-                                    View Job Order
-                                </InertiaLink>
                             </div>
 
                             <div className="mb-6">
@@ -176,7 +157,6 @@ export default function ParDetails({ auth }) {
                             </div>
 
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-xl font-bold">Progress Accomplishment</h2>
                                 <div className="flex space-x-2">
                                     {selectedDetails.length > 0 && (
                                         <div className="relative group">
@@ -203,7 +183,7 @@ export default function ParDetails({ auth }) {
                                             </svg>
                                         </button>
                                         <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Add New Detail
+                                            Add New Project
                                         </span>
                                     </div>
                                 </div>
@@ -213,14 +193,7 @@ export default function ParDetails({ auth }) {
                                 <table className="table-auto w-full border-collapse border border-gray-300">
                                     <thead>
                                         <tr>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-center"></th>
-                                            <th className="px-4 py-2 border-b border-gray-200 text-center">PAR #</th>
-                                            <th className="px-4 py-2 text-center">Description</th>
-                                            <th className="px-4 py-2 text-center">Date</th>
-                                            <th className="px-4 py-2 text-center">Checked By</th>
-                                            <th className="px-4 py-2 text-center">Reviewed By</th>
-                                            <th className="px-4 py-2 text-center">Approved By</th>
-                                            <th className="px-4 py-2 text-center">Prepared By</th>
+                                            <th className="px-4 py-2 border-b border-gray-200 text-center">Projects</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -232,20 +205,8 @@ export default function ParDetails({ auth }) {
                                                     onClick={(event) => handleRowClick(event, detail)}
                                                 >
                                                     <td className="px-4 py-2">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedDetails.includes(index)}
-                                                            onChange={() => handleCheckboxChange(index)}
-                                                            className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out"
-                                                        />
+                                                        <span className="ml-2">{detail.projectName}</span>
                                                     </td>
-                                                    <td className="px-4 py-2 text-center">{index + 1}</td>
-                                                    <td className="px-4 py-2 text-center">{detail.description}</td>
-                                                    <td className="px-4 py-2 text-center">{formatDate(detail.date)}</td>
-                                                    <td className="px-4 py-2 text-center">{detail.checkedBy}</td>
-                                                    <td className="px-4 py-2 text-center">{detail.reviewedBy}</td>
-                                                    <td className="px-4 py-2 text-center">{detail.approvedBy}</td>
-                                                    <td className="px-4 py-2 text-center">{detail.preparedBy}</td>
                                                 </tr>
                                             ))}
                                     </tbody>
@@ -256,7 +217,7 @@ export default function ParDetails({ auth }) {
                 </div>
             </div>
 
-            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddDetail} />
+            <Modal isOpen={showForm} onClose={() => setShowForm(false)} onSubmit={handleAddProject} />
         </AuthenticatedLayout>
     );
 }

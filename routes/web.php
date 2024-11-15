@@ -30,6 +30,10 @@ Route::get('/progress-report', function () {
     return Inertia::render('ProgressReport/ProgressReportPage');
 })->middleware(['auth', 'verified'])->name('progress-report');
 
+Route::get('/project-par', function () {
+    return Inertia::render('ProgressReport/ProjectPARPage');
+})->middleware(['auth', 'verified'])->name('project-par');
+
 Route::get('/par-details', function () {
     return Inertia::render('ProgressReport/ParDetailsPage');
 })->middleware(['auth', 'verified'])->name('par-details');

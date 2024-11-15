@@ -4,8 +4,6 @@ import { useEffect, useState, useRef, useCallback } from "react";
 
 export default function ParContractDetails({ auth }) {
     const [selectedDetail, setSelectedDetail] = useState(null);
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [menuVisible, setMenuVisible] = useState({});
     const [activeTab, setActiveTab] = useState('boq');
     
     // Pagination state for Bill of Quantities
@@ -16,6 +14,9 @@ export default function ParContractDetails({ auth }) {
     const [accomPage, setAccomPage] = useState(1);
     const [accomItemsPerPage] = useState(5);
 
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [accomEditData, setAccomEditData] = useState(null);
+
     useEffect(() => {
         const detail = sessionStorage.getItem('selectedDetail');
         if (detail) {
@@ -24,8 +25,21 @@ export default function ParContractDetails({ auth }) {
         }
     }, []);
 
-    const handlePopupToggle = () => {
+    const handlePopupToggle = (accomData) => {
         setIsPopupVisible(!isPopupVisible);
+        setAccomEditData(accomData);
+    };
+
+    const handleInputChange = (e) => {
+        setAccomEditData({ ...accomEditData, [e.target.name]: e.target.value });
+    };
+
+    const handleSaveChanges = () => {
+        const updatedAccomplishments = selectedDetail.accomplishments.map((item) =>
+            item.id === accomEditData.id ? accomEditData : item
+        );
+        setSelectedDetail({ ...selectedDetail, accomplishments: updatedAccomplishments });
+        setIsPopupVisible(false);
     };
 
     const getDuration = (startDate, endDate) => {
@@ -44,15 +58,6 @@ export default function ParContractDetails({ auth }) {
             </span>
         );
     };
-
-    // Function to paginate data for each table
-    const paginateData = (data, page, itemsPerPage) => {
-        const startIndex = (page - 1) * itemsPerPage;
-        return data.slice(startIndex, startIndex + itemsPerPage);
-    };
-
-    const totalBoqPages = Math.ceil(selectedDetail?.billOfQuantities?.length / boqItemsPerPage);
-    const totalAccomPages = Math.ceil(selectedDetail?.accomplishments?.length / accomItemsPerPage);
 
     return (
         <AuthenticatedLayout
@@ -74,9 +79,14 @@ export default function ParContractDetails({ auth }) {
 
             <div className="pb-4 mb-6">
                 <div className="flex items-center justify-between ml-12 mr-12">
-                    <h2 className="font-semibold">
-                        <span className="font-semibold">Contract Name:</span> {selectedDetail?.contractName}
-                    </h2>
+                    <div>
+                        <h1 className="text-2xl font-bold">
+                            Project Name (PAR#)
+                        </h1>
+                        <h2 className="font-semibold">
+                            <span className="font-semibold">Contract Name:</span> {selectedDetail?.contractName}
+                        </h2>
+                    </div>
                 </div>
 
                 <div className="flex space-x-8 text-sm ml-12 mr-12">
@@ -108,7 +118,7 @@ export default function ParContractDetails({ auth }) {
 
                         {activeTab === 'accom' && (
                             <div className="relative group">
-                                <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200">
+                                <button onClick={handlePopupToggle} className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
                                         <path d="M 40.5 6 C 40.11625 6 39.732453 6.1464531 39.439453 6.4394531 L 21.462891 24.417969 L 20 28 L 23.582031 26.537109 L 41.560547 8.5605469 C 42.145547 7.9745469 42.145547 7.0254531 41.560547 6.4394531 C 41.267547 6.1464531 40.88375 6 40.5 6 z M 12.5 7 C 9.4802259 7 7 9.4802259 7 12.5 L 7 35.5 C 7 38.519774 9.4802259 41 12.5 41 L 35.5 41 C 38.519774 41 41 38.519774 41 35.5 L 41 18.5 A 1.50015 1.50015 0 1 0 38 18.5 L 38 35.5 C 38 36.898226 36.898226 38 35.5 38 L 12.5 38 C 11.101774 38 10 36.898226 10 35.5 L 10 12.5 C 10 11.101774 11.101774 10 12.5 10 L 29.5 10 A 1.50015 1.50015 0 1 0 29.5 7 L 12.5 7 z"></path>
                                     </svg>
@@ -185,7 +195,7 @@ export default function ParContractDetails({ auth }) {
                                 </tbody>
                             </table>
                         </div>
-                    )}    
+                    )}  
                 </div>
 
                 {/* Authorized Representatives Section */}
@@ -206,6 +216,41 @@ export default function ParContractDetails({ auth }) {
                         </div>
                     </div>
                 </div>
+
+                {/* Edit Modal */}
+                {isPopupVisible && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white rounded-lg p-6 w-96">
+                            <h3 className="text-lg font-semibold mb-4">Edit Accomplishment</h3>
+                            <form>
+                                <label className="block mb-2">
+                                    Previous Quantity
+                                    <input type="text" name="prevQty" value={accomEditData.prevQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
+                                </label>
+                                <label className="block mb-2">
+                                    This Period Quantity
+                                    <input type="text" name="thisPeriodQty" value={accomEditData.thisPeriodQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
+                                </label>
+                                <label className="block mb-2">
+                                    To Date Quantity
+                                    <input type="text" name="toDateQty" value={accomEditData.toDateQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
+                                </label>
+                                <label className="block mb-4">
+                                    Remarks
+                                    <input type="text" name="remarks" value={accomEditData.remarks} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
+                                </label>
+                                <div className="flex justify-end">
+                                    <button type="button" onClick={() => setIsPopupVisible(false)} className="bg-gray-300 text-gray-700 py-2 px-4 rounded mr-2">
+                                        Cancel
+                                    </button>
+                                    <button type="button" onClick={handleSaveChanges} className="bg-blue-600 text-white py-2 px-4 rounded">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );
