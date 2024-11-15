@@ -108,7 +108,10 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                            <Link href={route("job-order", { contract_id: project.contract_id, project_id: project.id })}>
+                            <Link href={route("job-order", { 
+                                contract_id: project.contract_id, 
+                                project_id: project.id 
+                                })}>
                                 <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
                                     View Details
                                 </Button>

@@ -2,10 +2,22 @@ import { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft, Plus } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-export default function JobOrderPage({ auth, contractId, jobOrders, projectName, projectLocation }) {
+export default function JobOrderPage({
+    auth,
+    contractId,
+    jobOrders,
+    projectName,
+    projectLocation,
+}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
 
@@ -30,7 +42,11 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <Link href={route("job-order-projects", { contract_id: contractId })}>
+                    <Link
+                        href={route("job-order-projects", {
+                            contract_id: contractId,
+                        })}
+                    >
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                             <ChevronLeft size={20} strokeWidth={2} />
                         </button>
@@ -46,7 +62,9 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
             <div className="flex flex-col md:flex-column md:justify-between mb-10">
                 <div className="flex flex-col">
                     <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4 md:mb-0">
-                        <span className="text-2xl font-bold">{projectName || "Project Name"}</span>
+                        <span className="text-2xl font-bold">
+                            {projectName || "Project Name"}
+                        </span>
                     </div>
                     <div className="pb-4 flex items-center text-gray-500">
                         <span>{projectLocation || "Project Location"}</span>
@@ -93,14 +111,23 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                         style={{ height: "290px" }} // Adjusted height for card to fit progress bar
                     >
                         <CardHeader>
-                            <CardTitle className="text-lg font-semibold text-gray-800">{jobOrder.jo_name}</CardTitle>
+                            <CardTitle className="text-xl font-semibold text-gray-800">
+                                {jobOrder.jo_name}
+                            </CardTitle>
 
-                            {/* Progress Bar placed below Job Order Name */}
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                                <div
-                                    className={`h-2.5 rounded-full ${getProgressBarColor(jobOrder.progress)}`}
-                                    style={{ width: `${jobOrder.progress || 0}%` }}
-                                ></div>
+                            {/* Wrap progress bar and percentage in a flex container */}
+                            <div className="w-full flex justify-between items-center mt-2">
+                                <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
+                                    <div
+                                        className={`h-full rounded-full ${getProgressBarColor(
+                                            jobOrder.progress
+                                        )}`}
+                                        style={{
+                                            width: `${jobOrder.progress || 0}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <span className="text-sm ml-2">{jobOrder.progress}%</span> {/* Added margin to the right of the percentage */}
                             </div>
                         </CardHeader>
                         <CardContent className="text-sm text-gray-600">
@@ -108,18 +135,27 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                                 <strong>Location:</strong> {jobOrder.location}
                             </div>
                             <div className="mb-1">
-                                <strong>Period Covered:</strong> {jobOrder.period_covered}
+                                <strong>Period Covered:</strong>{" "}
+                                {jobOrder.period_covered}
                             </div>
                             <div className="mb-1">
                                 <strong>Supplier:</strong> {jobOrder.supplier}
                             </div>
                             <div>
-                                <strong>Date Needed:</strong> {jobOrder.dateNeeded}
+                                <strong>Date Needed:</strong>{" "}
+                                {jobOrder.dateNeeded}
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Link href={route("job-order-details", { job_order_id: jobOrder.jo_no })}>
-                                <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
+                            <Link
+                                href={route("job-order-details", {
+                                    job_order_id: jobOrder.jo_no,
+                                })}
+                            >
+                                <Button
+                                    variant="primary"
+                                    className="w-full bg-slate-600 hover:bg-slate-800 text-white"
+                                >
                                     View Details
                                 </Button>
                             </Link>
@@ -128,7 +164,11 @@ export default function JobOrderPage({ auth, contractId, jobOrders, projectName,
                 ))}
 
                 {/* Add Job Order Button as a Card */}
-                <Link href={route("create-job-order", { contract_id: contractId })}>
+                <Link
+                    href={route("create-job-order", {
+                        contract_id: contractId,
+                    })}
+                >
                     <Card
                         className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
                         style={{ height: "290px" }} // Matching height with other cards
