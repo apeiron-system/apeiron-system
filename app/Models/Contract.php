@@ -13,18 +13,8 @@ class Contract extends Model
 
     protected $fillable = [
         'contract_name',
-        'location',
-        'duration',
-        'budget',
-        'start_date',
-        'end_date',
+        'progress',
         'status'
-    ];
-
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'budget' => 'decimal:2'
     ];
 
     public function scopeActive($query)

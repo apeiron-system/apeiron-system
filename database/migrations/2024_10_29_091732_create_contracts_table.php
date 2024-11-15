@@ -11,11 +11,7 @@ class CreateContractsTable extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->string('contract_name');
-            $table->string('location')->nullable();
-            $table->string('duration')->nullable();
-            $table->decimal('budget', 12, 2)->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->float('progress')->default(0); // Progress as a percentage (0-100)
             $table->enum('status', ['active', 'past'])->default('active');
             $table->timestamps();
             $table->softDeletes();

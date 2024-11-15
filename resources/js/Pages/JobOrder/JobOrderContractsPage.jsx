@@ -1,40 +1,23 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     Card,
     CardHeader,
     CardTitle,
-    CardDescription,
     CardContent,
     CardFooter,
 } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function JobOrderContractsPage({ auth, activeContracts, pastContracts }) {
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Function to format currency
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat("en-PH", {
-            style: "currency",
-            currency: "PHP",
-        }).format(amount);
+    // Function to format the progress bar color based on progress
+    const getProgressColor = (progress) => {
+        if (progress < 50) return "bg-red-500";
+        if (progress < 80) return "bg-yellow-500";
+        return "bg-green-500";
     };
 
     // Filter active contracts based on the search term
@@ -47,7 +30,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             user={auth.user}
             header={
                 <div className="flex justify-between items-center">
-                    <h2 className="m-0.5 pl-12 font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 className="pl-9 font-semibold text-xl text-gray-800 leading-tight">
                         Job Order Contracts
                     </h2>
                 </div>
@@ -55,156 +38,123 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
         >
             <Head title="Job Order Contracts" />
 
-            {/* Active Contracts Section */}
-            <div className="flex justify-between items-center mb-4">
-                <div>
-                    <h3 className="font-semibold text-xl text-gray-800 leading-tight">
-                        Active Contracts
-                    </h3>
-                </div>
-            </div>
-
             {/* Search Bar Section */}
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-6">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Contract Name"
+                    placeholder="Search Contract Name"
                 />
                 <button
                     className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
                     onClick={() => setSearchTerm("")} // Clears search term
                 >
-                    Search
+                    Clear
                 </button>
             </div>
 
-            <div className="pb-5">
-                <div className="max-w-7xl mx-auto">
-                    {filteredActiveContracts.length === 0 ? (
-                        <div className="text-center py-10 text-gray-500">
-                            No active contracts found
-                        </div>
-                    ) : (
-                        <div className="flex flex-wrap gap-4">
-                            {filteredActiveContracts.map((contract) => (
-                                <Card
-                                    key={contract.id}
-                                    className="w-80 bg-white rounded-lg shadow-lg"
+            {/* Active Contracts Section */}
+            <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">
+                Active Contracts
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredActiveContracts.length > 0 ? (
+                    filteredActiveContracts.map((contract) => (
+                        <Card
+                            key={contract.id}
+                            className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                        >
+                            <CardHeader>
+                                <CardTitle className="text-xl font-semibold text-gray-800">
+                                    {contract.contract_name}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center justify-between">
+                                    <span className="whitespace-nowrap">Progress</span>
+                                    <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
+                                        <div
+                                            className={`h-full rounded-lg ${getProgressColor(contract.progress)}`}
+                                            style={{ width: `${contract.progress}%` }}
+                                        ></div>
+                                    </div>
+                                    <span className="text-sm">{contract.progress}%</span>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Link
+                                    href={route("job-order-projects", {
+                                        contract_id: contract.id,
+                                    })}
                                 >
-                                    <CardHeader>
-                                        <CardTitle className="text-lg font-bold">
-                                            {contract.contract_name}
-                                        </CardTitle>
-                                        <CardDescription>
-                                            Contract ID: {contract.id}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="mb-4">
-                                            <p className="text-gray-700">Location:</p>
-                                            <p className="text-gray-400">
-                                                {contract.location}
-                                            </p>
-                                        </div>
-                                        <div className="mb-4">
-                                            <p className="text-gray-700">Duration:</p>
-                                            <p className="text-gray-400">
-                                                {contract.duration}
-                                            </p>
-                                        </div>
-                                        <div className="mb-6">
-                                            <p className="text-gray-700">Budget:</p>
-                                            <p className="text-gray-400">
-                                                {formatCurrency(contract.budget)}
-                                            </p>
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Link
-                                            href={route("job-order-projects", {
-                                                contract_id: contract.id,
-                                            })}
-                                            className="w-full"
-                                        >
-                                            <Button
-                                                variant="primary"
-                                                className="w-full bg-slate-600 hover:bg-slate-800 text-white"
-                                            >
-                                                View
-                                            </Button>
-                                        </Link>
-                                    </CardFooter>
-                                </Card>
-                            ))}
-                        </div>
-                    )}
+                                    <Button
+                                        variant="primary"
+                                        className="w-full bg-slate-600 hover:bg-slate-800 text-white"
+                                    >
+                                        View
+                                    </Button>
+                                </Link>
+                            </CardFooter>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="text-center col-span-full">
+                        <p className="text-gray-500">No active contracts found.</p>
+                    </div>
+                )}
+            </div>
 
-                    {/* Past Contracts Section */}
-                    <h3 className="font-semibold text-xl text-gray-800 leading-tight mb-4 mt-8">
-                        Past Contracts
-                    </h3>
-
-                    {/* Table Contents */}
-                    <Table>
-                        <TableCaption>A list of past job order contracts.</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Contract ID</TableHead>
-                                <TableHead>Contract Name</TableHead>
-                                <TableHead>Start Date</TableHead>
-                                <TableHead>End Date</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {pastContracts.data.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center text-gray-500">
-                                        No past contracts found
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                pastContracts.data.map((contract) => (
-                                    <TableRow key={contract.id}>
-                                        <TableCell>{contract.id}</TableCell>
-                                        <TableCell>{contract.contract_name}</TableCell>
-                                        <TableCell>
-                                            {new Date(contract.start_date).toLocaleDateString()}
-                                        </TableCell>
-                                        <TableCell>
-                                            {new Date(contract.end_date).toLocaleDateString()}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost">
-                                                        &#8226;&#8226;&#8226;
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent>
-                                                    <DropdownMenuItem asChild>
-                                                        <Link href={route("job-order-projects")}>
-                                                            View
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-
-                    {pastContracts.links && pastContracts.links.length > 3 && (
-                        <div className="mt-4 flex justify-center">
-                            {/* Add pagination component here */}
-                        </div>
-                    )}
-                </div>
+            {/* Past Contracts Section */}
+            <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight mt-8">
+                Past Contracts
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {pastContracts.data.length > 0 ? (
+                    pastContracts.data.map((contract) => (
+                        <Card
+                            key={contract.id}
+                            className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                        >
+                            <CardHeader>
+                                <CardTitle className="text-xl font-semibold text-gray-800">
+                                    {contract.contract_name}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center justify-between">
+                                    <span className="whitespace-nowrap">Progress</span>
+                                    <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
+                                        <div
+                                            className={`h-full rounded-lg ${getProgressColor(contract.progress)}`}
+                                            style={{ width: `${contract.progress}%` }}
+                                        ></div>
+                                    </div>
+                                    <span className="text-sm">{contract.progress}%</span>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Link
+                                    href={route("job-order-projects", {
+                                        contract_id: contract.id,
+                                    })}
+                                >
+                                    <Button
+                                        variant="primary"
+                                        className="w-full bg-slate-600 hover:bg-slate-800 text-white"
+                                    >
+                                        View
+                                    </Button>
+                                </Link>
+                            </CardFooter>
+                        </Card>
+                    ))
+                ) : (
+                    <div className="text-center col-span-full">
+                        <p className="text-gray-500">No past contracts found.</p>
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );

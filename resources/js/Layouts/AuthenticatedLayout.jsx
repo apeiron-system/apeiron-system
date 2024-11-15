@@ -28,14 +28,15 @@ export default function Authenticated({ user, header, children }) {
 
     return (
         <div className="min-h-screen flex">
-            <nav className="w-52 bg-white border-r border-gray-100 px-4">
+            {/* Fixed Sidebar */}
+            <nav className="w-52 bg-white border-r border-gray-100 px-4 fixed h-full">
                 <div className="flex items-center justify-center border-b border-gray-100 gap-2 p-2">
                     <ApplicationLogo height={50} width={50} />
                     <div className="font-bold text-sm">
                         Apeiron Construction Solutions
                     </div>
                 </div>
-                <div className="flex flex-col ">
+                <div className="flex flex-col">
                     <div className="flex-grow pt-4 space-y-1">
                         <NavLink
                             href={route("dashboard")}
@@ -72,9 +73,7 @@ export default function Authenticated({ user, header, children }) {
                     </div>
 
                     <div className="mt-3 border-t text-center">
-
                         <DropdownMenu>
-
                             <DropdownMenuTrigger className="w-full p-2 hover:bg-slate-100">
                                 <div className="font-medium text-base text-gray-800">
                                     {user.name}
@@ -110,15 +109,13 @@ export default function Authenticated({ user, header, children }) {
                                 </DropdownMenuItem>
 
                             </DropdownMenuContent>
-                            
                         </DropdownMenu>
-
                     </div>
                 </div>
             </nav>
 
-
-            <div className="flex-grow">
+            {/* Main Content with left margin to prevent overlap with the fixed sidebar */}
+            <div className="flex-grow ml-52">
                 {header && (
                     <header className="bg-white shadow">
                         <div className="max-w-7xl py-6 px-4 sm:px-6 lg:px-8">

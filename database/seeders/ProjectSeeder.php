@@ -64,6 +64,42 @@ class ProjectSeeder extends Seeder
                     'status' => 'on-going',
                 ],
             ],
+            // Projects for contract with ID 4
+            4 => [
+                [
+                    'description' => 'Project A',
+                    'progress' => 100.0,
+                    'status' => 'completed',
+                ],
+                [
+                    'description' => 'Project B',
+                    'progress' => 100.0,
+                    'status' => 'completed',
+                ],
+                [
+                    'description' => 'Project C',
+                    'progress' => 40.0,
+                    'status' => 'on-going',
+                ],
+            ],
+            // Projects for contract with ID 5
+            5 => [
+                [
+                    'description' => 'Project A',
+                    'progress' => 10.0,
+                    'status' => 'on-going',
+                ],
+                [
+                    'description' => 'Project B',
+                    'progress' => 10.0,
+                    'status' => 'on-going',
+                ],
+                [
+                    'description' => 'Project C',
+                    'progress' => 40.0,
+                    'status' => 'on-going',
+                ],
+            ],
         ];
 
         foreach ($projectsData as $contractId => $projects) {

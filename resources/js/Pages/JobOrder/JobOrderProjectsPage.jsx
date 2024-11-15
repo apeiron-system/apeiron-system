@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -17,9 +17,9 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
         );
 
         if (sortOrder === 'latest') {
-            sortedItems.sort((a, b) => (a.id < b.id ? 1 : -1));  // Using id instead of item_no
+            sortedItems.sort((a, b) => (a.id < b.id ? 1 : -1)); // Using id instead of item_no
         } else if (sortOrder === 'oldest') {
-            sortedItems.sort((a, b) => (a.id > b.id ? 1 : -1));  // Using id instead of item_no
+            sortedItems.sort((a, b) => (a.id > b.id ? 1 : -1)); // Using id instead of item_no
         }
 
         return sortedItems;
@@ -77,16 +77,22 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     sortedItems(projects).map((project, index) => (
                         <Card key={index} className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                             <CardHeader>
-                                <CardTitle className="text-lg font-semibold text-gray-800">{project.description}</CardTitle>
+                                <CardTitle className="text-xl font-semibold text-gray-800">{project.description}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 {/* Total Progress Bar with Color Based on Status */}
-                                <div className="flex items-center justify-between mt-4">
+                                <div className="flex items-center justify-between">
                                     <div className="flex items-center w-full">
                                         <span className="whitespace-nowrap">Total Progress</span>
                                         <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
                                             <div
-                                                className={`h-full rounded-lg ${project.status === 'on-going' ? 'bg-yellow-500' : 'bg-green-500'}`}
+                                                className={`h-full rounded-lg ${
+                                                    project.progress < 50
+                                                        ? 'bg-red-500'
+                                                        : project.status === 'on-going'
+                                                        ? 'bg-yellow-500'
+                                                        : 'bg-green-500'
+                                                }`}
                                                 style={{ width: `${project.progress}%` }}
                                             ></div>
                                         </div>

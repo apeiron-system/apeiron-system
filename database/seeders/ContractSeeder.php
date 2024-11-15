@@ -2,119 +2,92 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contract;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ContractSeeder extends Seeder
 {
     public function run()
     {
-         // Hardcoded data for active contracts
+        // Specific data for active contracts
         $activeContracts = [
             [
-                'contract_name' => 'Contract 1',
-                'location' => 'Toril',
-                'duration' => '12 months',
-                'budget' => 1000000,
-                'start_date' => '2024-01-01',
-                'end_date' => '2024-12-31',
+                'contract_name' => 'Active Contract 1',
+                'progress' => 20, // 20% progress
                 'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'contract_name' => 'Contract 2',
-                'location' => 'Nabunturan',
-                'duration' => '24 months',
-                'budget' => 2000000,
-                'start_date' => '2024-02-01',
-                'end_date' => '2026-01-31',
+                'contract_name' => 'Active Contract 2',
+                'progress' => 40, // 40% progress
                 'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'contract_name' => 'Contract 3',
-                'location' => 'Sta. Cruz',
-                'duration' => '6 months',
-                'budget' => 500000,
-                'start_date' => '2024-03-01',
-                'end_date' => '2024-08-31',
+                'contract_name' => 'Active Contract 3',
+                'progress' => 60, // 60% progress
                 'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'contract_name' => 'Contract 4',
-                'location' => 'Toril',
-                'duration' => '3 years',
-                'budget' => 500000,
-                'start_date' => '2024-03-01',
-                'end_date' => '2027-03-01',
+                'contract_name' => 'Active Contract 4',
+                'progress' => 80, // 80% progress
                 'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'contract_name' => 'Contract 5',
-                'location' => 'Panabo',
-                'duration' => '4 years',
-                'budget' => 500000,
-                'start_date' => '2024-03-01',
-                'end_date' => '2028-03-01',
+                'contract_name' => 'Active Contract 5',
+                'progress' => 100, // 100% progress
                 'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ];
 
-        // Hardcoded data for past contracts
+        // Specific data for past contracts
         $pastContracts = [
             [
-                'contract_name' => 'Contract 6',
-                'location' => 'Panabo',
-                'duration' => '10 months',
-                'budget' => 800000,
-                'start_date' => '2022-01-01',
-                'end_date' => '2022-10-31',
+                'contract_name' => 'Past Contract 1',
+                'progress' => 100, // Completed
                 'status' => 'past',
+                'created_at' => now()->subMonths(12), // Created 12 months ago
+                'updated_at' => now()->subMonths(6),  // Updated 6 months ago
             ],
             [
-                'contract_name' => 'Contract 7',
-                'location' => 'Seattle, WA',
-                'duration' => '8 months',
-                'budget' => 600000,
-                'start_date' => '2022-11-01',
-                'end_date' => '2023-06-30',
+                'contract_name' => 'Past Contract 2',
+                'progress' => 100, // Completed
                 'status' => 'past',
+                'created_at' => now()->subMonths(10),
+                'updated_at' => now()->subMonths(5),
             ],
             [
-                'contract_name' => 'Contract 8',
-                'location' => 'San Francisco, CA',
-                'duration' => '5 months',
-                'budget' => 400000,
-                'start_date' => '2021-05-01',
-                'end_date' => '2021-10-31',
+                'contract_name' => 'Past Contract 3',
+                'progress' => 100, // Completed
                 'status' => 'past',
+                'created_at' => now()->subMonths(8),
+                'updated_at' => now()->subMonths(4),
             ],
             [
-                'contract_name' => 'Contract 9',
-                'location' => 'Atlanta, GA',
-                'duration' => '12 months',
-                'budget' => 900000,
-                'start_date' => '2021-01-01',
-                'end_date' => '2021-12-31',
+                'contract_name' => 'Past Contract 4',
+                'progress' => 100, // Completed
                 'status' => 'past',
+                'created_at' => now()->subMonths(6),
+                'updated_at' => now()->subMonths(3),
             ],
             [
-                'contract_name' => 'Contract 10',
-                'location' => 'Boston, MA',
-                'duration' => '15 months',
-                'budget' => 750000,
-                'start_date' => '2020-06-01',
-                'end_date' => '2021-09-30',
+                'contract_name' => 'Past Contract 5',
+                'progress' => 100, // Completed
                 'status' => 'past',
+                'created_at' => now()->subMonths(4),
+                'updated_at' => now()->subMonths(2),
             ],
         ];
 
-        // Insert active contracts
-        foreach ($activeContracts as $contract) {
-            Contract::create($contract);
-        }
-
-        // Insert past contracts
-        foreach ($pastContracts as $contract) {
-            Contract::create($contract);
-        }
+        // Insert data into the database
+        DB::table('contracts')->insert(array_merge($activeContracts, $pastContracts));
     }
 }
