@@ -28,12 +28,26 @@ export default function ProjectPartItemTable({
     project_id,
     project_part_id,
 }) {
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null); // Track the selected item for deletion
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // Track whether the dialog is open
 
-    const handleDelete = (itemId) => {
+    const handleDelete = () => {
+        if (!selectedItem) return; // Ensure a valid selected item exists
         router.delete(
-            `/contract/${contract_id}/project/${project_id}/part/${project_part_id}/item/${itemId}/delete`
+            `/contract/${contract_id}/project/${project_id}/part/${project_part_id}/item/${selectedItem}/delete`
         );
+        setIsDialogOpen(false); // Close the dialog after deletion
+        setSelectedItem(null); // Reset selected item
+    };
+
+    const openDialog = (itemId) => {
+        setSelectedItem(itemId); // Set the selected item
+        setIsDialogOpen(true); // Open the dialog
+    };
+
+    const closeDialog = () => {
+        setIsDialogOpen(false); // Close the dialog
+        setSelectedItem(null); // Reset the selected item
     };
 
     return (
@@ -49,18 +63,25 @@ export default function ProjectPartItemTable({
                 </TableHeader>
                 <TableBody>
                     {items.map((item) => (
-                        <TableRow key={`${type}-item-${item.id}`} className="group">
+                        <TableRow
+                            key={`${type}-item-${item.id}`}
+                            className="group"
+                        >
                             <TableCell>{item.description}</TableCell>
                             <TableCell>{item.quantity}</TableCell>
-                            <TableCell>{item.bid_amount ? `${item.bid_amount}` : 'N/A'}</TableCell>
+                            <TableCell>
+                                {item.bid_amount ? `${item.bid_amount}` : "N/A"}
+                            </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end space-x-2">
-                                    <AlertDialog>
+                                    <AlertDialog open={isDialogOpen}>
                                         <AlertDialogTrigger asChild>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => setSelectedItem(item.id)}
+                                                onClick={() =>
+                                                    openDialog(item.id)
+                                                }
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
@@ -71,22 +92,21 @@ export default function ProjectPartItemTable({
                                                     Confirm Deletion
                                                 </AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    Are you sure you want to delete this item? This action cannot be undone.
+                                                    Are you sure you want to
+                                                    delete this item? This
+                                                    action cannot be undone.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
                                                 <Button
                                                     variant="outline"
-                                                    onClick={() => setSelectedItem(null)}
+                                                    onClick={closeDialog}
                                                 >
                                                     Cancel
                                                 </Button>
                                                 <Button
                                                     variant="destructive"
-                                                    onClick={() => {
-                                                        handleDelete(selectedItem);
-                                                        setSelectedItem(null);
-                                                    }}
+                                                    onClick={handleDelete}
                                                 >
                                                     Delete
                                                 </Button>
