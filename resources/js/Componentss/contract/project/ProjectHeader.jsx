@@ -1,4 +1,4 @@
-import { Edit, ArrowLeft } from "lucide-react";
+import { Edit, ChevronLeft } from "lucide-react";
 
 import { Link, router } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
@@ -34,11 +34,11 @@ export default function ProjectHeader({
     //     $project->contract_id = $contract_id;
 
     return (
-        <section className="grid grid-cols-3">
-            <div>
+        <section className="w-full flex justify-between items-start">
+            <div className="flex-1">
                 <Link href={`/contract/${contract.id}`}>
                     <button className="text-gray-500 flex items-center gap-2 pb-4">
-                        <ArrowLeft />
+                        <ChevronLeft />
                     </button>
                 </Link>
 
@@ -49,6 +49,7 @@ export default function ProjectHeader({
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight mt-2">
                     Project - {project.project_name}
                 </h2>
+
                 <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
                         <AccordionTrigger className="text-sm">
@@ -76,7 +77,6 @@ export default function ProjectHeader({
                                         signingAuthorityEmployee.last_name}
                                 </h2>
                                 <h2 className="text-sm text-gray-600 leading-tight mt-2">
-                                    {/* put project location */}
                                     Location -{" "}
                                     {project.street_address +
                                         ", " +
@@ -96,7 +96,7 @@ export default function ProjectHeader({
                 </Accordion>
             </div>
 
-            <div className="w-full text-right">
+            <div className="flex-1 text-right">
                 <Link
                     href={`/contract/${contract.id}/project/${project.id}/edit`}
                 >

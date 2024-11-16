@@ -64,8 +64,8 @@ export default function ViewProjectPartPage({
                 </div>
             }
         >
-            <section className="mt-6">
-                <div className="flex flex-col space-y-10">
+            <section className="mt-6 max-w-7xl">
+                <div className="flex flex-col space-y-14">
                     {/* Materials Table */}
                     <div>
                         <div className="flex justify-between">

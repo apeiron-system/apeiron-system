@@ -6,6 +6,7 @@ import { Head } from "@inertiajs/react";
 import ProjectForm from "../../../Componentss/contract/project/ProjectForm";
 import _ from "lodash";
 import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
+import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart/ProjectPartTabNavigation";
 
 export default function EditProjectPage({
     auth,
@@ -28,6 +29,11 @@ export default function EditProjectPage({
             }
         >
             <Head title="Edit Project" />
+
+            <ProjectPartTabNavigation
+                contract_id={contract.id}
+                project_id={project.id}
+            />
 
             <section className="ml-4 mt-2">
                 <h1 className="font-bold text-lg">Edit Project</h1>

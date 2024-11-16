@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/Components/ui/button";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ChevronLeft, Trash2 } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import {
@@ -73,7 +73,7 @@ export default function BidPage({ auth, item, contractId, bids }) {
                 <div className="flex items-center gap-2">
                         <Link href={`/contracts/${contractId}/items`}>
                             <button className="text-gray-500">
-                                <ArrowLeft />
+                                <ChevronLeft />
                             </button>
                         </Link>
 
@@ -128,10 +128,10 @@ export default function BidPage({ auth, item, contractId, bids }) {
                     </div>
                 </div>
                 {bids.length > 0 ? (
-                    <Table className="w-full bg-white border border-gray-300">
+                    <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead>
                                     <input
                                         type="checkbox"
                                         onChange={handleSelectAll}
@@ -140,10 +140,10 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                         }
                                     />
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead>
                                     Bid Amount
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead>
                                     Date Placed
                                 </TableHead>
                             </TableRow>
@@ -157,7 +157,7 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                 ) // Sort bids in descending order by date
                                 .map((bid) => (
                                     <TableRow key={bid.id}>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             <input
                                                 type="checkbox"
                                                 checked={selectedBids.includes(
@@ -168,12 +168,12 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                                 }
                                             />
                                         </TableCell>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             {parseFloat(bid.bid_amount).toFixed(
                                                 2
                                             )}
                                         </TableCell>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             {new Date(
                                                 bid.created_at
                                             ).toLocaleDateString()}

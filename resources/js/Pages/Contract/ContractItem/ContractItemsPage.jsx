@@ -34,7 +34,6 @@ export default function Index({
     const [sortOrder, setSortOrder] = useState("date_desc");
     const [selectedItems, setSelectedItems] = useState([]);
 
-
     // Handle search input change
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -120,42 +119,24 @@ export default function Index({
                 </div>
                 <div className="py-4 w-full">
                     {/* Table for Items */}
-                    <Table className="w-full bg-white border border-gray-300 text-center">
+                    <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="py-2 px-4 border-b text-center">
-                                    Description
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b text-center">
-                                    Type
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b text-center">
-                                    Unit
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b text-center">
-                                    Latest Price
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b text-center">
-                                    Bid Price
-                                </TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Unit</TableHead>
+                                <TableHead>Latest Price</TableHead>
+                                <TableHead>Bid Price</TableHead>
+                                <TableHead>Action   </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {items.data.map((item) => (
-                                <TableRow
-                                    key={item.id}
-                                    className="hover:bg-gray-100"
-                                >
-                                    <TableCell className="py-2 px-4 border-b">
-                                        {item.description}
-                                    </TableCell>
-                                    <TableCell className="py-2 px-4 border-b">
-                                        {item.type}
-                                    </TableCell>
-                                    <TableCell className="py-2 px-4 border-b">
-                                        {item.unit}
-                                    </TableCell>
-                                    <TableCell className="py-2 px-4 border-b">
+                                <TableRow key={item.id}>
+                                    <TableCell>{item.description}</TableCell>
+                                    <TableCell>{item.type}</TableCell>
+                                    <TableCell>{item.unit}</TableCell>
+                                    <TableCell>
                                         {item.prices.length !== 0 &&
                                             (item.prices[item.prices.length - 1]
                                                 .unit_cost
@@ -190,7 +171,7 @@ export default function Index({
                         </TableBody>
                     </Table>
                     {/* Pagination Controls */}
-                    <div className="mt-6 flex justify-end gap-3">
+                    <div className="mt-6 flex  gap-3">
                         {items.links.map((link, index) => (
                             <a
                                 key={index}

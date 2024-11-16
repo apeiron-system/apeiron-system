@@ -58,7 +58,7 @@ export default function ViewContractPage({
                 <ProjectTabNavigation id={contract.id} />
             </div>
 
-            <div className="flex items-center my-4 gap-4 justify-between">
+            <div className="flex items-center my-4 gap-4 justify-between max-w-7xl">
                 {/* Search */}
                 <Input
                     type="text"

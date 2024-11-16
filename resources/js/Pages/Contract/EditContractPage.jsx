@@ -2,7 +2,7 @@ import ContractForm from "@/Componentss/contract/ContractForm";
 import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 export default function EditContractPage({ auth, contract, employees }) {
     return (
@@ -12,7 +12,7 @@ export default function EditContractPage({ auth, contract, employees }) {
                 <div className="flex items-center gap-2">
                     <Link href={`/contract/${contract.id}`}>
                         <button className="text-gray-500">
-                            <ArrowLeft />
+                            <ChevronLeft />
                         </button>
                     </Link>
 
