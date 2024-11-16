@@ -90,7 +90,12 @@ export default function ContractForm({ contract, employees }) {
                     name="contract_name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Contract Name</FormLabel>
+                            <FormLabel>
+                                Contract Name{" "}
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -107,7 +112,12 @@ export default function ContractForm({ contract, employees }) {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Status</FormLabel>
+                            <FormLabel>
+                                Status
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <select
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -128,7 +138,12 @@ export default function ContractForm({ contract, employees }) {
                     name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel>
+                                Description
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <textarea
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -145,7 +160,12 @@ export default function ContractForm({ contract, employees }) {
                     name="location"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Location</FormLabel>
+                            <FormLabel>
+                                Location
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -162,7 +182,12 @@ export default function ContractForm({ contract, employees }) {
                     name="designation"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Designation</FormLabel>
+                            <FormLabel>
+                                Designation
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -179,7 +204,12 @@ export default function ContractForm({ contract, employees }) {
                     name="duration_in_days"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Duration in Days</FormLabel>
+                            <FormLabel>
+                                Duration in Days
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -197,7 +227,12 @@ export default function ContractForm({ contract, employees }) {
                     name="amount"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Amount (PHP)</FormLabel>
+                            <FormLabel>
+                                Amount (PHP)
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -232,7 +267,12 @@ export default function ContractForm({ contract, employees }) {
                     name="authorized_representative_employee_id"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Authorized Representative</FormLabel>
+                            <FormLabel>
+                                Authorized Representative
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={
