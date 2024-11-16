@@ -11,7 +11,15 @@ import {
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Link, router } from "@inertiajs/react";
-import _ from "lodash";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+} from "@/Components/ui/alert-dialog";
 
 export default function ProjectPartItemTable({
     type,
@@ -20,7 +28,13 @@ export default function ProjectPartItemTable({
     project_id,
     project_part_id,
 }) {
+    const [selectedItem, setSelectedItem] = useState(null);
 
+    const handleDelete = (itemId) => {
+        router.delete(
+            `/contract/${contract_id}/project/${project_id}/part/${project_part_id}/item/${itemId}/delete`
+        );
+    };
 
     return (
         <div className="mt-6">
@@ -41,18 +55,44 @@ export default function ProjectPartItemTable({
                             <TableCell>{item.bid_amount ? `${item.bid_amount}` : 'N/A'}</TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end space-x-2">
-
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => {
-                                            router.delete(
-                                                `/contract/${contract_id}/project/${project_id}/part/${project_part_id}/item/${item.id}/delete`
-                                            );
-                                        }}  
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setSelectedItem(item.id)}
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>
+                                                    Confirm Deletion
+                                                </AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Are you sure you want to delete this item? This action cannot be undone.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => setSelectedItem(null)}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    variant="destructive"
+                                                    onClick={() => {
+                                                        handleDelete(selectedItem);
+                                                        setSelectedItem(null);
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </div>
                             </TableCell>
                         </TableRow>

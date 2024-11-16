@@ -5,7 +5,7 @@ import { Button } from "@/Components/ui/button";
 import ProjectPartItemTable from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/ProjectPartItemTable";
 import AddProjectPartItemModal from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/AddProjectPartItemModal";
 import { Link, router } from "@inertiajs/react";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Plus, Download } from "lucide-react";
 
 export default function ViewProjectPartPage({
     auth,
@@ -52,15 +52,20 @@ export default function ViewProjectPartPage({
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex items-center gap-2">
-                    <Link
-                        href={`/contract/${contract.id}/project/${project.id}`}
-                    >
-                        <button className="text-gray-500">
-                            <ChevronLeft />
-                        </button>
-                    </Link>
-                    <h2>Project Part - {projectParts.description}</h2>
+                <div className="flex items-center justify-between">
+                    <div className="flex gap-2">
+                        <Link
+                            href={`/contract/${contract.id}/project/${project.id}`}
+                        >
+                            <button className="text-gray-500">
+                                <ChevronLeft />
+                            </button>
+                        </Link>
+                        <h2>Project Part - {projectParts.description}</h2>
+                    </div>
+                    <Button>
+                        <Download />
+                    </Button>
                 </div>
             }
         >
