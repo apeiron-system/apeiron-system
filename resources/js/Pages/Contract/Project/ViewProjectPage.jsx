@@ -32,10 +32,10 @@ export default function ViewProjectPage({
                 project_id={project.id}
             />
 
-            <section>
+            <section className="mt-6">
                 <h1>Project Overview</h1>
 
-                <section className="mt-12">
+                <section className="mt-6">
                     <ProjectPartTable
                         projectParts={projectParts}
                         contract_id={contract.id}

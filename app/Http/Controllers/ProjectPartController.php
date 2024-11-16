@@ -11,8 +11,7 @@ use Inertia\Inertia;
 
 class ProjectPartController extends Controller
 {
-    //
-
+    
     public function add($contract_id, $project_id)
     {
 
@@ -83,4 +82,5 @@ class ProjectPartController extends Controller
 
         return redirect()->route('contract.project.view', ['contract_id' => $contract_id, 'project_id' => $project_id]);
     }
+    
 }

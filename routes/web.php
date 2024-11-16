@@ -6,7 +6,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\ContractItemController;//added this for contract item
+use App\Http\Controllers\ContractItemController;
+use App\Http\Controllers\ProjectPartItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
@@ -139,6 +140,18 @@ Route::patch("/contract/{contract_id}/project/{project_id}/part/{part_id}/update
 
 Route::delete("/contract/{contract_id}/project/{project_id}/part/{part_id}/delete", [ProjectPartController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.part.delete');
 
+
+//project-part-item     
+Route::get('contract/{contract_id}/project/{project_id}/part/{id}', [ProjectPartItemController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.part.view');
+
+Route::get('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item', [ProjectPartItemController::class, 'getContractItems'])->name('contract.project.part.item.add')->middleware(['auth', 'verified']);
+
+Route::post('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/add', [ProjectPartItemController::class, 'storeProjectPartItem'])->name('contract.project.part.item.store')->middleware(['auth', 'verified']);
+
+Route::delete('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/{item_id}/delete', [ProjectPartItemController::class, 'destroy'])->name('contract.project.part.item.delete')->middleware(['auth', 'verified']);
+
+
+//profile
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
