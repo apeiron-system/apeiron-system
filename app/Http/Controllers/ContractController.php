@@ -13,7 +13,7 @@ class ContractController extends Controller
     {
         $sortBy = $request->input('sort', 'recent');
 
-        // Start a database transaction to update the progress of each project
+        // Start a database transaction to update the progress of each contract and related projects
         DB::beginTransaction();
 
         // Retrieve active contracts with their cumulative progress
@@ -21,8 +21,9 @@ class ContractController extends Controller
             ->with('projects') // Eager load projects to minimize queries
             ->get()
             ->map(function ($contract) {
+                // Calculate the cumulative progress for the contract
                 $totalProgress = $contract->projects->count() > 0
-                    ? $contract->projects->avg('progress') // Calculate average progress
+                    ? $contract->projects->avg('progress') // Calculate average progress of all projects under the contract
                     : 0; // Default progress if no projects
                 $contract->progress = round($totalProgress, 2); // Add progress attribute
                 return $contract;
@@ -33,10 +34,11 @@ class ContractController extends Controller
             ->with('projects') // Eager load projects
             ->paginate(3)
             ->through(function ($contract) {
+                // Calculate and update the progress for past contracts
                 $totalProgress = $contract->projects->count() > 0
-                    ? $contract->projects->avg('progress') // Calculate average progress
-                    : 0; // Default progress if no projects
-                $contract->progress = round($totalProgress, 2); // Add progress attribute
+                    ? $contract->projects->avg('progress') // Calculate average progress of all projects under the contract
+                    : 0;
+                $contract->progress = round($totalProgress, 2);
                 $contract->save(); // Save the updated progress to the database
                 return $contract;
             });
@@ -44,6 +46,7 @@ class ContractController extends Controller
         // Commit the transaction after successful updates
         DB::commit();
 
+        // Pass the contracts and progress data to the Inertia view
         return Inertia::render('JobOrder/JobOrderContractsPage', [
             'activeContracts' => $activeContracts,
             'pastContracts' => $pastContracts,
