@@ -135,11 +135,14 @@ export default function JobOrderPage({
                                 <strong>Location:</strong> {jobOrder.location}
                             </div>
                             <div className="mb-1">
-                                <strong>Period Covered:</strong>{" "}
-                                {jobOrder.period_covered}
+                                <strong>Supplier:</strong> {jobOrder.supplier}
                             </div>
                             <div className="mb-1">
-                                <strong>Supplier:</strong> {jobOrder.supplier}
+                                <strong>Item Works:</strong> {jobOrder.itemWorks}
+                            </div>
+                            <div className="mb-1">
+                                <strong>Period Covered:</strong>{" "}
+                                {jobOrder.period_covered}
                             </div>
                             <div>
                                 <strong>Date Needed:</strong>{" "}
