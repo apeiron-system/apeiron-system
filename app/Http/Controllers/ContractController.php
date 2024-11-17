@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Contract;
+use Illuminate\Support\Facades\DB;
+
+use function Laravel\Prompts\progress;
 
 class ContractController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $sortBy = $request->input('sort', 'recent');
+        // Start a database transaction to update the progress of each project
+        DB::beginTransaction();
 
         // Retrieve active contracts with their cumulative progress
         $activeContracts = Contract::where('status', 'active')
@@ -21,6 +24,7 @@ class ContractController extends Controller
                     ? $contract->projects->avg('progress') // Calculate average progress
                     : 0; // Default progress if no projects
                 $contract->progress = round($totalProgress, 2); // Add progress attribute
+                $contract->save(); // Save the updated progress to the database
                 return $contract;
             });
 
@@ -28,18 +32,21 @@ class ContractController extends Controller
         $pastContracts = Contract::where('status', 'past')
             ->with('projects') // Eager load projects
             ->paginate(3)
-            ->through(function ($contract) {
+            ->through(function ($contract){
                 $totalProgress = $contract->projects->count() > 0
                     ? $contract->projects->avg('progress') // Calculate average progress
                     : 0; // Default progress if no projects
                 $contract->progress = round($totalProgress, 2); // Add progress attribute
+                $contract->save(); // Save the updated progress to the database
                 return $contract;
             });
+        
+        // Commit the transaction after successful updates
+        DB::commit();
 
         return Inertia::render('JobOrder/JobOrderContractsPage', [
             'activeContracts' => $activeContracts,
             'pastContracts' => $pastContracts,
-            'sortBy' => $sortBy,
         ]);
     }
 }
