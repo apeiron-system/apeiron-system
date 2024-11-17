@@ -79,6 +79,7 @@ export default function JobOrderDetailsPage({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            className="fixed top-0 left-0 right-0 bg-white z-20 shadow-md"
             header={
                 <div className="flex items-center">
                     <Link href={route("job-order")}>
