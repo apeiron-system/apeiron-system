@@ -40,14 +40,6 @@ export default function ProjectPAR({ auth }) {
         });
     };
 
-    const handleDeleteSelected = () => {
-        setContract((prevContract) => {
-            const updatedDetails = prevContract.details.filter((_, index) => !selectedDetails.includes(index));
-            return { ...prevContract, details: updatedDetails };
-        });
-        setSelectedDetails([]);
-    };
-
     function Modal({ isOpen, onClose, onSubmit }) {
         const [newProject, setNewProject] = useState({
             projectName: "",
@@ -173,19 +165,6 @@ export default function ProjectPAR({ auth }) {
                                             </span>
                                         </div>
                                     )}
-                                    <div className="relative group">
-                                        <button
-                                            onClick={() => setShowForm(true)}
-                                            className="inline-flex justify-center items-center p-0 p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
-                                        <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            Add New Project
-                                        </span>
-                                    </div>
                                 </div>
                             </div>
 

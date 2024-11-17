@@ -16,6 +16,7 @@ export default function ParContractDetails({ auth }) {
 
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [accomEditData, setAccomEditData] = useState(null);
+    const [modalPage, setModalPage] = useState(1);
 
     useEffect(() => {
         const detail = sessionStorage.getItem('selectedDetail');
@@ -40,6 +41,15 @@ export default function ParContractDetails({ auth }) {
         );
         setSelectedDetail({ ...selectedDetail, accomplishments: updatedAccomplishments });
         setIsPopupVisible(false);
+        setModalPage(1);
+    };
+
+    const handleNextPage = () => {
+        setModalPage(modalPage + 1);
+    };
+
+    const handlePreviousPage = () => {
+        setModalPage(modalPage - 1);
     };
 
     const getDuration = (startDate, endDate) => {
@@ -217,40 +227,173 @@ export default function ParContractDetails({ auth }) {
                     </div>
                 </div>
 
-                {/* Edit Modal */}
+                {/* Edit Modal with Pagination */}
                 {isPopupVisible && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white rounded-lg p-6 w-96">
-                            <h3 className="text-lg font-semibold mb-4">Edit Accomplishment</h3>
+                        <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
+                            <h3 className="text-lg font-bold mb-4">Edit Accomplishment</h3>
                             <form>
-                                <label className="block mb-2">
-                                    Previous Quantity
-                                    <input type="text" name="prevQty" value={accomEditData.prevQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
-                                </label>
-                                <label className="block mb-2">
-                                    This Period Quantity
-                                    <input type="text" name="thisPeriodQty" value={accomEditData.thisPeriodQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
-                                </label>
-                                <label className="block mb-2">
-                                    To Date Quantity
-                                    <input type="text" name="toDateQty" value={accomEditData.toDateQty} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
-                                </label>
-                                <label className="block mb-4">
-                                    Remarks
-                                    <input type="text" name="remarks" value={accomEditData.remarks} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded" />
-                                </label>
-                                <div className="flex justify-end">
-                                    <button type="button" onClick={() => setIsPopupVisible(false)} className="bg-gray-300 text-gray-700 py-2 px-4 rounded mr-2">
-                                        Cancel
-                                    </button>
-                                    <button type="button" onClick={handleSaveChanges} className="bg-blue-600 text-white py-2 px-4 rounded">
-                                        Save Changes
-                                    </button>
+                                {/* Display form sections categorized by modalPage */}
+                                {modalPage === 1 && (
+                                    <div>
+                                        <h4 className="text-md font-semibold mb-2">QUANTITY</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium">Previous Quantity</label>
+                                                <input
+                                                    name="prevQty"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.prevQty || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">This Period Quantity</label>
+                                                <input
+                                                    name="thisPeriodQty"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.thisPeriodQty || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">To Date Quantity</label>
+                                                <input
+                                                    name="toDateQty"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.toDateQty || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">Balance Quantity</label>
+                                                <input
+                                                    name="balanceQty"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.balanceQty || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {modalPage === 2 && (
+                                    <div>
+                                        <h4 className="text-md font-semibold mb-2">AMMOUNT</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium">Previous Amount</label>
+                                                <input
+                                                    name="prevAmt"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.prevAmt || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">This Period Amount</label>
+                                                <input
+                                                    name="thisPeriodAmt"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.thisPeriodAmt || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">To Date Amount</label>
+                                                <input
+                                                    name="toDateAmt"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.toDateAmt || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">Balance Amount</label>
+                                                <input
+                                                    name="balanceAmt"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.balanceAmt || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {modalPage === 3 && (
+                                    <div>
+                                        <h4 className="text-md font-semibold mb-2">Weight Information</h4>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium">TO DATE % (Weight)</label>
+                                                <input
+                                                    name="toDateWeight"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.toDateWeight || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium">BALANCE % (Weight)</label>
+                                                <input
+                                                    name="balanceWeight"
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    value={accomEditData?.balanceWeight || ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {modalPage === 4 && (
+                                    <div>
+                                        <div>
+                                            <label className="block text-sm font-medium">Remarks</label>
+                                            <textarea
+                                                name="remarks"
+                                                className="w-full border border-gray-300 rounded p-2"
+                                                value={accomEditData?.remarks || ''}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Pagination Buttons */}
+                                <div className="flex justify-between mt-6">
+                                    {modalPage > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={handlePreviousPage}
+                                            className="text-gray-600 px-4 py-2 rounded border border-gray-300"
+                                        >
+                                            Previous
+                                        </button>
+                                    )}
+                                    {modalPage < 4 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleNextPage}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded ml-auto"
+                                        >
+                                            Next
+                                        </button>
+                                    )}
+                                    {modalPage === 4 && (
+                                        <button
+                                            type="button"
+                                            onClick={handleSaveChanges}
+                                            className="bg-green-500 text-white px-4 py-2 rounded ml-auto"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    )}
                                 </div>
                             </form>
                         </div>
                     </div>
                 )}
+
             </div>
         </AuthenticatedLayout>
     );

@@ -200,16 +200,16 @@ export default function ProgressReport({ auth }) {
                             <label htmlFor="sort-by" className="sr-only">Sort By</label>
                             <select
                                 id="sort-by"
-                                className="px-3 py-1 bg-gray-500 text-white rounded appearance-none"
+                                className="w-fullpx-3 py-1 bg-white-500 text-black rounded"
                                 value={sortBy}
                                 onChange={handleSortByChange}
                             >
-                                <option value="Most Recent">Most Recent</option>
-                                <option value="Active Contracts">Active Contracts</option>
-                                <option value="Pending Contracts">Pending Contracts</option>
-                                <option value="Complete Contracts">Complete Contracts</option>
+                                <option value="Most Recent">Recent</option>
+                                <option value="Active Contracts">Active</option>
+                                <option value="Pending Contracts">Pending</option>
+                                <option value="Complete Contracts">Complete</option>
                             </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <div className="absolute inset-y-0 right-0 flex items-right px-2 pointer-events-none">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
