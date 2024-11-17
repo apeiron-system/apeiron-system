@@ -117,13 +117,13 @@ export default function Authenticated({ user, header, children }) {
             {/* Main Content with left margin to prevent overlap with the fixed sidebar */}
             <div className="flex-grow ml-52">
                 {header && (
-                    <header className="bg-white shadow">
+                    <header className="ml-52 bg-white shadow fixed top-0 left-0 right-0 z-20">
                         <div className="max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
                             {header}
                         </div>
                     </header>
                 )}
-                <main className="px-20 py-4">{children}</main>
+                <main className="px-20 py-4 mt-20">{children}</main>
             </div>
         </div>
     );
