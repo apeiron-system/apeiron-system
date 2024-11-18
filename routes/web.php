@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectPartController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
 use App\Http\Controllers\ProjectPartItemController;
+use App\Http\Controllers\BOQController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
@@ -149,6 +150,12 @@ Route::get('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/
 Route::post('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/add', [ProjectPartItemController::class, 'storeProjectPartItem'])->name('contract.project.part.item.store')->middleware(['auth', 'verified']);
 
 Route::delete('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/{item_id}/delete', [ProjectPartItemController::class, 'destroy'])->name('contract.project.part.item.delete')->middleware(['auth', 'verified']);
+
+//BOQ
+
+Route::get('/contract/{contractId}/project/{projectId}/boq', [BOQController::class, 'view'])->middleware(['auth', 'verified'])->name('boq.view');
+
+Route::get('/contract/{contractId}/project/{projectId}/boq/download', [BOQController::class, 'download'])->middleware(['auth', 'verified'])->name('boq.download');
 
 
 //profile

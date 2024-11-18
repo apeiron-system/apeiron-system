@@ -27,4 +27,10 @@ class ProjectPartModel extends Model
     {
         return $this->belongsTo(ProjectPartModel::class, 'parent_id');
     }
+
+    public function projectPartItems()
+    {
+        return $this->hasMany(ProjectPartItemModel::class, 'project_part_id');
+    }
+
 }

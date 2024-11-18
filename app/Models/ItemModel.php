@@ -46,4 +46,9 @@ class ItemModel extends Model
         return $this->hasMany(Bid::class, 'item_id');
     }
 
+    public function getLatestBid()
+    {
+        return $this->bids()->latest('created_at')->first();
+    }
+
 }

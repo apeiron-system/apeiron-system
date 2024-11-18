@@ -62,10 +62,7 @@ export default function ViewProjectPartPage({
                             </button>
                         </Link>
                         <h2>Project Part - {projectParts.description}</h2>
-                    </div>
-                    <Button>
-                        <Download />
-                    </Button>
+                    </div>  
                 </div>
             }
         >

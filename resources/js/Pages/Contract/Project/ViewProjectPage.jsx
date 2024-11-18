@@ -4,6 +4,8 @@ import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart
 import ProjectPartTable from "@/Componentss/contract/project/ProjectPart/ProjectPartTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import { Button } from "@/Components/ui/button";
+import { Link } from "@inertiajs/react";
 
 export default function ViewProjectPage({
     auth,
@@ -27,10 +29,20 @@ export default function ViewProjectPage({
         >
             <Head title={`View Project - ${project.project_name}`} />
 
-            <ProjectPartTabNavigation
-                contract_id={contract.id}
-                project_id={project.id}
-            />
+            <div className="flex justify-between max-w-7xl">
+                <ProjectPartTabNavigation
+                    contract_id={contract.id}
+                    project_id={project.id}
+                />
+                <Link
+                    href={route("boq.view", {
+                        contractId: contract.id,
+                        projectId: project.id,
+                    })}
+                >
+                    <Button>View BOQ</Button>
+                </Link>
+            </div>
 
             <section className="mt-6">
                 <h1>Project Overview</h1>
