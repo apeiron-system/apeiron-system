@@ -9,21 +9,27 @@ use Illuminate\Support\Facades\DB;
 
 class ContractController extends Controller
 {
+    /**
+     * Display a listing of projects for a specific contract.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    
     public function index(Request $request)
     {
         $sortBy = $request->input('sort', 'recent');
 
-        // Start a database transaction to update the progress of each contract and related projects
+        // Start a database transaction to update the progress of each project
         DB::beginTransaction();
 
         // Retrieve active contracts with their cumulative progress
-        $activeContracts = Contract::where('status', 'active')
+        $activeContracts = Contract::where('status', operator: 'active')
             ->with('projects') // Eager load projects to minimize queries
             ->get()
             ->map(function ($contract) {
-                // Calculate the cumulative progress for the contract
                 $totalProgress = $contract->projects->count() > 0
-                    ? $contract->projects->avg('progress') // Calculate average progress of all projects under the contract
+                    ? $contract->projects->avg('progress') // Calculate average progress
                     : 0; // Default progress if no projects
                 $contract->progress = round($totalProgress, 2); // Add progress attribute
                 return $contract;
@@ -34,11 +40,10 @@ class ContractController extends Controller
             ->with('projects') // Eager load projects
             ->paginate(3)
             ->through(function ($contract) {
-                // Calculate and update the progress for past contracts
                 $totalProgress = $contract->projects->count() > 0
-                    ? $contract->projects->avg('progress') // Calculate average progress of all projects under the contract
-                    : 0;
-                $contract->progress = round($totalProgress, 2);
+                    ? $contract->projects->avg('progress') // Calculate average progress
+                    : 0; // Default progress if no projects
+                $contract->progress = round($totalProgress, 2); // Add progress attribute
                 $contract->save(); // Save the updated progress to the database
                 return $contract;
             });
@@ -46,7 +51,6 @@ class ContractController extends Controller
         // Commit the transaction after successful updates
         DB::commit();
 
-        // Pass the contracts and progress data to the Inertia view
         return Inertia::render('JobOrder/JobOrderContractsPage', [
             'activeContracts' => $activeContracts,
             'pastContracts' => $pastContracts,

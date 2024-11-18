@@ -5,7 +5,7 @@ const ExitJobOrderModal = ({ show, onClose, onDiscard, onSaveDraft }) => {
     if (!show) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-30">
             <div className="bg-white rounded-2xl shadow-lg w-80 overflow-hidden pt-6">
                 <div className="p-6 px-4 text-center">
                     <FileX2

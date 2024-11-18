@@ -5,7 +5,7 @@ const SaveJobOrderModal = ({ show, onClose }) => {
     if (!show) return null;
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-30">
             <div className="bg-white p-6 rounded-2xl shadow-lg text-center" style={{ width: '300px', height: '300px' }}>
                 <div className="flex justify-center">
                     <CheckCheck

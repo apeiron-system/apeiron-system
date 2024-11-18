@@ -59,7 +59,7 @@ export default function JobOrderPage({
         >
             <Head title="Job Orders" />
 
-            <div className="flex flex-col md:flex-column md:justify-between mb-10">
+            <div className="flex flex-col md:flex-column md:justify-between mb-6">
                 <div className="flex flex-col">
                     <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4 md:mb-0">
                         <span className="text-2xl font-bold">
@@ -68,6 +68,22 @@ export default function JobOrderPage({
                     </div>
                     <div className="pb-4 flex items-center text-gray-500">
                         <span>{projectLocation || "Project Location"}</span>
+                        <span className="ml-1 text-slate-500 items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.3}
+                                stroke="currentColor"
+                                className="w-4 h-4"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 2c3.866 0 7 3.134 7 7 0 3.866-7 13-7 13S5 12.866 5 9c0-3.866 3.134-7 7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"
+                                />
+                            </svg>
+                        </span>
                     </div>
                 </div>
 
@@ -108,7 +124,7 @@ export default function JobOrderPage({
                     <Card
                         key={index}
                         className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                        style={{ height: "290px" }} // Adjusted height for card to fit progress bar
+                        style={{ height: "320px" }} // Adjusted height for card to fit progress bar
                     >
                         <CardHeader>
                             <CardTitle className="text-xl font-semibold text-gray-800">
@@ -152,7 +168,7 @@ export default function JobOrderPage({
                         <CardFooter>
                             <Link
                                 href={route("job-order-details", {
-                                    job_order_id: jobOrder.jo_no,
+                                    jo_no: jobOrder.jo_no,
                                 })}
                             >
                                 <Button
@@ -174,9 +190,9 @@ export default function JobOrderPage({
                 >
                     <Card
                         className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
-                        style={{ height: "290px" }} // Matching height with other cards
+                        style={{ height: "320px" }} // Matching height with other cards
                     >
-                        <Plus size={48} className="text-gray-500" />
+                        <Plus size={64} className="text-gray-500" />
                     </Card>
                 </Link>
             </div>
