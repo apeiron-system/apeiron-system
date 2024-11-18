@@ -164,7 +164,7 @@
                         @if ($part->projectPartItems->count() > 0)
                             <!-- Part Description -->
                             <tr>
-                                <td colspan="7"><strong>PART DESCRIPTION:</strong> {{ $part->description }}</td>
+                                <td colspan="7"><strong> {{ $part->description }}</strong></td>
                             </tr>
                             <!-- Items Associated with the Part -->
                             @foreach ($part->projectPartItems as $item)
