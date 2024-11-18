@@ -13,6 +13,8 @@ class CreateContractsTable extends Migration
             $table->string('contract_name');
             $table->float('progress')->default(0); // Progress as a percentage (0-100)
             $table->enum('status', ['active', 'past'])->default('active');
+            $table->float('budget')->default(0); // Budget field with default value of 0
+            
             $table->timestamps();
             $table->softDeletes();
         });

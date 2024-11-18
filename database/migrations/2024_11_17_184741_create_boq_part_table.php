@@ -15,7 +15,12 @@ class CreateBoqPartTable extends Migration
     {
         Schema::create('boq_part', function (Blueprint $table) {
             $table->id('boq_part_id'); // Primary Key
-            $table->string('part_name'); // Name of the BOQ part
+            $table->unsignedBigInteger('boq_id');
+            $table->foreign('boq_id') // Foreign key to 'boq' table
+                  ->references('boq_id')
+                  ->on('boq')
+                  ->onDelete('cascade');
+            $table->string('part_name'); // Name of the BoQ part
             $table->integer('item_no'); // Item number
             $table->string('description'); // Description of the item
             $table->string('unit'); // Unit of measurement

@@ -14,14 +14,13 @@ class CreateBoqTable extends Migration
     public function up()
     {
         Schema::create('boq', function (Blueprint $table) {
-            $table->id();
+            $table->id('boq_id');
             $table->unsignedBigInteger('jo_no');
-            $table->unsignedBigInteger('boq_part_id');
+            $table->foreign('jo_no')
+                  ->references('jo_no') // Foreign key to 'job_orders' table
+                  ->on('job_orders')
+                  ->onDelete('cascade');
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('jo_no')->references('jo_no')->on('job_orders')->onDelete('cascade');
-            $table->foreign('boq_part_id')->references('id')->on('boq_parts')->onDelete('cascade');
         });
     }
 

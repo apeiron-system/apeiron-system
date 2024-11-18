@@ -45,7 +45,7 @@ class BoqPart extends Model
 
     public function billingOfQuantities()
     {
-        return $this->belongsTo(BoQ::class, 'boq_part_id', 'boq_part_id');
+        return $this->belongsTo(BoQ::class);
     }
     
     public function calculateAmount()

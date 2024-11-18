@@ -56,6 +56,7 @@ class JobOrderController extends Controller
                     'dateNeeded' => $jobOrder->dateNeeded ? $jobOrder->dateNeeded->format('Y-m-d') : null, // Handle null dates
                     'progress' => $jobOrder->progress,
                     'status' => $jobOrder->status,
+                    'budget' => $jobOrder->budget,
                 ];
             });
 

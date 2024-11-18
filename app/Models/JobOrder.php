@@ -18,10 +18,8 @@ class JobOrder extends Model
 
     // Define the fillable fields for mass assignment
     protected $fillable = [
-        'jo_name', 
-        'contract_id', 
-        'project_id', 
-        'location', 
+        'jo_name',
+        'location',
         'period_covered', 
         'supplier', 
         'dateNeeded', 
@@ -31,6 +29,7 @@ class JobOrder extends Model
         'itemWorks',
         'progress',
         'status',
+        'budget',
     ];
 
     // Specify the date format if needed
@@ -54,6 +53,6 @@ class JobOrder extends Model
 
     public function billingOfQuantities(): HasMany
     {
-        return $this->hasMany(BoQ::class);
+        return $this->hasMany(BoQ::class, 'jo_no');
     }
 }

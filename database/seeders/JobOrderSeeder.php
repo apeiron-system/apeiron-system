@@ -25,7 +25,8 @@ class JobOrderSeeder extends Seeder
                         'approvedBy' => 'Mark Smith',
                         'itemWorks' => 'Item Work A1 description',
                         'progress' => 100,
-                        'status' => 'on-going',
+                        'status' => 'completed',
+                        'budget' => 100000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order A2',
@@ -39,6 +40,7 @@ class JobOrderSeeder extends Seeder
                         'itemWorks' => 'Item Work A2 description',
                         'progress' => 50,
                         'status' => 'on-going',
+                        'budget' => 200000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order A3',
@@ -52,6 +54,7 @@ class JobOrderSeeder extends Seeder
                         'itemWorks' => 'Item Work A3 description',
                         'progress' => 40,
                         'status' => 'on-going',
+                        'budget' => 150000.00, // Added budget
                     ],
                 ],
                 2 => [ // Project 2
@@ -66,7 +69,8 @@ class JobOrderSeeder extends Seeder
                         'approvedBy' => 'James Clark',
                         'itemWorks' => 'Item Work B1 description',
                         'progress' => 30,
-                        'status' => 'completed',
+                        'status' => 'on-going',
+                        'budget' => 120000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order B2',
@@ -80,6 +84,7 @@ class JobOrderSeeder extends Seeder
                         'itemWorks' => 'Item Work B2 description',
                         'progress' => 20,
                         'status' => 'on-going',
+                        'budget' => 180000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order B3',
@@ -91,8 +96,9 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Emma Taylor',
                         'approvedBy' => 'Noah White',
                         'itemWorks' => 'Item Work B3 description',
-                        'progress' => 10,
+                        'progress' => 40,
                         'status' => 'on-going',
+                        'budget' => 140000.00, // Added budget
                     ],
                 ],
                 3 => [ // Project 3
@@ -100,44 +106,46 @@ class JobOrderSeeder extends Seeder
                         'jo_name' => 'Job Order C1',
                         'location' => 'Location 1',
                         'period_covered' => 'Jan 2024 - Feb 2024',
-                        'supplier' => 'Supplier 4',
+                        'supplier' => 'Supplier 7',
                         'dateNeeded' => '2024-02-01',
-                        'preparedBy' => 'David King',
-                        'checkedBy' => 'Sophia Harris',
-                        'approvedBy' => 'James Clark',
+                        'preparedBy' => 'Michael Dean',
+                        'checkedBy' => 'Sophia Wright',
+                        'approvedBy' => 'James Parker',
                         'itemWorks' => 'Item Work C1 description',
-                        'progress' => 30,
+                        'progress' => 40,
                         'status' => 'on-going',
+                        'budget' => 130000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order C2',
                         'location' => 'Location 2',
                         'period_covered' => 'Mar 2024 - Apr 2024',
-                        'supplier' => 'Supplier 5',
+                        'supplier' => 'Supplier 8',
                         'dateNeeded' => '2024-04-01',
-                        'preparedBy' => 'Olivia Scott',
-                        'checkedBy' => 'Liam Moore',
-                        'approvedBy' => 'Daniel Lee',
+                        'preparedBy' => 'Emma Hall',
+                        'checkedBy' => 'Oliver Scott',
+                        'approvedBy' => 'Daniel Young',
                         'itemWorks' => 'Item Work C2 description',
-                        'progress' => 20,
-                        'status' => 'completed',
+                        'progress' => 25,
+                        'status' => 'on-going',
+                        'budget' => 170000.00, // Added budget
                     ],
                     [
                         'jo_name' => 'Job Order C3',
                         'location' => 'Location 3',
                         'period_covered' => 'May 2024 - Jun 2024',
-                        'supplier' => 'Supplier 6',
+                        'supplier' => 'Supplier 9',
                         'dateNeeded' => '2024-06-01',
-                        'preparedBy' => 'Lucas Young',
-                        'checkedBy' => 'Emma Taylor',
-                        'approvedBy' => 'Noah White',
+                        'preparedBy' => 'Ethan Martin',
+                        'checkedBy' => 'Lucas Anderson',
+                        'approvedBy' => 'Sophia Hill',
                         'itemWorks' => 'Item Work C3 description',
-                        'progress' => 10,
+                        'progress' => 20,
                         'status' => 'on-going',
+                        'budget' => 160000.00, // Added budget
                     ],
                 ],
             ],
-            // You can add more contracts here with similar structure for their projects and job orders...
         ];
 
         // Loop through each contract
@@ -145,7 +153,7 @@ class JobOrderSeeder extends Seeder
             foreach ($projects as $projectId => $jobOrders) {
                 foreach ($jobOrders as $jobOrder) {
                     JobOrder::create(array_merge([
-                        'contract_id' => $contractId, 
+                        'contract_id' => $contractId,
                         'project_id' => $projectId
                     ], $jobOrder));
                 }

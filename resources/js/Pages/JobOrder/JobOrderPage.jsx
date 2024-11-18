@@ -124,7 +124,7 @@ export default function JobOrderPage({
                     <Card
                         key={index}
                         className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                        style={{ height: "320px" }} // Adjusted height for card to fit progress bar
+                        style={{ height: "440px" }} // Adjusted height for card to fit progress bar
                     >
                         <CardHeader>
                             <CardTitle className="text-xl font-semibold text-gray-800">
@@ -148,6 +148,21 @@ export default function JobOrderPage({
                         </CardHeader>
                         <CardContent className="text-sm text-gray-600">
                             <div className="mb-1">
+                                <strong>Status:</strong>{" "}
+                                <span
+                                    className={`font-medium ${
+                                        jobOrder.status === "completed"
+                                            ? "text-green-600"
+                                            : "text-yellow-600"
+                                    }`}
+                                >
+                                    {jobOrder.status}
+                                </span>
+                            </div>
+                            <div className="mb-1">
+                                <strong>Budget:</strong> ₱{jobOrder.budget}
+                            </div>
+                            <div className="mb-1">
                                 <strong>Location:</strong> {jobOrder.location}
                             </div>
                             <div className="mb-1">
@@ -157,12 +172,19 @@ export default function JobOrderPage({
                                 <strong>Item Works:</strong> {jobOrder.itemWorks}
                             </div>
                             <div className="mb-1">
-                                <strong>Period Covered:</strong>{" "}
-                                {jobOrder.period_covered}
+                                <strong>Period Covered:</strong> {jobOrder.period_covered}
                             </div>
-                            <div>
-                                <strong>Date Needed:</strong>{" "}
-                                {jobOrder.dateNeeded}
+                            <div className="mb-1">
+                                <strong>Date Needed:</strong> {jobOrder.dateNeeded}
+                            </div>
+                            <div className="mb-1">
+                                <strong>Prepared By:</strong> {jobOrder.preparedBy}
+                            </div>
+                            <div className="mb-1">
+                                <strong>Checked By:</strong> {jobOrder.checkedBy}
+                            </div>
+                            <div className="mb-1">
+                                <strong>Approved By:</strong> {jobOrder.approvedBy}
                             </div>
                         </CardContent>
                         <CardFooter>
@@ -190,7 +212,7 @@ export default function JobOrderPage({
                 >
                     <Card
                         className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
-                        style={{ height: "320px" }} // Matching height with other cards
+                        style={{ height: "440px" }} // Matching height with other cards
                     >
                         <Plus size={64} className="text-gray-500" />
                     </Card>

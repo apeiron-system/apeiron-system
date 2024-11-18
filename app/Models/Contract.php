@@ -14,7 +14,8 @@ class Contract extends Model
     protected $fillable = [
         'contract_name',
         'progress',
-        'status'
+        'status',
+        'budget',
     ];
 
     public function scopeActive($query)

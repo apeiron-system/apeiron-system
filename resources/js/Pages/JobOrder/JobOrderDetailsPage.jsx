@@ -59,25 +59,6 @@ export default function JobOrderDetailsPage({ auth }) {
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const handleStatusChange = (status) => {
-        setFormData((prevState) => ({ ...prevState, status }));
-    };
-
-    const handleAddItem = (part) => {
-        const newItem = {
-            itemNo: "007",
-            description: "Sample Item",
-            unit: "pcs",
-            quantity: 1,
-            unitCost: 100,
-            amount: 100,
-        };
-        setBoQParts((prevParts) => ({
-            ...prevParts,
-            [part]: [...prevParts[part], newItem],
-        }));
-    };
-
     // Function to determine the color of the progress bar based on the progress percentage
     const getProgressBarColor = (progress) => {
         if (progress >= 100) return "bg-green-500"; // Green for 100%
@@ -115,110 +96,77 @@ export default function JobOrderDetailsPage({ auth }) {
             <div className="flex flex-row-reverse gap-6">
                 {/* Bill of Quantities - BoQ Parts Section (Left Side - Scrollable) */}
                 <div className="w-full flex flex-col">
-                    <h3 className="text-xl font-semibold mb-4">Bill of Quantities</h3>
+                    <h3 className="text-xl font-semibold">Bill of Quantities</h3>
+                    <h3 className="text-left text-gray-700 mb-1">
+                        Grand Total: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
+                    </h3>
                     <div className="w-full h-[calc(100vh-15rem)] lg:w-7/10 bg-white rounded-md py-4 pr-4 overflow-y-auto">
-                        
-                    {Object.keys(BoQParts).map((part, idx) => {
-                        const subtotal = BoQParts[part].reduce((sum, item) => sum + item.amount, 0);
+                        {Object.keys(BoQParts).map((part, idx) => {
+                            const subtotal = BoQParts[part].reduce((sum, item) => sum + item.amount, 0);
 
-                        return (
-                            <div key={idx} className="mb-8">
-                                <h4 className="font-semibold text-lg">{part}</h4>
-                                
-                                {/* Subtotal displayed below Part Name */}
-                                <div className="text-left text-gray-700 text-sm mb-1">
-                                    Subtotal: <span className="text-yellow-500">₱{subtotal.toLocaleString()}</span>
-                                </div>
+                            return (
+                                <div key={idx} className="mb-8">
+                                    <h4 className="font-semibold text-lg">{part}</h4>
 
-                                <div className="bg-white shadow rounded overflow-hidden">
-                                    <Table className="min-w-full divide-y divide-gray-200">
-                                        <TableHeader>
-                                            <TableRow>
-                                                {[
-                                                    "",
-                                                    "Item No.",
-                                                    "Description",
-                                                    "Unit",
-                                                    "Quantity",
-                                                    "Unit Cost",
-                                                    "Amount",
-                                                ].map((header, idx) => (
-                                                    <TableHead key={idx}>{header}</TableHead>
-                                                ))}
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {BoQParts[part].length > 0 ? (
-                                                BoQParts[part].map((item, idx) => (
-                                                    <TableRow key={idx} className="hover:bg-gray-600">
-                                                        <TableCell>
-                                                            <Checkbox />
-                                                        </TableCell>
-                                                        <TableCell>{item.itemNo}</TableCell>
-                                                        <TableCell>{item.description}</TableCell>
-                                                        <TableCell>{item.unit}</TableCell>
-                                                        <TableCell>{item.quantity}</TableCell>
-                                                        <TableCell>{item.unitCost}</TableCell>
-                                                        <TableCell>{item.amount}</TableCell>
-                                                        <TableCell className="text-right">
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger className="text-gray-500 hover:text-white">
-                                                                    &#8226;&#8226;&#8226;
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent>
-                                                                    <DropdownMenuItem>
-                                                                        <Link
-                                                                            href="#"
-                                                                            className="w-full flex gap-2 items-center"
-                                                                        >
-                                                                            View
-                                                                        </Link>
-                                                                    </DropdownMenuItem>
-                                                                    <DropdownMenuItem>
-                                                                        <Link
-                                                                            href="#"
-                                                                            className="w-full flex gap-2 items-center"
-                                                                        >
-                                                                            Delete
-                                                                        </Link>
-                                                                    </DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
+                                    {/* Subtotal displayed below Part Name */}
+                                    <div className="text-left text-gray-700 text-sm mb-1">
+                                        Subtotal: <span className="text-yellow-500">₱{subtotal.toLocaleString()}</span>
+                                    </div>
+
+                                    <div className="bg-white shadow rounded overflow-hidden">
+                                        <Table className="min-w-full divide-y divide-gray-200">
+                                            <TableHeader>
+                                                <TableRow>
+                                                    {[
+                                                        "Item No.",
+                                                        "Description",
+                                                        "Unit",
+                                                        "Quantity",
+                                                        "Unit Cost",
+                                                        "Amount",
+                                                    ].map((header, idx) => (
+                                                        <TableHead key={idx}>{header}</TableHead>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {BoQParts[part].length > 0 ? (
+                                                    BoQParts[part].map((item, idx) => (
+                                                        <TableRow key={idx} className="hover:bg-gray-200">
+                                                            <TableCell>{item.itemNo}</TableCell>
+                                                            <TableCell>{item.description}</TableCell>
+                                                            <TableCell>{item.unit}</TableCell>
+                                                            <TableCell>{item.quantity}</TableCell>
+                                                            <TableCell>{item.unitCost}</TableCell>
+                                                            <TableCell>{item.amount}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell
+                                                            colSpan={6}
+                                                            className="px-4 py-4 text-center text-gray-500"
+                                                        >
+                                                            No items found.
                                                         </TableCell>
                                                     </TableRow>
-                                                ))
-                                            ) : (
-                                                <TableRow>
-                                                    <TableCell
-                                                        colSpan={8}
-                                                        className="px-4 py-4 text-center text-gray-500"
-                                                    >
-                                                        No items found.
-                                                    </TableCell>
-                                                </TableRow>
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </div>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
 
-                                {/* Add Pay Item button */}
-                                <div className="col-span-2 flex justify-end mt-4">
-                                    <Link href={route("job-order-item-billing")}>
-                                        <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded-lg">
-                                            Add Pay Item
-                                        </button>
-                                    </Link>
+                                    {/* Add Pay Item button */}
+                                    <div className="col-span-2 flex justify-end mt-4">
+                                        <Link href={route("job-order-item-billing")}>
+                                            <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded-lg">
+                                                Add Pay Item
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                     </div>
-                    {/* Grand Total Display */}
-                    <div className="sticky bottom-0 left-0 bg-white shadow-lg p-4 mt-4 rounded-lg flex justify-start items-center">
-                            <div className="text-lg font-semibold">
-                                Grand Total: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
-                            </div>
-                        </div>
                 </div>
 
                 {/* JO Details Section (Right Side - Fixed) */}
@@ -246,12 +194,12 @@ export default function JobOrderDetailsPage({ auth }) {
                     </div>
                     <div className="grid grid-cols-1 gap-4 mt-4">
                         {[
+                            ["Status", formData.status],
                             ["Location", formData.location],
                             ["Item Works", formData.itemWorks],
                             ["Period Covered", formData.periodCovered],
                             ["Supplier", formData.supplier],
                             ["Date Needed", formData.dateNeeded],
-                            ["Status", formData.status],
                         ].map(([label, value], idx) => (
                             <div key={idx}>
                                 <div className="text-sm text-gray-600">{label}:</div>

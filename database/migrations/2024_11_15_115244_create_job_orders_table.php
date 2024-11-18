@@ -30,9 +30,10 @@ class CreateJobOrdersTable extends Migration
             $table->string('checkedBy'); // Checked by (employee or department)
             $table->string('approvedBy'); // Approved by (employee or department)
             $table->text('itemWorks'); // Item works as a string
-            $table->float('progress')->default(0); // progress field with default value of 0
+            $table->float('progress')->default(0); // Progress field with default value of 0
             $table->enum('status', ['completed', 'on-going'])->default('on-going'); // Status
-
+            $table->float('budget')->default(0); // Budget field with default value of 0
+            
             $table->timestamps(); // Timestamp columns: created_at, updated_at
         });
     }

@@ -32,7 +32,7 @@ class BoQ extends Model
      */
     public function jobOrder()
     {
-        return $this->belongsTo(JobOrder::class, 'jo_no', 'jo_no');
+        return $this->belongsTo(JobOrder::class, 'jo_no');
     }
 
     /**
