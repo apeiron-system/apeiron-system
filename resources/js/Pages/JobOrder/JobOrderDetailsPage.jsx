@@ -28,31 +28,31 @@ export default function JobOrderDetailsPage({ auth }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         project_desc: "Project A",
-        jo_name: "UNIT 21",
+        jo_name: "Job Order A1",
         contract_name: "Active Contract 1",
         location: "Panabo City",
         itemWorks: "Labor",
         periodCovered: "2022-2026",
         supplier: "Name of Supplier",
         dateNeeded: "2022-2026",
-        status: "PENDING", // default status
+        status: "on-going", // default status
         progress: 40, // Sample progress value (in percentage)
     });
 
     const [BoQParts, setBoQParts] = useState({
         "Part A": [
-            { itemNo: "001", description: "Excavation", unit: "sq.m", quantity: 50, unitCost: 200, amount: 10000 },
-            { itemNo: "002", description: "Concrete Pouring", unit: "cu.m", quantity: 30, unitCost: 250, amount: 7500 },
+            { itemNo: "001", description: "Excavation", unit: "sq.m", quantity: 50, unitCost: 200, amount: 10000, weight: 10 },
+            { itemNo: "002", description: "Concrete Pouring", unit: "cu.m", quantity: 30, unitCost: 250, amount: 7500, weight: 15 },
         ],
         "Part B": [
-            { itemNo: "003", description: "Steel Rebar", unit: "kg", quantity: 100, unitCost: 150, amount: 15000 },
-            { itemNo: "004", description: "Formwork", unit: "sq.m", quantity: 40, unitCost: 180, amount: 7200 },
+            { itemNo: "003", description: "Steel Rebar", unit: "kg", quantity: 100, unitCost: 150, amount: 15000, weight: 20 },
+            { itemNo: "004", description: "Formwork", unit: "sq.m", quantity: 40, unitCost: 180, amount: 7200, weight: 25 },
         ],
         "Part C": [
-            { itemNo: "005", description: "Labor", unit: "hours", quantity: 200, unitCost: 120, amount: 24000 },
-            { itemNo: "006", description: "Electrical Wiring", unit: "m", quantity: 500, unitCost: 50, amount: 25000 },
+            { itemNo: "005", description: "Labor", unit: "hours", quantity: 200, unitCost: 120, amount: 24000, weight: 30 },
+            { itemNo: "006", description: "Electrical Wiring", unit: "m", quantity: 500, unitCost: 50, amount: 25000, weight: 20 },
         ],
-    });
+    });    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -73,6 +73,24 @@ export default function JobOrderDetailsPage({ auth }) {
             return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
         }, 0);
     };
+
+    const addDummyPayItem = (part) => {
+        setBoQParts((prevBoQParts) => ({
+            ...prevBoQParts,
+            [part]: [
+                ...prevBoQParts[part],
+                {
+                    itemNo: `00${prevBoQParts[part].length + 1}`,
+                    description: "New Dummy Item",
+                    unit: "pcs",
+                    quantity: 1,
+                    unitCost: 100,
+                    amount: 100,
+                    weight: 0, // Default weight percentage
+                },
+            ],
+        }));
+    };    
 
     return (
         <AuthenticatedLayout
@@ -101,7 +119,7 @@ export default function JobOrderDetailsPage({ auth }) {
                 <div className="w-full flex flex-col">
                     <h3 className="text-xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
-                        Grand Total: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
+                        Total Job Order Cost: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
                     </h3>
                     <div className="w-full h-[calc(100vh-15rem)] lg:w-7/10 bg-white rounded-md py-4 pr-4 overflow-y-auto">
                         {Object.keys(BoQParts).map((part, idx) => {
@@ -127,6 +145,7 @@ export default function JobOrderDetailsPage({ auth }) {
                                                         "Quantity",
                                                         "Unit Cost",
                                                         "Amount",
+                                                        "Weight (%)", // Update header to indicate percentage
                                                     ].map((header, idx) => (
                                                         <TableHead key={idx}>{header}</TableHead>
                                                     ))}
@@ -142,12 +161,13 @@ export default function JobOrderDetailsPage({ auth }) {
                                                             <TableCell>{item.quantity}</TableCell>
                                                             <TableCell>{item.unitCost}</TableCell>
                                                             <TableCell>{item.amount}</TableCell>
+                                                            <TableCell>{item.weight}%</TableCell> {/* Display weight as percentage */}
                                                         </TableRow>
                                                     ))
                                                 ) : (
                                                     <TableRow>
                                                         <TableCell
-                                                            colSpan={6}
+                                                            colSpan={7} // Updated colspan to match the new column count
                                                             className="px-4 py-4 text-center text-gray-500"
                                                         >
                                                             No items found.
@@ -160,11 +180,12 @@ export default function JobOrderDetailsPage({ auth }) {
 
                                     {/* Add Pay Item button */}
                                     <div className="col-span-2 flex justify-end mt-4">
-                                        <Link href={route("job-order-item-billing")}>
-                                            <button className="py-2 px-3 py-2 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded-lg">
+                                        <button
+                                                onClick={() => addDummyPayItem(part)}
+                                                className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded-lg"
+                                            >
                                                 Add Pay Item
-                                            </button>
-                                        </Link>
+                                        </button>
                                     </div>
                                 </div>
                             );
@@ -244,17 +265,17 @@ export default function JobOrderDetailsPage({ auth }) {
                                 <DropdownMenuContent>
                                     <DropdownMenuItem
                                         onClick={() => {
-                                            /* Logic to change status to On Going */
+                                            /* Logic to change status to on-going */
                                         }}
                                     >
-                                        ON-GOING
+                                        on-going
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onClick={() => {
-                                            /* Logic to change status to Pending */
+                                            /* Logic to change status to completed */
                                         }}
                                     >
-                                        PENDING
+                                        completed
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

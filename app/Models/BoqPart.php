@@ -9,19 +9,15 @@ class BoqPart extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
+    // Table name
     protected $table = 'boq_part';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Primary key
+    protected $primaryKey = 'boq_part_id';
+
+    // Fillable properties for mass assignment
     protected $fillable = [
+        'boq_id',
         'part_name',
         'item_no',
         'description',
@@ -30,26 +26,12 @@ class BoqPart extends Model
         'unit_cost',
         'amount',
         'subtotal',
+        'weight',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'unit_cost' => 'float',
-        'amount' => 'float',
-        'subtotal' => 'float',
-    ];
-
-    public function billingOfQuantities()
+    // Relationships
+    public function boq()
     {
-        return $this->belongsTo(BoQ::class);
-    }
-    
-    public function calculateAmount()
-    {
-        return $this->quantity * $this->unit_cost;
+        return $this->belongsTo(Boq::class, 'boq_id', 'boq_id'); // Foreign key 'boq_id' relates to 'boq' table
     }
 }

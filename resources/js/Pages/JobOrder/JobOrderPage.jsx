@@ -163,7 +163,7 @@ export default function JobOrderPage({
                                 </span>
                             </div>
                             <div className="mb-1">
-                                <strong>Budget:</strong> ₱{jobOrder.budget}
+                                <strong>Approved Budget:</strong> ₱{jobOrder.budget}
                             </div>
                             <div className="mb-1">
                                 <strong>Location:</strong> {jobOrder.location}

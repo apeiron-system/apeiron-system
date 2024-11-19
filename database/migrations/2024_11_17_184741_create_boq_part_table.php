@@ -28,6 +28,7 @@ class CreateBoqPartTable extends Migration
             $table->float('unit_cost', 10, 2); // Cost per unit
             $table->float('amount', 10, 2); // Total amount (unit_cost * quantity)
             $table->float('subtotal', 10, 2); // Subtotal for the part
+            $table->float('weight', 10, 2)->nullable(); // Weight of the item, nullable
             $table->timestamps(); // Created at and Updated at timestamps
         });
     }
