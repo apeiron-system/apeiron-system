@@ -1,5 +1,6 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
-import NavLink from "@/Components/NavLink";
+import { useState } from "react";
+import ApplicationLogo from "@/Componentss/ApplicationLogo";
+import NavLink from "@/Componentss/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -19,11 +20,12 @@ import {
     User,
     Users,
 } from "lucide-react";
-import { useState } from "react";
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    // Safely handle the current route with optional chaining and a fallback
+    const currentRoute = route && route().current ? route().current() : null;
 
     return (
         <div className="min-h-screen flex">
@@ -38,37 +40,37 @@ export default function Authenticated({ user, header, children }) {
                     <div className="flex-grow pt-4 space-y-1">
                         <NavLink
                             href={route("dashboard")}
-                            active={route().current("dashboard")}
+                            active={currentRoute === "dashboard"}
                         >
                             <LayoutDashboard className="mr-2" /> Dashboard
                         </NavLink>
                         <NavLink
                             href={route("contract")}
-                            active={route().current().startsWith("contract")}
+                            active={currentRoute?.startsWith("contract")}
                         >
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
                         <NavLink
                             href={route("job-order")}
-                            active={route().current("job-order")}
+                            active={currentRoute === "job-order"}
                         >
                             <NotebookPen className="mr-2" /> Job Order
                         </NavLink>
                         <NavLink
                             href={route("item")}
-                            active={route().current().startsWith("item")}
+                            active={currentRoute?.startsWith("item")}
                         >
                             <ShoppingBasket className="mr-2" /> Item
                         </NavLink>
                         <NavLink
                             href={route("progress-report")}
-                            active={route().current("progress-report")}
+                            active={currentRoute === "progress-report"}
                         >
                             <LineChart className="mr-2" /> Progress Report
                         </NavLink>
                         <NavLink
                             href={route("employees")}
-                            active={route().current().startsWith("employee")}
+                            active={currentRoute?.startsWith("employee")}
                         >
                             <Users className="mr-2" /> Employees
                         </NavLink>

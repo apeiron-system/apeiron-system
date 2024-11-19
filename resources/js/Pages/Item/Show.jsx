@@ -10,7 +10,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import {
     Dialog,
     DialogTrigger,
@@ -19,7 +19,7 @@ import {
     DialogTitle,
     DialogFooter,
     DialogClose,
-} from "@/components/ui/dialog"; // Ensure you have the Dialog component
+} from "@/Components/ui/dialog"; // Ensure you have the Dialog component
 
 export default function Show({ auth, item, contractId }) {
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -19,83 +20,68 @@ import {
     AlertDialogTitle,
     AlertDialogDescription,
 } from "@/Components/ui/alert-dialog";
-import { useState } from "react";
 
-export default function ProjectPartTable({
-    projectParts,
+export default function ProjectPartItemTable({
+    type,
+    items,
     contract_id,
     project_id,
+    project_part_id,
 }) {
-    const [selectedPart, setSelectedPart] = useState(null); // Track the selected part for deletion
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // Track the dialog's open state
+    const [selectedItem, setSelectedItem] = useState(null); // Track the selected item for deletion
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // Track whether the dialog is open
 
-    const handleDelete = (partId) => {
-        if (!partId) return; // Ensure the part ID is valid
+    const handleDelete = () => {
+        if (!selectedItem) return; // Ensure a valid selected item exists
         router.delete(
-            `/contract/${contract_id}/project/${project_id}/part/${partId}/delete`
+            `/contract/${contract_id}/project/${project_id}/part/${project_part_id}/item/${selectedItem}/delete`
         );
-        setSelectedPart(null); // Reset selected part after deletion
-        setIsDialogOpen(false); // Close the dialog
+        setIsDialogOpen(false); // Close the dialog after deletion
+        setSelectedItem(null); // Reset selected item
     };
 
-    const openDialog = (partId) => {
-        setSelectedPart(partId); // Set the selected part ID
+    const openDialog = (itemId) => {
+        setSelectedItem(itemId); // Set the selected item
         setIsDialogOpen(true); // Open the dialog
     };
 
     const closeDialog = () => {
-        setSelectedPart(null); // Reset selected part
         setIsDialogOpen(false); // Close the dialog
+        setSelectedItem(null); // Reset the selected item
     };
 
     return (
-        <div>
+        <div className="mt-6">
             <Table>
-                <TableCaption>Project Parts</TableCaption>
-
                 <TableHeader>
                     <TableRow>
                         <TableHead>Description</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Bid Amount</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
-
                 <TableBody>
-                    {projectParts.map((projectPart) => (
+                    {items.map((item) => (
                         <TableRow
-                            key={"project-part-" + projectPart.id}
-                            className="group cursor-pointer"
+                            key={`${type}-item-${item.id}`}
+                            className="group"
                         >
-                            <TableCell
-                                onClick={() =>
-                                    (window.location.href = `/contract/${contract_id}/project/${project_id}/part/${projectPart.id}`)
-                                }
-                            >
-                                {projectPart.description}
+                            <TableCell>{item.description}</TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>
+                                {item.bid_amount ? `${item.bid_amount}` : "N/A"}
                             </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end space-x-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <Link
-                                            href={`/contract/${contract_id}/project/${project_id}/part/${projectPart.id}/edit`}
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </Link>
-                                    </Button>
-
                                     <AlertDialog open={isDialogOpen}>
                                         <AlertDialogTrigger asChild>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={(e) => {
-                                                    e.stopPropagation(); // Prevent row click
-                                                    openDialog(projectPart.id); // Open dialog with selected part ID
-                                                }}
+                                                onClick={() =>
+                                                    openDialog(item.id)
+                                                }
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
@@ -107,29 +93,20 @@ export default function ProjectPartTable({
                                                 </AlertDialogTitle>
                                                 <AlertDialogDescription>
                                                     Are you sure you want to
-                                                    delete this project part?
-                                                    This action cannot be
-                                                    undone.
+                                                    delete this item? This
+                                                    action cannot be undone.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
                                                 <Button
                                                     variant="outline"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // Prevent row click
-                                                        closeDialog(); // Close the dialog
-                                                    }}
+                                                    onClick={closeDialog}
                                                 >
                                                     Cancel
                                                 </Button>
                                                 <Button
                                                     variant="destructive"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // Prevent row click
-                                                        handleDelete(
-                                                            selectedPart
-                                                        ); // Delete the selected part
-                                                    }}
+                                                    onClick={handleDelete}
                                                 >
                                                     Delete
                                                 </Button>

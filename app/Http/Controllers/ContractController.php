@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContractModel;
 use App\Models\EmployeeModel;
+use App\Models\ProjectModel;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,15 +13,29 @@ class ContractController extends Controller
     //
 
 
-    public function view()
+    public function view(Request $request)
     {
-
-        // get all contracts from the ContractModel
-
-        $contracts = ContractModel::all();
-
-        return Inertia::render('Contract/ContractPage', ['contracts' => $contracts]);
+        $search = $request->input('search');
+    
+        // Active contracts (exclude completed and canceled)
+        $contracts = ContractModel::whereNotIn('status', ['completed', 'canceled'])->get();
+    
+        // Filter past contracts with status "completed"
+        $pastContractsQuery = ContractModel::where('status', 'completed');
+    
+        // Apply search filter if provided
+        if ($search) {
+            $pastContractsQuery->where('contract_name', 'like', '%' . $search . '%');
+        }
+    
+        $pastContracts = $pastContractsQuery->get();
+    
+        return Inertia::render('Contract/ContractPage', [
+            'contracts' => $contracts,
+            'pastContracts' => $pastContracts, // Use the correct data label
+        ]);
     }
+    
 
     public function add()
     {
@@ -63,17 +78,31 @@ class ContractController extends Controller
         return redirect()->route('contract');
     }
 
-    public function viewContract($id)
+    public function viewContract(Request $request, $id)
     {
-
-        $contract = ContractModel::find($id);
-
-        $projects = $contract->projects;
-
-        $signingAuthorityEmployee = $contract->signingAuthorityEmployee;
-
-
-        return Inertia::render('Contract/ViewContractPage', ['contract' => $contract, 'projects' => $projects, 'signingAuthorityEmployee' => $signingAuthorityEmployee]);
+        $contract = ContractModel::with('projects')->find($id);
+        
+        if (!$contract) {
+            return redirect()->route('contracts.index')->with('error', 'Contract not found.');
+        }
+    
+        $signingAuthorityEmployee = EmployeeModel::find($contract->authorized_representative_employee_id);
+    
+        // Build the query for projects
+        $projectsQuery = ProjectModel::where('contract_id', $id);
+    
+        // Apply search filter if search query exists
+        if ($request->has('search') && !empty($request->search)) {
+            $projectsQuery->where('project_name', 'like', '%' . $request->search . '%');
+        }
+    
+        $projects = $projectsQuery->get();
+    
+        return Inertia::render('Contract/ViewContractPage', [
+            'contract' => $contract,
+            'projects' => $projects,
+            'signingAuthorityEmployee' => $signingAuthorityEmployee,
+        ]);
     }
 
     public function edit($id)

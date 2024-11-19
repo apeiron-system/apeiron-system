@@ -1,4 +1,4 @@
-import EmployeesDialog from "@/Components/contract/EmployeesDialog";
+import EmployeesDialog from "@/Componentss/contract/EmployeesDialog";
 import { Button } from "@/Components/ui/button";
 import {
     Form,
@@ -7,7 +7,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form";
+} from "@/Components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
@@ -97,7 +97,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="project_name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Project Name</FormLabel>
+                            <FormLabel>
+                                Project Name
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -114,7 +119,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Status</FormLabel>
+                            <FormLabel>
+                                Status
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <select
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -135,7 +145,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="street_address"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Street Address</FormLabel>
+                            <FormLabel>
+                                Street Address
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -152,7 +167,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="barangay"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Barangay</FormLabel>
+                            <FormLabel>
+                                Barangay
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -169,7 +189,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="city"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>City</FormLabel>
+                            <FormLabel>
+                                City
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -186,7 +211,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="province"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Province</FormLabel>
+                            <FormLabel>
+                                Province
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -203,7 +233,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="zip_code"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Zip Code</FormLabel>
+                            <FormLabel>
+                                Zip Code
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -220,7 +255,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="country"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Country</FormLabel>
+                            <FormLabel>
+                                Country
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -237,7 +277,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="duration_in_days"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Duration in Days</FormLabel>
+                            <FormLabel>
+                                Duration in Days
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -255,7 +300,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="num_of_units"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Number of Units</FormLabel>
+                            <FormLabel>
+                                Number of Units
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -273,7 +323,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="abc_value"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>ABC Value (PHP)</FormLabel>
+                            <FormLabel>
+                                ABC Value (PHP)
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -291,7 +346,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="submitted_by_employee_id"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Submitted By</FormLabel>
+                            <FormLabel>
+                                Submitted By
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={
@@ -317,7 +377,12 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="signing_authority_employee_id"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Signing Authority</FormLabel>
+                            <FormLabel>
+                                Signing Authority
+                                <div className="text-stone-500 text-xs">
+                                    (required)
+                                </div>
+                            </FormLabel>
                             <div>
                                 <EmployeesDialog
                                     selectedEmployee={

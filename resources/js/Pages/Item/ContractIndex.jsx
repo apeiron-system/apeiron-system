@@ -29,7 +29,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog"; // Assuming you have a Modal component
+} from "@/Components/ui/dialog"; // Assuming you have a Modal component
 import {
     FilterIcon,
     MoveRight,

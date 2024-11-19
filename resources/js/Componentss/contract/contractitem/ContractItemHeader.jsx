@@ -1,7 +1,5 @@
 import { Edit, ChevronLeft } from "lucide-react";
-import DialogDeleteContract from "./DialogDeleteContract";
 import { Link, router } from "@inertiajs/react";
-import { Button } from "@/Components/ui/button";
 import _ from "lodash";
 
 import {
@@ -11,15 +9,14 @@ import {
     AccordionTrigger,
 } from "@/Components/ui/accordion";
 
-export default function ContractHeader({
+export default function ContractItemHeader({
     contract,
     signingAuthorityEmployee,
-    canEdit,
 }) {
     return (
-        <section className="w-full flex justify-between items-start">
-            <div className="flex-1">
-                <Link href={`/contract`}>
+        <section className="grid grid-cols-3">
+            <div>
+                <Link href={`/contract/${contract.id}`}>
                     <button className="text-gray-500 flex items-center gap-2 pb-4">
                         <ChevronLeft />
                     </button>
@@ -72,23 +69,6 @@ export default function ContractHeader({
                 </Accordion>
             </div>
 
-            {canEdit && (
-                <div className="flex-1 text-right">
-                    <Link href={`/contract/${contract.id}/edit`}>
-                        <Button variant="outline">
-                            <Edit />
-                        </Button>
-                    </Link>
-                    <DialogDeleteContract
-                        contract={contract}
-                        onDelete={() => {
-                            router.delete(
-                                route("contract.delete", contract.id)
-                            );
-                        }}
-                    />
-                </div>
-            )}
         </section>
     );
 }

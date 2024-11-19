@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { Label } from "@/Components/ui/label";
 import {
     Select,
     SelectContent,
@@ -8,15 +8,12 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "@/Components/ui/select";
 import { router } from "@inertiajs/react";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
-
-
-export default function AddItemSection({contract}) {
-
+export default function AddItemSection({ contract }) {
     const [items, setItems] = useState([
         {
             description: "",
@@ -36,6 +33,7 @@ export default function AddItemSection({contract}) {
 
     const handleSelectChange = (index, value) => {
         const newItems = [...items];
+        console.log(value);
         newItems[index].type = value;
         setItems(newItems);
     };
@@ -111,7 +109,11 @@ export default function AddItemSection({contract}) {
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label>Type</Label>
-                            <Select>
+                            <Select
+                                onValueChange={(value) => {
+                                    handleSelectChange(itemIndex, value);
+                                }}
+                            >
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue
                                         value={item.type}
@@ -121,37 +123,13 @@ export default function AddItemSection({contract}) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem
-                                            value={"material"}
-                                            onClick={() => {
-                                                handleSelectChange(
-                                                    itemIndex,
-                                                    "material"
-                                                );
-                                            }}
-                                        >
+                                        <SelectItem value={"material"}>
                                             Material
                                         </SelectItem>
-                                        <SelectItem
-                                            value={"labor"}
-                                            onClick={() => {
-                                                handleSelectChange(
-                                                    itemIndex,
-                                                    "labor"
-                                                );
-                                            }}
-                                        >
+                                        <SelectItem value={"labor"}>
                                             Labor
                                         </SelectItem>
-                                        <SelectItem
-                                            value={"equipment"}
-                                            onClick={() => {
-                                                handleSelectChange(
-                                                    itemIndex,
-                                                    "equipment"
-                                                );
-                                            }}
-                                        >
+                                        <SelectItem value={"equipment"}>
                                             Equipment
                                         </SelectItem>
                                     </SelectGroup>

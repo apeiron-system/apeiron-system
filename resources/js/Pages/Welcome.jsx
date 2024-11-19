@@ -1,7 +1,6 @@
 
-import ApplicationLogo from "@/Components/ApplicationLogo";
+import ApplicationLogo from "@/Componentss/ApplicationLogo";
 import { Button } from "@/Components/ui/button";
-
 import {
     Card,
     CardContent,

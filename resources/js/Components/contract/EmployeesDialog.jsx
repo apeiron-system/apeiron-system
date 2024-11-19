@@ -26,8 +26,9 @@ export default function EmployeesDialog({
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(
         selectedEmployee ? selectedEmployee : null
     );
-    const [addedSelectedEmployeeId, setAddedSelectedEmployeeId] =
-        useState(selectedEmployee ? selectedEmployee : null);
+    const [addedSelectedEmployeeId, setAddedSelectedEmployeeId] = useState(
+        selectedEmployee ? selectedEmployee : null
+    );
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleAddEmployee = () => {
