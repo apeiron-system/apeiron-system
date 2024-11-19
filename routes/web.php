@@ -25,6 +25,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/job-order', function() {
+    return Inertia::render('JobOrder/JobOrderPage');
+})->middleware(['auth', 'verified'])->name('job-order');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ApplicationLogo from "@/Componentss/ApplicationLogo";
-import NavLink from "@/Componentss/NavLink";
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import NavLink from "@/Components/NavLink";
 import {
     DropdownMenu,
     DropdownMenuContent,
