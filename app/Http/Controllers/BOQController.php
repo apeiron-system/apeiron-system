@@ -62,36 +62,36 @@ class BOQController extends Controller
     public function view($contractId, $projectId)
     {
         $data = $this->fetchBOQData($contractId, $projectId);
-    
+
         // Explicitly include contractId and projectId in the data array
         $data['contractId'] = $contractId;
         $data['projectId'] = $projectId;
-    
+
         return view('boq.viewboq', $data);
     }
-    
+
 
     public function download($contractId, $projectId)
     {
         $data = $this->fetchBOQData($contractId, $projectId);
-    
+
         // Render the HTML for the PDF
         $html = View::make('boq.pdf', $data)->render();
-    
+
         // Configure and generate the PDF
         $options = new Options();
         $options->set('isRemoteEnabled', true);
         $dompdf = new Dompdf($options);
-    
+
         $dompdf->loadHtml('<style>@page { margin: 0; } body { margin: 0; }</style>' . $html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
-    
+
         return response()->streamDownload(function () use ($dompdf) {
             echo $dompdf->output();
         }, "boq_contract_{$contractId}_project_{$projectId}.pdf");
     }
-    
+
 }
 
 
