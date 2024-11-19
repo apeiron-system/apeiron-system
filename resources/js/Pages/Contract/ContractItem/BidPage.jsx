@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/Components/ui/button";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ChevronLeft, Trash2 } from "lucide-react";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import {
@@ -13,31 +13,36 @@ import {
     TableHeader,
     TableRow,
 } from "@/Components/ui/table";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+} from "@/Components/ui/alert-dialog";
 
 export default function BidPage({ auth, item, contractId, bids }) {
     const [formData, setFormData] = useState({
-        bid_amount: "", // Initialize bid amount as empty
+        bid_amount: "",
     });
-    const [selectedBids, setSelectedBids] = useState([]); // Track selected bids
+    const [selectedBids, setSelectedBids] = useState([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    // Handle input change for the bid amount
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handle form submission to store the bid
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Post the new bid to the backend route
         router.post(
-            route("item.contract.bid.store", [contractId, item.id]), // Post bid to this route
+            route("item.contract.bid.store", [contractId, item.id]),
             formData
         );
     };
 
-    // Handle checkbox change for individual bid selection
     const handleCheckboxChange = (bidId) => {
         setSelectedBids((prevSelected) =>
             prevSelected.includes(bidId)
@@ -46,24 +51,23 @@ export default function BidPage({ auth, item, contractId, bids }) {
         );
     };
 
-    // Handle the "select all" checkbox
     const handleSelectAll = () => {
         if (selectedBids.length === bids.length) {
-            setSelectedBids([]); // Deselect all if already selected
+            setSelectedBids([]);
         } else {
-            setSelectedBids(bids.map((bid) => bid.id)); // Select all
+            setSelectedBids(bids.map((bid) => bid.id));
         }
     };
 
-    // Handle multiple bid deletion
     const handleDeleteSelected = () => {
         router.delete(
             route("item.contract.bids.delete", [contractId, item.id]),
             {
                 data: { bidIds: selectedBids },
-                onSuccess: () => setSelectedBids([]), // Clear selected bids on success
+                onSuccess: () => setSelectedBids([]),
             }
         );
+        setIsDialogOpen(false); // Close the dialog after deletion
     };
 
     return (
@@ -71,12 +75,11 @@ export default function BidPage({ auth, item, contractId, bids }) {
             user={auth.user}
             header={
                 <div className="flex items-center gap-2">
-                        <Link href={`/contracts/${contractId}/items`}>
-                            <button className="text-gray-500">
-                                <ArrowLeft />
-                            </button>
-                        </Link>
-
+                    <Link href={`/contracts/${contractId}/items`}>
+                        <button className="text-gray-500">
+                            <ChevronLeft />
+                        </button>
+                    </Link>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Place Bid - {item.description}
                     </h2>
@@ -87,7 +90,6 @@ export default function BidPage({ auth, item, contractId, bids }) {
 
             <section className="py-4 w-full max-w-[600px]">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Bid Amount Field */}
                     <div>
                         <Label>Bid Amount</Label>
                         <Input
@@ -101,37 +103,59 @@ export default function BidPage({ auth, item, contractId, bids }) {
                     </div>
 
                     <div className="flex justify-end">
-                        <Button
-                            type="submit"
-                            className="bg-primary text-white"
-                        >
+                        <Button type="submit" className="bg-primary text-white">
                             Submit Bid
                         </Button>
                     </div>
                 </form>
 
-                {/* Bids Table */}
                 <div className="flex justify-between pt-6">
                     <h3 className="mt-8 text-lg font-semibold">
                         Previous Bids
                     </h3>
 
-                    {/* Delete Selected Bids Button */}
-                    <div className="flex justify-end my-4">
-                        <Button
-                            variant="destructive"
-                            onClick={handleDeleteSelected}
-                            disabled={selectedBids.length === 0}
-                        >
-                            <Trash2 className="w-4 h-4 " />
-                        </Button>
-                    </div>
+                    <AlertDialog open={isDialogOpen}>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                variant="destructive"
+                                onClick={() => setIsDialogOpen(true)}
+                                disabled={selectedBids.length === 0}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Confirm Deletion
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Are you sure you want to delete the selected
+                                    bids? This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setIsDialogOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="destructive"
+                                    onClick={handleDeleteSelected}
+                                >
+                                    Delete
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
                 {bids.length > 0 ? (
-                    <Table className="w-full bg-white border border-gray-300">
+                    <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="py-2 px-4 border-b">
+                                <TableHead>
                                     <input
                                         type="checkbox"
                                         onChange={handleSelectAll}
@@ -140,12 +164,8 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                         }
                                     />
                                 </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
-                                    Bid Amount
-                                </TableHead>
-                                <TableHead className="py-2 px-4 border-b">
-                                    Date Placed
-                                </TableHead>
+                                <TableHead>Bid Amount</TableHead>
+                                <TableHead>Date Placed</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -154,10 +174,10 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                     (a, b) =>
                                         new Date(b.created_at) -
                                         new Date(a.created_at)
-                                ) // Sort bids in descending order by date
+                                )
                                 .map((bid) => (
                                     <TableRow key={bid.id}>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             <input
                                                 type="checkbox"
                                                 checked={selectedBids.includes(
@@ -168,12 +188,12 @@ export default function BidPage({ auth, item, contractId, bids }) {
                                                 }
                                             />
                                         </TableCell>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             {parseFloat(bid.bid_amount).toFixed(
                                                 2
                                             )}
                                         </TableCell>
-                                        <TableCell className="py-4 px-4 border-b">
+                                        <TableCell>
                                             {new Date(
                                                 bid.created_at
                                             ).toLocaleDateString()}

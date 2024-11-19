@@ -1,4 +1,4 @@
-import { Edit, ArrowLeft } from "lucide-react";
+import { Edit, ChevronLeft } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import _ from "lodash";
 
@@ -18,7 +18,7 @@ export default function ContractItemHeader({
             <div>
                 <Link href={`/contract/${contract.id}`}>
                     <button className="text-gray-500 flex items-center gap-2 pb-4">
-                        <ArrowLeft />
+                        <ChevronLeft />
                     </button>
                 </Link>
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">

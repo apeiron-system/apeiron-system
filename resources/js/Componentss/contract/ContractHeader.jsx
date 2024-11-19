@@ -1,4 +1,4 @@
-import { Edit, ArrowLeft } from "lucide-react";
+import { Edit, ChevronLeft } from "lucide-react";
 import DialogDeleteContract from "./DialogDeleteContract";
 import { Link, router } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";
@@ -17,11 +17,11 @@ export default function ContractHeader({
     canEdit,
 }) {
     return (
-        <section className="grid grid-cols-3">
-            <div>
+        <section className="w-full flex justify-between items-start">
+            <div className="flex-1">
                 <Link href={`/contract`}>
                     <button className="text-gray-500 flex items-center gap-2 pb-4">
-                        <ArrowLeft />
+                        <ChevronLeft />
                     </button>
                 </Link>
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
@@ -73,7 +73,7 @@ export default function ContractHeader({
             </div>
 
             {canEdit && (
-                <div className="w-full text-right">
+                <div className="flex-1 text-right">
                     <Link href={`/contract/${contract.id}/edit`}>
                         <Button variant="outline">
                             <Edit />
