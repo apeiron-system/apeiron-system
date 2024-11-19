@@ -1,7 +1,8 @@
 import React from "react";
 import { FileX2 } from "lucide-react";
+import { Link } from "@inertiajs/react";
 
-const ExitJobOrderModal = ({ show, onClose, onDiscard, onSaveDraft }) => {
+const ExitJobOrderModal = ({ show, onClose, projectId }) => {
     if (!show) return null;
 
     return (
@@ -10,32 +11,29 @@ const ExitJobOrderModal = ({ show, onClose, onDiscard, onSaveDraft }) => {
                 <div className="p-6 px-4 text-center">
                     <FileX2
                         className="mx-auto mb-4"
-                        size={50}
+                        size={100}
                         color="rgb(15,23,42)"
                     />
-                    <h3 className="text-lg font-semibold mt-2 mb-2">
-                        Do you really wish to exit without saving?
+                    <h3 className="text-xl font-semibold mt-2 mb-2">
+                        Unsaved Changes
                     </h3>
-                    <p className="text-xs text-gray-500 mb-4">
-                        Your progress will not be saved if you cancel now.
+                    <p className="text-sm text-gray-500 mb-4">
+                        Are you sure you want to continue?
                     </p>
                 </div>
                 <div className="border-t border-gray-200">
-                    <button
-                        onClick={onDiscard}
-                        className="text-lg w-full p-4 text-red-500 font-semibold hover:bg-gray-50 transition-colors"
+                    <Link href={route("job-order", { 
+                            project_id: projectId
+                        })}
                     >
-                        Discard
-                    </button>
+                        <button
+                            className="text-lg w-full p-4 text-red-500 font-semibold hover:bg-gray-50 transition-colors"
+                        >
+                            Discard Changes
+                        </button>
+                    </Link>
                 </div>
-                <div className="border-t border-gray-200">
-                    <button
-                        onClick={onSaveDraft}
-                        className="text-lg w-full p-4 text-blue-500 font-semibold hover:bg-gray-50 transition-colors"
-                    >
-                        Save as Draft
-                    </button>
-                </div>
+                
                 <div className="border-t border-gray-200">
                     <button
                         onClick={onClose}

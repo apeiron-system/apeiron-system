@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table"; // Import ShadCN Table components
 
-export default function JobOrderDetailsPage({ auth }) {
+export default function JobOrderDetailsPage({ auth, jobOrder }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         project_desc: "Project A",
@@ -38,6 +38,8 @@ export default function JobOrderDetailsPage({ auth }) {
         status: "on-going", // default status
         progress: 40, // Sample progress value (in percentage)
     });
+
+    
 
     const [BoQParts, setBoQParts] = useState({
         "Part A": [
@@ -98,7 +100,10 @@ export default function JobOrderDetailsPage({ auth }) {
             className="fixed top-0 left-0 right-0 bg-white z-20 shadow-md"
             header={
                 <div className="flex items-center">
-                    <Link href={route("job-order")}>
+                    <Link href={route("job-order", { 
+                            // project_id: jobOrder.project_id
+                        })}
+                    >
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                             <ChevronLeft size={20} />
                         </button>
@@ -197,7 +202,9 @@ export default function JobOrderDetailsPage({ auth }) {
 
                 {/* JO Details Section (Left  Side - Fixed) */}
                 <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">
+                    
                     <div className="text-gray-900">
+                        
                         <div className="pb-4">
                             <div className="text-xl font-semibold">{formData.jo_name}</div>
                             <div className="text-sm text-gray-600">{formData.project_desc}</div>
@@ -217,7 +224,9 @@ export default function JobOrderDetailsPage({ auth }) {
                             </div>
                             <span className="text-sm">{formData.progress}%</span>
                         </div>
+
                     </div>
+                    
                     <div className="grid grid-cols-1 gap-4 mt-4">
                         {[
                             ["Status", formData.status],

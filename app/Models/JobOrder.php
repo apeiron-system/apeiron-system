@@ -18,18 +18,20 @@ class JobOrder extends Model
 
     // Define the fillable fields for mass assignment
     protected $fillable = [
+        'contract_id',
+        'project_id',
         'jo_name',
         'location',
+        'supplier',
+        'itemWorks', 
         'period_covered', 
-        'supplier', 
         'dateNeeded', 
         'preparedBy', 
         'checkedBy', 
         'approvedBy', 
-        'itemWorks',
-        'progress',
-        'status',
         'budget',
+        'status',
+        'progress',
     ];
 
     // Specify the date format if needed

@@ -73,6 +73,7 @@ class JobOrderController extends Controller
                     ] : null
                 ],
                 'contractId' => $contractId, // Pass contract_id of the first job order
+                'projectId' => $projectId,
                 'jobOrders' => $jobOrders,
                 'projectName' => $projectName, // Pass the project name to the frontend
                 'projectLocation' => $projectLocation, // Pass the project location to the frontend
@@ -99,6 +100,116 @@ class JobOrderController extends Controller
                 'projectName' => null, // Pass null if no project is found
                 'projectLocation' => null, // Pass null if no project is found
             ]);
+        }
+    }
+
+    /**
+     * Show the form for creating a new job order.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function create(Request $request)
+    {
+        try {
+            // Fetch project data to pass to the frontend
+            $projectId = $request->query('project_id');
+            $project = Project::findOrFail($projectId);
+
+            // Fetch contract data, assuming the project has a contract
+            $contract = Contract::findOrFail($project->contract_id);
+
+            return Inertia::render('JobOrder/CreateJobOrderPage', [
+                'auth' => [
+                    'user' => $request->user() ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                    ] : null
+                ],
+                'project' => $project,
+                'contract' => $contract,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in JobOrderController@create: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return Inertia::render('JobOrder/CreateJobOrderPage', [
+                'auth' => [
+                    'user' => $request->user() ? [
+                        'id' => $request->user()->id,
+                        'name' => $request->user()->name,
+                        'email' => $request->user()->email,
+                    ] : null
+                ],
+                'project' => null,
+                'contract' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Store a newly created job order in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'contractId' => 'required|exists:contracts,id',
+            'projectId' => 'required|exists:projects,id',
+            'jobOrderName' => 'required|string|max:255',
+            'budget' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+            'supplier' => 'required|string|max:255',
+            'itemWorks' => 'required|string|max:255',
+            'periodCovered' => 'required|string|max:255',
+            'dateNeeded' => 'required|date',
+            'preparedBy' => 'required|string|max:255',
+            'checkedBy' => 'required|string|max:255',
+            'approvedBy' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+        ]);
+
+        try {
+            // Transform the validated data to match database column names
+            $jobOrderData = [
+                'contract_id' => $validatedData['contractId'],
+                'project_id' => $validatedData['projectId'],
+                'jo_name' => $validatedData['jobOrderName'],
+                'location' => $validatedData['location'],
+                'supplier' => $validatedData['supplier'],
+                'itemWorks' => $validatedData['itemWorks'],
+                'period_covered' => $validatedData['periodCovered'],
+                'dateNeeded' => $validatedData['dateNeeded'],
+                'preparedBy' => $validatedData['preparedBy'],
+                'checkedBy' => $validatedData['checkedBy'],
+                'approvedBy' => $validatedData['approvedBy'],
+                'budget' => $validatedData['budget'],
+                'status' =>  $validatedData['status'],
+                'progress' => 0,
+            ];
+
+            // Create the job order
+            $jobOrder = JobOrder::create($jobOrderData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Job Order created successfully!',
+                'job_order' => $jobOrder
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in JobOrderController@store: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create job order.'
+            ], 500);
         }
     }
 }

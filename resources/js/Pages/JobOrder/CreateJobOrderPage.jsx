@@ -4,27 +4,30 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import ExitJobOrderModal from "@/Components/ExitJobOrderModal";
 import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
-import CancelJobOrderModal from "@/Components/CancelJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
 import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
 import { ChevronLeft } from "lucide-react";
 
-export default function CreateJobOrderPage({ auth }) {
+export default function CreateJobOrderPage({ auth, project, contract }) {
     const [formData, setFormData] = useState({
-        projectName: "",
-        jobOrderNo: "",
-        contractId: "",
+        contractId: contract.id,
+        projectId: project.id,
+        jobOrderName: "",
+        budget: "",
         location: "",
-        itemsWork: "",
-        periodCovered: "",
         supplier: "",
+        itemWorks: "", 
+        periodCovered: "",
         dateNeeded: "",
+        preparedBy: "", 
+        checkedBy: "",
+        approvedBy: "",
+        status: "on-going",
     });
 
     // State for handling modals
     const [isExitModalOpen, setIsExitModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
 
@@ -50,30 +53,23 @@ export default function CreateJobOrderPage({ auth }) {
         }
     };
 
-    // Handle Save button
-    const handleSave = () => {
-        closeModal();
-        setIsSaveModalOpen(true);
-    };
-
-    // Handle Cancel button
-    const handleCancel = () => {
-        closeModal();
-        setIsCancelModalOpen(true);
-    };
-
     const resetForm = () => {
         setFormData({
-            projectName: "",
-            jobOrderNo: "",
-            contractId: "",
+            contractId: contract.id,
+            projectId: project.id,
+            jobOrderName: "",
+            budget: "",
             location: "",
-            itemsWork: "",
-            periodCovered: "",
             supplier: "",
+            itemWorks: "", 
+            periodCovered: "",
             dateNeeded: "",
+            preparedBy: "", 
+            checkedBy: "",
+            approvedBy: "",
+            status: "on-going",
         });
-        setIsCancelModalOpen(false);
+        setIsExitModalOpen(false);
     };
 
     const handleSubmit = () => {
@@ -82,30 +78,57 @@ export default function CreateJobOrderPage({ auth }) {
     };
 
     const handleConfirmSubmit = () => {
-        console.log("Form submitted!");
-        setIsSubmitModalOpen(false);
-        setIsSubmittedModalOpen(true);
+        // First log what we're sending
+        console.log('Sending data:', formData);
+    
+        axios.post(route('store-job-order'), formData)
+            .then(response => {
+                if (response.data.success) {
+                    console.log('Job order created successfully:', response.data);
+                    setIsSubmitModalOpen(false);
+                    setIsSubmittedModalOpen(true);
+                } else {
+                    console.error('Failed to create job order:', response.data.message);
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    // The server responded with a status code outside of 2xx
+                    console.error('Validation errors:', error.response.data.errors);
+                    
+                    // You could set these errors in state to display them to the user
+                    const errorMessages = Object.values(error.response.data.errors)
+                        .flat()
+                        .join('\n');
+                        
+                    alert('Validation failed:\n' + errorMessages);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('No response received:', error.request);
+                    alert('No response received from server');
+                } else {
+                    // Something happened in setting up the request
+                    console.error('Error:', error.message);
+                    alert('Error creating job order: ' + error.message);
+                }
+            });
     };
+    
 
     const closeModal = () => {
         setIsExitModalOpen(false);
         setIsSaveModalOpen(false);
-        setIsCancelModalOpen(false);
         setIsSubmitModalOpen(false);
         setIsSubmittedModalOpen(false);
     };
 
-    // Handle the Back Button click
-    const handleBackButtonClick = (e) => {
+    // Handle the Return Button or Cancel Button click
+    const handleCancel = (e) => {
         if (areAllFieldsEmpty) {
-            handleReturn();
+            window.location.href = route("job-order", { project_id: project.id });
         } else {
             setIsExitModalOpen(true);
         }
-    };
-
-    const handleReturn = () => {
-        window.location.href = "job-order";
     };
 
     return (
@@ -113,9 +136,9 @@ export default function CreateJobOrderPage({ auth }) {
             user={auth.user}
             header={
                 <div className="flex items-center">
-                    <button onClick={handleBackButtonClick} className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
-                        <ChevronLeft size={20} strokeWidth={2} />
-                    </button>
+                        <button onClick={handleCancel} className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
+                            <ChevronLeft size={20} strokeWidth={2} />
+                        </button>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Create Job Order
                     </h2>
@@ -129,125 +152,57 @@ export default function CreateJobOrderPage({ auth }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="bg-white border-b border-gray-200">
 
-                            <div className="mt-0">
-                                <h2 className="text-xl font-semibold text-gray-800">
-                                    New Job Order
+                            <div className="p-2">
+                                <h2 className="text-2xl font-bold text-gray-800">
+                                    {project.description}
                                 </h2>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Please provide the required information
-                                    below:
+                                <p className="mt-1 text-lg text-gray-600">
+                                    {contract.contract_name}
                                 </p>
-
-                                <div className="mt-6">
-                                    <h2 htmlFor="projectName" className="block text-sm font-medium text-gray-700">
-                                        Project Name
-                                        <span className="text-red-500"> *</span>
-                                    </h2>
-                                    <p className="mt-1 text-sm text-gray-600">
-                                        Choose the project you're creating the job order for.
-                                    </p>
-                                    <select
-                                        id="projectName"
-                                        name="projectName"
-                                        required
-                                        value={formData.projectName}
-                                        onChange={handleChange}
-                                        className="mt-1 inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
-                                    >
-                                        <option value="">
-                                            Select Project Name
-                                        </option>
-                                        <option value="Project 1">Project 1</option>
-                                        <option value="Project 2">Project 2</option>
-                                    </select>
-                                </div>
 
                                 <form className="mt-6" onSubmit={handleExit}>
                                     <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
                                         <div>
                                             <label
-                                                htmlFor="jobOrderNo"
+                                                htmlFor="jobOrderName"
                                                 className="block text-sm font-medium text-gray-700"
                                             >
-                                                Job Order No.
+                                                Job Order Name
                                                 <span className="text-red-500"> *</span>
                                             </label>
                                             <input
-                                                id="jobOrderNo"
-                                                name="jobOrderNo"
+                                                id="jobOrderName"
+                                                name="jobOrderName"
                                                 type="text"
                                                 required
-                                                value={formData.jobOrderNo}
+                                                value={formData.jobOrderName}
                                                 onChange={handleChange}
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Job Order Number"
+                                                placeholder="Enter Job Order Name"
                                             />
                                         </div>
+
                                         <div>
                                             <label
-                                                htmlFor="contractId"
+                                                htmlFor="budget"
                                                 className="block text-sm font-medium text-gray-700"
                                             >
-                                                Contract ID
-                                                <span className="text-red-500"> *</span>
-                                            </label>
-                                            <select
-                                                id="contractId"
-                                                name="contractId"
-                                                required
-                                                value={formData.contractId}
-                                                onChange={handleChange}
-                                                className="mt-1 w-full inline-block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm rounded-md"
-                                            >
-                                                <option value="">
-                                                    Select Contract ID
-                                                </option>
-                                                <option value="Contract 1">
-                                                    C-001
-                                                </option>
-                                                <option value="Contract 2">
-                                                    C-002
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label
-                                                htmlFor="periodCovered"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Period Covered
+                                                Budget
                                                 <span className="text-red-500"> *</span>
                                             </label>
                                             <input
-                                                id="periodCovered"
-                                                name="periodCovered"
-                                                type="text"
+                                                id="budget"
+                                                name="budget"
+                                                type="number"
+                                                min="0"
                                                 required
-                                                value={formData.periodCovered}
+                                                value={formData.budget}
                                                 onChange={handleChange}
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Period Covered"
+                                                placeholder="Enter Budget Amount"
                                             />
                                         </div>
-                                        <div>
-                                            <label
-                                                htmlFor="supplier"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Supplier
-                                                <span className="text-red-500"> *</span>
-                                            </label>
-                                            <input
-                                                id="supplier"
-                                                name="supplier"
-                                                type="text"
-                                                required
-                                                value={formData.supplier}
-                                                onChange={handleChange}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Supplier"
-                                            />
-                                        </div>
+
                                         <div>
                                             <label
                                                 htmlFor="location"
@@ -267,6 +222,67 @@ export default function CreateJobOrderPage({ auth }) {
                                                 placeholder="Enter Location"
                                             />
                                         </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="supplier"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Supplier
+                                                <span className="text-red-500"> *</span>
+                                            </label>
+                                            <input
+                                                id="supplier"
+                                                name="supplier"
+                                                type="text"
+                                                required
+                                                value={formData.supplier}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Supplier"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="itemWorks"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Item Works
+                                                <span className="text-red-500"> *</span>
+                                            </label>
+                                            <input
+                                                id="itemWorks"
+                                                name="itemWorks"
+                                                type="text"
+                                                required
+                                                value={formData.itemWorks}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Item Works"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="periodCovered"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Period Covered
+                                                <span className="text-red-500"> *</span>
+                                            </label>
+                                            <input
+                                                id="periodCovered"
+                                                name="periodCovered"
+                                                type="text"
+                                                required
+                                                value={formData.periodCovered}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Period Covered"
+                                            />
+                                        </div>
+                                        
                                         <div>
                                             <label
                                                 htmlFor="dateNeeded"
@@ -285,25 +301,67 @@ export default function CreateJobOrderPage({ auth }) {
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
                                             />
                                         </div>
-                                        <div className="sm:col-span-2">
+
+                                        <div>
                                             <label
-                                                htmlFor="itemsWork"
+                                                htmlFor="preparedBy"
                                                 className="block text-sm font-medium text-gray-700"
                                             >
-                                                Items Work
+                                                Prepared By
                                                 <span className="text-red-500"> *</span>
                                             </label>
                                             <input
-                                                id="itemsWork"
-                                                name="itemsWork"
+                                                id="preparedBy"
+                                                name="preparedBy"
                                                 type="text"
                                                 required
-                                                value={formData.itemsWork}
+                                                value={formData.preparedBy}
                                                 onChange={handleChange}
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Items Work"
+                                                placeholder="Enter Name Here"
                                             />
                                         </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="checkedBy"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Checked By
+                                                <span className="text-red-500"> *</span>
+                                            </label>
+                                            <input
+                                                id="checkedBy"
+                                                name="checkedBy"
+                                                type="text"
+                                                required
+                                                value={formData.checkedBy}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Name Here"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                htmlFor="approvedBy"
+                                                className="block text-sm font-medium text-gray-700"
+                                            >
+                                                Approved By
+                                                <span className="text-red-500"> *</span>
+                                            </label>
+                                            <input
+                                                id="approvedBy"
+                                                name="approvedBy"
+                                                type="text"
+                                                required
+                                                value={formData.approvedBy}
+                                                onChange={handleChange}
+                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                placeholder="Enter Name Here"
+                                            />
+                                        </div>
+
                                     </div>
 
                                     <div className="my-4 flex items-center justify-end gap-4">
@@ -335,21 +393,13 @@ export default function CreateJobOrderPage({ auth }) {
                 <ExitJobOrderModal
                     show={isExitModalOpen}
                     onClose={closeModal}
-                    onSaveDraft={handleSave}
-                    onDiscard={handleReturn}
+                    projectId={project.id}
                 />
             )}
             {isSaveModalOpen && (
                 <SaveJobOrderModal
                     show={isSaveModalOpen}
                     onClose={closeModal}
-                />
-            )}
-            {isCancelModalOpen && (
-                <CancelJobOrderModal
-                    show={isCancelModalOpen}
-                    onClose={closeModal}
-                    onConfirm={resetForm}
                 />
             )}
             {isSubmitModalOpen && (
@@ -364,6 +414,7 @@ export default function CreateJobOrderPage({ auth }) {
                     show={isSubmittedModalOpen}
                     onClose={closeModal}
                     onCreateAnother={resetForm}
+                    projectId={project.id}
                 />
             )}
         </AuthenticatedLayout>

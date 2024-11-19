@@ -14,12 +14,14 @@ import { Button } from "@/components/ui/button";
 export default function JobOrderPage({
     auth,
     contractId,
+    projectId,
     jobOrders,
     projectName,
     projectLocation,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
+
 
     // Filtered Job Orders based on search term and status
     const filteredJobOrders = (jobOrders || []).filter((jobOrder) =>
@@ -110,9 +112,8 @@ export default function JobOrderPage({
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="ml-2 pr-8 px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none"
                         >
-                            <option value="">All Status</option>
-                            <option value="ON-GOING">On-Going</option>
-                            <option value="FINISHED">Completed</option>
+                            <option value="on-going">on-going</option>
+                            <option value="completed">completed</option>
                         </select>
                     </div>
                 </div>
@@ -206,13 +207,15 @@ export default function JobOrderPage({
                                 </Button>
                             </Link>
                         </CardFooter>
+
                     </Card>
                 ))}
 
                 {/* Add Job Order Button as a Card */}
+
                 <Link
                     href={route("create-job-order", {
-                        contract_id: contractId,
+                        project_id: projectId,
                     })}
                 >
                     <Card
@@ -221,8 +224,13 @@ export default function JobOrderPage({
                     >
                         <Plus size={64} className="text-gray-500" />
                     </Card>
+
                 </Link>
+
             </div>
+
+
+
         </AuthenticatedLayout>
     );
 }

@@ -48,9 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('job-order-details');
 
     // Create Job Order
-    Route::get('/create-job-order', function () {
-        return Inertia::render('JobOrder/CreateJobOrderPage');
-    })->name('create-job-order');
+    Route::get('/create-job-order', [JobOrderController::class, 'create'])
+        ->name('create-job-order');
+
+    Route::post('/store-job-order', [JobOrderController::class, 'store'])
+        ->name('store-job-order');
 
     // Job Order Item Billing
     Route::get('/job-order-item-billing', function () {

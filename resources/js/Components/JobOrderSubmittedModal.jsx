@@ -1,11 +1,11 @@
 import React from "react";
 import { CheckCheck } from "lucide-react";
 
-const JobOrderSubmittedModal = ({ show, onClose, onCreateAnother }) => {
+const JobOrderSubmittedModal = ({ show, onClose, onCreateAnother, projectId }) => {
     if (!show) return null;
 
     const handleDone = () => {
-        window.location.href = "/job-order"; // Adjust the URL as needed
+        window.location.href = route("job-order", { project_id: projectId });
     };
 
     const handleCreateAnother = () => {
