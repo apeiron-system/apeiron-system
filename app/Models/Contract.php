@@ -15,7 +15,6 @@ class Contract extends Model
         'contract_name',
         'progress',
         'status',
-        'budget',
     ];
 
     public function scopeActive($query)

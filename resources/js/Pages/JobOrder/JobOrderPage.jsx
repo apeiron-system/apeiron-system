@@ -121,11 +121,13 @@ export default function JobOrderPage({
             {/* Job Orders List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {filteredJobOrders.map((jobOrder, index) => (
+
                     <Card
                         key={index}
                         className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                         style={{ height: "440px" }} // Adjusted height for card to fit progress bar
                     >
+                        
                         <CardHeader>
                             <CardTitle className="text-xl font-semibold text-gray-800">
                                 {jobOrder.jo_name}
@@ -146,6 +148,7 @@ export default function JobOrderPage({
                                 <span className="text-sm ml-2">{jobOrder.progress}%</span> {/* Added margin to the right of the percentage */}
                             </div>
                         </CardHeader>
+
                         <CardContent className="text-sm text-gray-600">
                             <div className="mb-1">
                                 <strong>Status:</strong>{" "}
@@ -186,7 +189,9 @@ export default function JobOrderPage({
                             <div className="mb-1">
                                 <strong>Approved By:</strong> {jobOrder.approvedBy}
                             </div>
+
                         </CardContent>
+                        
                         <CardFooter>
                             <Link
                                 href={route("job-order-details", {

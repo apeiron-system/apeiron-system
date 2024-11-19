@@ -83,12 +83,6 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     </div>
                                     <span className="text-sm">{contract.progress}%</span>
                                 </div>
-
-                                {/* Budget Display Section */}
-                                <div className="mt-2">
-                                    <span className="font-semibold text-gray-800">Budget:</span>
-                                    <span className="ml-2 text-gray-600"> ₱{contract.budget}</span>
-                                </div>
                             </CardContent>
                             <CardFooter>
                                 <Link

@@ -59,6 +59,7 @@ export default function JobOrderDetailsPage({ auth }) {
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
+
     // Function to determine the color of the progress bar based on the progress percentage
     const getProgressBarColor = (progress) => {
         if (progress >= 100) return "bg-green-500"; // Green for 100%
@@ -92,9 +93,11 @@ export default function JobOrderDetailsPage({ auth }) {
         >
             <Head title="Job Order Details" />
 
+
+
             {/* Flex Container for JO Details and Bill of Quantities */}
             <div className="flex flex-row-reverse gap-6">
-                {/* Bill of Quantities - BoQ Parts Section (Left Side - Scrollable) */}
+                {/* Bill of Quantities - BoQ Parts Section (Right Side - Scrollable) */}
                 <div className="w-full flex flex-col">
                     <h3 className="text-xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
@@ -169,7 +172,9 @@ export default function JobOrderDetailsPage({ auth }) {
                     </div>
                 </div>
 
-                {/* JO Details Section (Right Side - Fixed) */}
+
+
+                {/* JO Details Section (Left  Side - Fixed) */}
                 <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">
                     <div className="text-gray-900">
                         <div className="pb-4">
@@ -207,6 +212,7 @@ export default function JobOrderDetailsPage({ auth }) {
                             </div>
                         ))}
                     </div>
+                    
                     <Button
                         onClick={() => setIsModalOpen(true)}
                         className="mt-6 bg-gray-500 text-white"
