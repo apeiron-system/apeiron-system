@@ -1,11 +1,11 @@
-import ContractForm from "@/Componentss/contract/ContractForm";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
-import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
+import ContractForm from "@/Components/contract/ContractForm";
+import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
+import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import ProjectForm from "../../../Componentss/contract/project/ProjectForm";
+import ProjectForm from "../../../Components/contract/project/ProjectForm";
 import _ from "lodash";
-import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
+import ProjectHeader from "@/Components/contract/project/ProjectHeader";
 
 export default function EditProjectPage({
     auth,

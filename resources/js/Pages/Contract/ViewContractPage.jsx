@@ -1,9 +1,9 @@
-import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
-import ProjectsTable from "@/Componentss/contract/project/ProjectsTable";
+import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
+import ProjectsTable from "@/Components/contract/project/ProjectsTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
+import ContractHeader from "@/Components/contract/ContractHeader";
+import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
 
 export default function ViewContractPage({
     auth,

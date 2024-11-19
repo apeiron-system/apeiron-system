@@ -1,8 +1,8 @@
-import ContractForm from "@/Componentss/contract/ContractForm";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
-import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
-import ProjectPartForm from "@/Componentss/contract/project/ProjectPart/ProjectPartForm";
-import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart/ProjectPartTabNavigation";
+import ContractForm from "@/Components/contract/ContractForm";
+import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
+import ProjectHeader from "@/Components/contract/project/ProjectHeader";
+import ProjectPartForm from "@/Components/contract/project/ProjectPart/ProjectPartForm";
+import ProjectPartTabNavigation from "@/Components/contract/project/ProjectPart/ProjectPartTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 

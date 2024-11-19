@@ -1,8 +1,8 @@
-import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
+import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import ProjectForm from "../../../Componentss/contract/project/ProjectForm";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
+import ProjectForm from "../../../Components/contract/project/ProjectForm";
+import ContractHeader from "@/Components/contract/ContractHeader";
 
 export default function AddProjectPage({
     auth,

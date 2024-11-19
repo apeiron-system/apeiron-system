@@ -1,10 +1,10 @@
-import ContractHeader from "@/Componentss/contract/ContractHeader";
-import AddItemCsv from "@/Componentss/item/AddItemCsv";
-import AddItemSection from "@/Componentss/item/AddItemSection";
-import ItemTabNavigation from "@/Componentss/item/ItemTabNavigation";
+import ContractHeader from "@/Components/contract/ContractHeader";
+import AddItemCsv from "@/Components/item/AddItemCsv";
+import AddItemSection from "@/Components/item/AddItemSection";
+import ItemTabNavigation from "@/Components/item/ItemTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 
 export default function AddContractPage({ auth, contract }) {
     return (

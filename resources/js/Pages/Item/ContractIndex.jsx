@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, Link } from "@inertiajs/react";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
-import ItemTabNavigation from "@/Componentss/item/ItemTabNavigation";
+import ContractHeader from "@/Components/contract/ContractHeader";
+import ItemTabNavigation from "@/Components/item/ItemTabNavigation";
 import {
     Table,
     TableBody,
@@ -9,9 +9,9 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/Components/ui/input";
 import {
     Select,
     SelectContent,
@@ -19,8 +19,8 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
+} from "@/Components/ui/select";
+import { Button } from "@/Components/ui/button"; // Assuming you have a Button component
 import {
     Dialog,
     DialogClose,

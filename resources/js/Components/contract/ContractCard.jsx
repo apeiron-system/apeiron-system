@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button"; // Ensure you have the Button component in your project
+import { Button } from "@/Components/ui/button"; // Ensure you have the Button component in your project
 import _ from "lodash";
 import { Link } from "@inertiajs/react";
 

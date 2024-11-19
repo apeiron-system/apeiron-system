@@ -1,5 +1,5 @@
-import EmployeesDialog from "@/Componentss/contract/EmployeesDialog";
-import { Button } from "@/components/ui/button";
+import EmployeesDialog from "@/Components/contract/EmployeesDialog";
+import { Button } from "@/Components/ui/button";
 import {
     Form,
     FormControl,
