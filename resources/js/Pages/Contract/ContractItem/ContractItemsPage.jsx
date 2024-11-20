@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, Link } from "@inertiajs/react";
 import ContractItemHeader from "@/Componentss/contract/contractitem/ContractItemHeader";
-import ProjectTabNavigation from "@/Componentss/contract/project/ProjectTabNavigation";
+import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
 import {
     Table,
     TableBody,

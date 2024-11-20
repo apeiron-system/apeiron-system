@@ -177,16 +177,19 @@ Route::prefix('item')->group(function () {
 
 
 //Progress report Contracts Page
-Route::get('/progress-report', [ProgressReportController::class, 'index'])
+Route::get('/progress-report', [ProgressReportController::class, 'index_contracts'])
     ->middleware(['auth', 'verified'])
     ->name('progress-report');
 
 Route::prefix('/progress-report')->group(function () {
-    Route::get('/contracts/{contractId}', [ProgressReportController::class, 'showContract'])
-        ->name('progress-report.contract');
+    Route::get('/contracts/{contractId}', [ProgressReportController::class, 'showContract'])->name('progress-report.contract');
 
-    // Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])
-    //     ->name('progress-report.project');
+    Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])
+        ->name('progress-report.project');
+
+    Route::post('/contracts/{contractId}/project/{projectId}/add', [ProgressReportController::class, 'store'])->middleware(['auth', 'verified']);
+
+    Route::get('/contracts/{contractId}/project/{projectId}/show', [ProgressReportController::class, 'index_par'])->middleware(['auth', 'verified']);
 
     // Route::get('/contracts/{contractId}/project/{projectId}/part/{partId}', [ProgressReportController::class, 'showPart'])
     //     ->name('progress-report.part');
@@ -196,22 +199,17 @@ Route::prefix('/progress-report')->group(function () {
 });
 
 
+// Route::get('/par-contract-details', function () {
+//     return Inertia::render('ProgressReport/ParDetailsPage/ParContractDetailsPage');
+// })->middleware(['auth', 'verified'])->name('par-contract-details');
 
-Route::get('/par-details', function () {
-    return Inertia::render('ProgressReport/ParDetailsPage/ParDetailsPage');
-})->middleware(['auth', 'verified'])->name('par-details');
+// Route::get('/jo-details', function () {
+//     return Inertia::render('ProgressReport/ParDetailsPage/JODetailsPage');
+// })->middleware(['auth', 'verified'])->name('jo-details');
 
-Route::get('/par-contract-details', function () {
-    return Inertia::render('ProgressReport/ParDetailsPage/ParContractDetailsPage');
-})->middleware(['auth', 'verified'])->name('par-contract-details');
-
-Route::get('/jo-details', function () {
-    return Inertia::render('ProgressReport/ParDetailsPage/JODetailsPage');
-})->middleware(['auth', 'verified'])->name('jo-details');
-
-Route::get('/par-job-order', function () {
-    return Inertia::render('ProgressReport/ParDetailsPage/ParJobOrderPage');
-})->middleware(['auth', 'verified'])->name('par-job-order');
+// Route::get('/par-job-order', function () {
+//     return Inertia::render('ProgressReport/ParDetailsPage/ParJobOrderPage');
+// })->middleware(['auth', 'verified'])->name('par-job-order');
 
 
 

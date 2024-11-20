@@ -30,4 +30,10 @@ class ProjectModel extends Model
     {
         return $this->hasMany(ProjectPartModel::class, 'project_id');
     }
+
+    public function progressReports()
+    {
+        return $this->hasMany(ProgressAccomplishmentModel::class, 'project_id');
+    }
+
 }

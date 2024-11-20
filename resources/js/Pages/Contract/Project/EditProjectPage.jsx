@@ -5,8 +5,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ProjectForm from "../../../Components/contract/project/ProjectForm";
 import _ from "lodash";
-import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
-import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart/ProjectPartTabNavigation";
+import ProjectHeader from "@/Components/contract/project/ProjectHeader";
+import ProjectPartTabNavigation from "@/Components/contract/project/ProjectPart/ProjectPartTabNavigation";
 
 export default function EditProjectPage({
     auth,
