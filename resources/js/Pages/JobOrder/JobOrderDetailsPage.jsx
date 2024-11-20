@@ -249,7 +249,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
 
             <div className="flex flex-row-reverse gap-6">
                 <div className="w-full flex flex-col">
-                    <h3 className="text-xl font-semibold">Bill of Quantities</h3>
+                    <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
                         Total Job Order Cost: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
                     </h3>
@@ -323,7 +323,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                 <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">
                     <div className="text-gray-900">
                         <div className="pb-4">
-                            <div className="text-xl font-semibold">{formData.jo_name}</div>
+                            <div className="text-2xl font-semibold">{formData.jo_name}</div>
                             <div className="text-lg text-gray-600">{formData.project_desc}</div>
                             <div className="text-sm text-gray-500">{formData.contract_name}</div>
                         </div>

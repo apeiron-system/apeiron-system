@@ -32,10 +32,18 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
 
     // Helper function to check if any field is empty
-    const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
+    // const isAnyFieldEmpty = Object.values(formData).some(value => value === "");
+
+    const isAnyFieldEmpty = Object.entries(formData)
+        .filter(([key]) => !["contractId", "projectId", "status"].includes(key))
+        .some(([_, value]) => value === "");
 
     // Check if all input fields are empty
-    const areAllFieldsEmpty = Object.values(formData).every(value => value === "");
+    // const areAllFieldsEmpty = Object.values(formData).every(value => value === "");
+
+    const areAllFieldsEmpty = Object.entries(formData)
+        .filter(([key]) => !["contractId", "projectId", "status"].includes(key))
+        .every(([_, value]) => value === "");
 
     const handleChange = (e) => {
         setFormData({
