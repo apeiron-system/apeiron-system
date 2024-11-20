@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class, // Make sure this runs first
             ProjectSeeder::class,
             JobOrderSeeder::class,
+            BoqSeeder::class,
+            BoqPartSeeder::class,
         ]);
     }
 }

@@ -20,14 +20,16 @@ class JobOrder extends Model
     protected $fillable = [
         'contract_id',
         'project_id',
+        'project_desc',
+        'contract_name',
         'jo_name',
         'location',
         'supplier',
-        'itemWorks', 
-        'period_covered', 
+        'itemWorks',
+        'period_covered',
         'dateNeeded', 
-        'preparedBy', 
-        'checkedBy', 
+        'preparedBy',
+        'checkedBy',
         'approvedBy', 
         'budget',
         'status',
@@ -57,4 +59,6 @@ class JobOrder extends Model
     {
         return $this->hasMany(BoQ::class, 'jo_no');
     }
+
+    
 }

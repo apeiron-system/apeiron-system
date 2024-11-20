@@ -35,12 +35,12 @@ class JobOrderController extends Controller
 
             // Ensure there are job orders
             $jobOrders = $project->jobOrders;
-
+            
             // If there are job orders, get the contract_id from the first job order
             $contractId = $jobOrders->isNotEmpty() ? $jobOrders->first()->contract_id : $project->contract_id;
 
             // Map the job orders to match the frontend's required structure
-            $jobOrders = $jobOrders->map(function ($jobOrder) {
+            $jobOrder = $jobOrders->map(function ($jobOrder) {
                 return [
                     'jo_no' => $jobOrder->jo_no,
                     'jo_name' => $jobOrder->jo_name,
@@ -74,7 +74,7 @@ class JobOrderController extends Controller
                 ],
                 'contractId' => $contractId, // Pass contract_id of the first job order
                 'projectId' => $projectId,
-                'jobOrders' => $jobOrders,
+                'jobOrder' => $jobOrder,
                 'projectName' => $projectName, // Pass the project name to the frontend
                 'projectLocation' => $projectLocation, // Pass the project location to the frontend
             ]);
@@ -96,7 +96,7 @@ class JobOrderController extends Controller
                     ] : null
                 ],
                 'contractId' => null, // Pass null if no job orders are found
-                'jobOrders' => [],
+                'jobOrder' => [],
                 'projectName' => null, // Pass null if no project is found
                 'projectLocation' => null, // Pass null if no project is found
             ]);
@@ -212,4 +212,47 @@ class JobOrderController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, $jobOrderId)
+{
+    try {
+        // Validate the incoming request data
+        $validated = $request->validate([
+            'jo_name' => 'required|string|max:255',
+            'contract_id' => 'required|exists:contracts,id',
+            'location' => 'required|string|max:255',
+            'supplier' => 'required|string|max:255',
+            'itemWorks' => 'required|string|max:255',
+            'dateNeeded' => 'required|date',
+            'status' => 'required|string|max:255',
+        ]);
+
+        // Find the job order by its ID
+        $jobOrder = JobOrder::findOrFail($jobOrderId);
+
+        // Update the job order with validated data
+        $jobOrder->update($validated);
+
+        // Optionally, log the successful update
+        Log::info('Job order updated successfully', [
+            'job_order_id' => $jobOrderId,
+            'updated_data' => $validated,
+        ]);
+
+        // Redirect back to the job order details page with a success message
+        return redirect()->route('job_orders.index', ['project_id' => $jobOrder->project_id])
+            ->with('success', 'Job order updated successfully.');
+
+    } catch (\Exception $e) {
+        // Log any errors
+        Log::error('Error updating job order: ' . $e->getMessage(), [
+            'job_order_id' => $jobOrderId,
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        // Return an error response to the frontend
+        return redirect()->back()->with('error', 'An error occurred while updating the job order.');
+    }
+}
+
 }

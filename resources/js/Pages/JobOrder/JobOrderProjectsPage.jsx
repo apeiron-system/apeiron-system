@@ -125,6 +125,7 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     </div>
                 )}
             </div>
+            
         </AuthenticatedLayout>
     );
 }

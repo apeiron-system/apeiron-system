@@ -85,7 +85,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Link
+                                <Link 
                                     href={route("job-order-projects", {
                                         contract_id: contract.id,
                                     })}

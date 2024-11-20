@@ -17,6 +17,8 @@ class BoQ extends Model
      */
     protected $table = 'boq';
 
+    protected $primaryKey = 'boq_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -24,13 +26,12 @@ class BoQ extends Model
      */
     protected $fillable = [
         'jo_no',
-        'boq_part_id',
     ];
 
     /**
      * Get the job order associated with this BOQ.
      */
-    public function jobOrder()
+    public function jobOrders()
     {
         return $this->belongsTo(JobOrder::class, 'jo_no');
     }
@@ -38,7 +39,7 @@ class BoQ extends Model
     /**
      * Get the BOQ part associated with this BOQ.
      */
-    public function boqPart(): HasMany
+    public function boqParts(): HasMany
     {
         return $this->hasMany(BoqPart::class, 'boq_part_id');
     }

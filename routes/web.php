@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\JobOrderController;
+use App\Http\Controllers\JobOrderDetailsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -42,11 +43,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/job-order', [JobOrderController::class, 'index'])
         ->name('job-order');
 
-    // Job Order Details
-    Route::get('/job-order-details', function () {
-        return Inertia::render('JobOrder/JobOrderDetailsPage');
-    })->name('job-order-details');
-
     // Create Job Order
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
@@ -54,6 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/store-job-order', [JobOrderController::class, 'store'])
         ->name('store-job-order');
 
+    // Job Order Details
+    Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
+        ->name('job-order-details');
+    
     // Job Order Item Billing
     Route::get('/job-order-item-billing', function () {
         return Inertia::render('JobOrder/JobOrderItemBillingPage');

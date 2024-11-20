@@ -24,13 +24,14 @@ import {
 } from "@/components/ui/table";
 import * as XLSX from 'xlsx';
 
-export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, boqParts }) {
-    // console.log(boqParts);
-
+export default function JobOrderDetailsPage({ auth, jobOrder }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const [formData, setFormData] = useState({
+        // Initialize formData with provided initial values or defaults
         jo_name: jobOrder.jo_name || "",
+        project_desc: jobOrder.project_desc || "",
+        contract_name: jobOrder.contract_name || "",
         location: jobOrder.location || "",
         itemWorks: jobOrder.itemWorks || "",
         periodCovered: jobOrder.period_covered || "",
@@ -40,27 +41,20 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         progress: jobOrder.progress || 0,
     });
 
-    // Convert boqParts array to grouped object based on part_name
-    const groupedBoqParts = boqParts.reduce((acc, item) => {
-        const partName = item.part_name || "Uncategorized";
-        if (!acc[partName]) {
-            acc[partName] = [];
-        }
-        acc[partName].push({
-            itemNo: item.item_no,
-            description: item.description,
-            unit: item.unit,
-            quantity: parseFloat(item.quantity),
-            unitCost: parseFloat(item.unit_cost),
-            amount: parseFloat(item.amount),
-            weight: parseFloat(item.weight)
-        });
-        return acc;
-    }, {});
-
-    // console.log(groupedBoqParts);
-
-    const [currentBoqParts, setCurrentBoqParts] = useState(groupedBoqParts);
+    const [BoQParts, setBoQParts] = useState({
+        "Part A": [
+            { itemNo: "001", description: "Excavation", unit: "sq.m", quantity: 50, unitCost: 200, amount: 10000, weight: 10 },
+            { itemNo: "002", description: "Concrete Pouring", unit: "cu.m", quantity: 30, unitCost: 250, amount: 7500, weight: 15 },
+        ],
+        "Part B": [
+            { itemNo: "003", description: "Steel Rebar", unit: "kg", quantity: 100, unitCost: 150, amount: 15000, weight: 20 },
+            { itemNo: "004", description: "Formwork", unit: "sq.m", quantity: 40, unitCost: 180, amount: 7200, weight: 25 },
+        ],
+        "Part C": [
+            { itemNo: "005", description: "Labor", unit: "hours", quantity: 200, unitCost: 120, amount: 24000, weight: 30 },
+            { itemNo: "006", description: "Electrical Wiring", unit: "m", quantity: 500, unitCost: 50, amount: 25000, weight: 20 },
+        ],
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -74,29 +68,28 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     };
 
     const calculateGrandTotal = () => {
-        return Object.values(currentBoqParts).reduce((total, part) => {
+        return Object.values(BoQParts).reduce((total, part) => {
             return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
         }, 0);
     };
 
     const formatDate = (date) => {
-        if (!date) return "";
         const newDate = new Date(date);
-        return newDate.toLocaleDateString("en-CA");
+        return newDate.toLocaleDateString("en-CA");  // en-CA is "YYYY-MM-DD", we can customize it further.
     };
 
     const addDummyPayItem = (part) => {
-        setCurrentBoqParts((prevBoqParts) => ({
-            ...prevBoqParts,
+        setBoQParts((prevBoQParts) => ({
+            ...prevBoQParts,
             [part]: [
-                ...prevBoqParts[part],
+                ...prevBoQParts[part],
                 {
-                    itemNo: `${prevBoqParts[part].length + 1}`.padStart(3, '0'),
-                    description: "New Item",
-                    unit: "unit",
-                    quantity: 0,
-                    unitCost: 0,
-                    amount: 0,
+                    itemNo: `00${prevBoQParts[part].length + 1}`,
+                    description: "New Dummy Item",
+                    unit: "pcs",
+                    quantity: 1,
+                    unitCost: 100,
+                    amount: 100,
                     weight: 0,
                 },
             ],
@@ -104,21 +97,24 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     };
 
     const exportToExcel = () => {
+        // Create workbook
         const wb = XLSX.utils.book_new();
         
+        // Set column widths
         const defaultColWidth = [
-            { wch: 15 },
-            { wch: 40 },
-            { wch: 10 },
-            { wch: 12 },
-            { wch: 15 },
-            { wch: 15 },
-            { wch: 12 }
+            { wch: 15 }, // Default width for columns
+            { wch: 40 }, // Description column wider
+            { wch: 10 }, // Unit
+            { wch: 12 }, // Quantity
+            { wch: 15 }, // Unit Cost
+            { wch: 15 }, // Amount
+            { wch: 12 }  // Weight
         ];
     
+        // Styles for cells
         const headerStyle = {
             font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "4F46E5" } },
+            fill: { fgColor: { rgb: "4F46E5" } }, // Indigo color
             alignment: { horizontal: "center", vertical: "center" },
             border: {
                 top: { style: "thin" },
@@ -128,12 +124,13 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             }
         };
     
+        // Create JO Details worksheet
         const joDetailsData = [
             ['JOB ORDER DETAILS', '', '', '', '', '', ''],
             ['', '', '', '', '', '', ''],
             ['Job Order Name:', formData.jo_name, '', '', '', '', ''],
-            ['Project Name:', projectName, '', '', '', '', ''],
-            ['Contract Name:', contractName, '', '', '', '', ''],
+            ['Project Description:', formData.project_desc, '', '', '', '', ''],
+            ['Contract Name:', formData.contract_name, '', '', '', '', ''],
             ['Location:', formData.location, '', '', '', '', ''],
             ['Item Works:', formData.itemWorks, '', '', '', '', ''],
             ['Period Covered:', formData.periodCovered, '', '', '', '', ''],
@@ -148,9 +145,10 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         const joDetailsWs = XLSX.utils.aoa_to_sheet(joDetailsData);
         joDetailsWs['!cols'] = defaultColWidth;
         joDetailsWs['!merges'] = [
-            { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } } // Merge title cells
         ];
         
+        // Style the title
         joDetailsWs['A1'] = { 
             v: 'JOB ORDER DETAILS',
             s: {
@@ -161,13 +159,18 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         
         XLSX.utils.book_append_sheet(wb, joDetailsWs, 'Job Order Details');
     
+        // Create BoQ worksheet with enhanced formatting
         let boqData = [];
-        boqData.push(['BILL OF QUANTITIES', '', '', '', '', '', '']);
-        boqData.push(['', '', '', '', '', '', '']);
         
-        Object.entries(currentBoqParts).forEach(([partName, items]) => {
+        // Add main header
+        boqData.push(['BILL OF QUANTITIES', '', '', '', '', '', '']);
+        boqData.push(['', '', '', '', '', '', '']); // Empty row for spacing
+        
+        Object.entries(BoQParts).forEach(([partName, items]) => {
+            // Add part header
             boqData.push([partName.toUpperCase(), '', '', '', '', '', '']);
             
+            // Add table headers
             boqData.push([
                 'Item No.',
                 'Description',
@@ -178,6 +181,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 'Weight (%)'
             ]);
             
+            // Add items
             items.forEach(item => {
                 boqData.push([
                     item.itemNo,
@@ -190,22 +194,26 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 ]);
             });
             
+            // Add subtotal
             const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
             boqData.push(['', '', '', '', 'Subtotal:', subtotal, '']);
-            boqData.push(['', '', '', '', '', '', '']);
+            boqData.push(['', '', '', '', '', '', '']); // Empty row for spacing
         });
         
+        // Add grand total
         boqData.push(['', '', '', '', 'GRAND TOTAL:', calculateGrandTotal(), '']);
         
         const boqWs = XLSX.utils.aoa_to_sheet(boqData);
         boqWs['!cols'] = defaultColWidth;
         
+        // Add styling to BoQ worksheet
         const range = XLSX.utils.decode_range(boqWs['!ref']);
         for (let R = 0; R <= range.e.r; R++) {
             for (let C = 0; C <= range.e.c; C++) {
                 const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
                 if (!boqWs[cellRef]) continue;
                 
+                // Style for headers (Part names and column headers)
                 if (R === 0 || boqWs[cellRef].v === 'Item No.' || 
                     (typeof boqWs[cellRef].v === 'string' && 
                     boqWs[cellRef].v.toUpperCase() === boqWs[cellRef].v && 
@@ -213,14 +221,16 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     boqWs[cellRef].s = headerStyle;
                 }
                 
+                // Style for amounts and totals
                 if (C === 5 && typeof boqWs[cellRef].v === 'number') {
-                    boqWs[cellRef].z = '"₱"#,##0.00';
+                    boqWs[cellRef].z = '"₱"#,##0.00'; // Format as currency
                 }
             }
         }
         
         XLSX.utils.book_append_sheet(wb, boqWs, 'Bill of Quantities');
     
+        // Save the file
         const fileName = `${formData.jo_name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(wb, fileName);
     };
@@ -228,7 +238,10 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     const handleDelete = async () => {
         if (confirm("Are you sure you want to delete this job order?")) {
             try {
+                // Make DELETE request to the backend
                 await axios.delete(`/job-orders/${jobOrder.project_id}`);
+                
+                // On successful deletion, redirect to the job orders page
                 router.visit(route('job-order'), {
                     method: 'get'
                 });
@@ -245,7 +258,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             className="fixed top-0 left-0 right-0 bg-white z-20 shadow-md"
             header={
                 <div className="flex items-center">
-                    <Link href={route("job-order", { project_id: jobOrder.project_id })}>
+                    <Link href={route("job-order", {})}>
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                             <ChevronLeft size={20} />
                         </button>
@@ -265,8 +278,8 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         Total Job Order Cost: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
                     </h3>
                     <div className="w-full h-[calc(100vh-15rem)] lg:w-7/10 bg-white rounded-md py-4 pr-4 overflow-y-auto">
-                        {Object.keys(currentBoqParts).map((part, idx) => {
-                            const subtotal = currentBoqParts[part].reduce((sum, item) => sum + item.amount, 0);
+                        {Object.keys(BoQParts).map((part, idx) => {
+                            const subtotal = BoQParts[part].reduce((sum, item) => sum + item.amount, 0);
 
                             return (
                                 <div key={idx} className="mb-8">
@@ -294,8 +307,8 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {currentBoqParts[part].length > 0 ? (
-                                                    currentBoqParts[part].map((item, idx) => (
+                                                {BoQParts[part].length > 0 ? (
+                                                    BoQParts[part].map((item, idx) => (
                                                         <TableRow key={idx} className="hover:bg-gray-200">
                                                             <TableCell>{item.itemNo}</TableCell>
                                                             <TableCell>{item.description}</TableCell>
@@ -335,8 +348,8 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     <div className="text-gray-900">
                         <div className="pb-4">
                             <div className="text-2xl font-semibold">{formData.jo_name}</div>
-                            <div className="text-lg text-gray-600">{projectName || "No Project"}</div>
-                            <div className="text-sm text-gray-500">{contractName|| "No Contract"}</div>
+                            <div className="text-lg text-gray-600">{formData.project_desc}</div>
+                            <div className="text-sm text-gray-500">{formData.contract_name}</div>
                         </div>
 
                         <div className="flex flex-row items-center">
@@ -353,13 +366,13 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 mt-4">
-                        {[ 
-                            ["Status", formData.status],
-                            ["Location", formData.location],
-                            ["Item Works", formData.itemWorks],
-                            ["Period Covered", formData.periodCovered],
-                            ["Supplier", formData.supplier],
-                            ["Date Needed", formatDate(formData.dateNeeded)],
+                        {[
+                            ["Status", formData.status || "N/A"],
+                            ["Location", formData.location || "N/A"],
+                            ["Item Works", formData.itemWorks || "N/A"],
+                            ["Period Covered", formData.periodCovered || "N/A"],
+                            ["Supplier", formData.supplier || "N/A"],
+                            ["Date Needed", formData.dateNeeded || "N/A"],
                         ].map(([label, value], idx) => (
                             <div key={idx}>
                                 <div className="text-sm text-gray-600">{label}:</div>
@@ -513,7 +526,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     </form>
                 </div>
             </Modal>
-            
         </AuthenticatedLayout>
     );
 }

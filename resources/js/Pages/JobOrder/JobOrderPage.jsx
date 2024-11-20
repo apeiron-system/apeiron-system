@@ -15,7 +15,7 @@ export default function JobOrderPage({
     auth,
     contractId,
     projectId,
-    jobOrders,
+    jobOrder,
     projectName,
     projectLocation,
 }) {
@@ -23,7 +23,7 @@ export default function JobOrderPage({
     const [statusFilter, setStatusFilter] = useState("all"); // Changed default to "all"
 
     // Sort job orders by date
-    const sortedJobOrders = [...(jobOrders || [])].sort((a, b) => {
+    const sortedJobOrders = [...(jobOrder || [])].sort((a, b) => {
         if (a.created_at && b.created_at) {
             return new Date(b.created_at) - new Date(a.created_at);
         }
@@ -79,9 +79,7 @@ export default function JobOrderPage({
                         </span>
                     </div>
                     <div className="pb-4 flex items-center text-gray-500">
-                        <span>{projectLocation || "Project Location"}</span>
-                        <span className="ml-1 text-slate-500 items-center">
-                            <svg
+                        <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
@@ -95,6 +93,9 @@ export default function JobOrderPage({
                                     d="M12 2c3.866 0 7 3.134 7 7 0 3.866-7 13-7 13S5 12.866 5 9c0-3.866 3.134-7 7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"
                                 />
                             </svg>
+                        <span>{projectLocation || "Project Location"}</span>
+                        <span className="ml-1 text-slate-500 items-center">
+                            
                         </span>
                     </div>
                 </div>
@@ -238,6 +239,7 @@ export default function JobOrderPage({
                     ))
                 )}
             </div>
+            
         </AuthenticatedLayout>
     );
 }
