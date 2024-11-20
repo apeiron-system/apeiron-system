@@ -20,23 +20,33 @@ export default function JobOrderPage({
     projectLocation,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all"); // Changed default to "all"
 
+    // Sort job orders by date
+    const sortedJobOrders = [...(jobOrders || [])].sort((a, b) => {
+        if (a.created_at && b.created_at) {
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+        return b.jo_no - a.jo_no;
+    });
 
-    // Filtered Job Orders based on search term and status
-    const filteredJobOrders = (jobOrders || []).filter((jobOrder) =>
-        jobOrder.jo_name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Combined filtering for both search term and status
+    const filteredJobOrders = sortedJobOrders.filter((jobOrder) => {
+        const matchesSearch = jobOrder.jo_name?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === "all" || jobOrder.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
 
     const handleClearSearch = () => {
         setSearchTerm("");
+        setStatusFilter("all"); // Reset status filter when clearing
     };
 
     // Function to determine the color of the progress bar based on the progress percentage
     const getProgressBarColor = (progress) => {
-        if (progress >= 100) return "bg-green-500"; // Green for 100%
-        if (progress >= 50) return "bg-yellow-500"; // Yellow for below 100%
-        return "bg-red-500"; // Red for below 50%
+        if (progress >= 100) return "bg-green-500";
+        if (progress >= 50) return "bg-yellow-500";
+        return "bg-red-500";
     };
 
     return (
@@ -112,8 +122,9 @@ export default function JobOrderPage({
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="ml-2 pr-8 px-3 py-1 text-sm font-medium text-gray-700 bg-white border rounded-md shadow-sm focus:outline-none"
                         >
-                            <option value="on-going">on-going</option>
-                            <option value="completed">completed</option>
+                            <option value="all">All Status</option>
+                            <option value="on-going">On-going</option>
+                            <option value="completed">Completed</option>
                         </select>
                     </div>
                 </div>
@@ -121,98 +132,7 @@ export default function JobOrderPage({
 
             {/* Job Orders List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {filteredJobOrders.map((jobOrder, index) => (
-
-                    <Card
-                        key={index}
-                        className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                        style={{ height: "440px" }} // Adjusted height for card to fit progress bar
-                    >
-                        
-                        <CardHeader>
-                            <CardTitle className="text-xl font-semibold text-gray-800">
-                                {jobOrder.jo_name}
-                            </CardTitle>
-
-                            {/* Wrap progress bar and percentage in a flex container */}
-                            <div className="w-full flex justify-between items-center mt-2">
-                                <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
-                                    <div
-                                        className={`h-full rounded-full ${getProgressBarColor(
-                                            jobOrder.progress
-                                        )}`}
-                                        style={{
-                                            width: `${jobOrder.progress || 0}%`,
-                                        }}
-                                    ></div>
-                                </div>
-                                <span className="text-sm ml-2">{jobOrder.progress}%</span> {/* Added margin to the right of the percentage */}
-                            </div>
-                        </CardHeader>
-
-                        <CardContent className="text-sm text-gray-600">
-                            <div className="mb-1">
-                                <strong>Status:</strong>{" "}
-                                <span
-                                    className={`font-medium ${
-                                        jobOrder.status === "completed"
-                                            ? "text-green-600"
-                                            : "text-yellow-600"
-                                    }`}
-                                >
-                                    {jobOrder.status}
-                                </span>
-                            </div>
-                            <div className="mb-1">
-                                <strong>Approved Budget:</strong> ₱{jobOrder.budget}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Location:</strong> {jobOrder.location}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Supplier:</strong> {jobOrder.supplier}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Item Works:</strong> {jobOrder.itemWorks}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Period Covered:</strong> {jobOrder.period_covered}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Date Needed:</strong> {jobOrder.dateNeeded}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Prepared By:</strong> {jobOrder.preparedBy}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Checked By:</strong> {jobOrder.checkedBy}
-                            </div>
-                            <div className="mb-1">
-                                <strong>Approved By:</strong> {jobOrder.approvedBy}
-                            </div>
-
-                        </CardContent>
-                        
-                        <CardFooter>
-                            <Link
-                                href={route("job-order-details", {
-                                    jo_no: jobOrder.jo_no,
-                                })}
-                            >
-                                <Button
-                                    variant="primary"
-                                    className="w-full bg-slate-600 hover:bg-slate-800 text-white"
-                                >
-                                    View Details
-                                </Button>
-                            </Link>
-                        </CardFooter>
-
-                    </Card>
-                ))}
-
-                {/* Add Job Order Button as a Card */}
-
+                {/* Add Job Order Button as First Card */}
                 <Link
                     href={route("create-job-order", {
                         project_id: projectId,
@@ -220,17 +140,104 @@ export default function JobOrderPage({
                 >
                     <Card
                         className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
-                        style={{ height: "440px" }} // Matching height with other cards
+                        style={{ height: "440px" }}
                     >
                         <Plus size={64} className="text-gray-500" />
                     </Card>
-
                 </Link>
 
+                {/* Job Order Cards */}
+                {filteredJobOrders.length === 0 ? (
+                    <div className="col-span-full text-center text-gray-500 py-8">
+                        No job orders found matching your criteria
+                    </div>
+                ) : (
+                    filteredJobOrders.map((jobOrder, index) => (
+                        <Card
+                            key={index}
+                            className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                            style={{ height: "440px" }}
+                        >
+                            <CardHeader>
+                                <CardTitle className="text-xl font-semibold text-gray-800">
+                                    {jobOrder.jo_name}
+                                </CardTitle>
+
+                                <div className="w-full flex justify-between items-center mt-2">
+                                    <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
+                                        <div
+                                            className={`h-full rounded-full ${getProgressBarColor(
+                                                jobOrder.progress
+                                            )}`}
+                                            style={{
+                                                width: `${jobOrder.progress || 0}%`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <span className="text-sm ml-2">{jobOrder.progress}%</span>
+                                </div>
+                            </CardHeader>
+
+                            <CardContent className="text-sm text-gray-600">
+                                <div className="mb-1">
+                                    <strong>Status:</strong>{" "}
+                                    <span
+                                        className={`font-medium ${
+                                            jobOrder.status === "completed"
+                                                ? "text-green-600"
+                                                : "text-yellow-600"
+                                        }`}
+                                    >
+                                        {jobOrder.status}
+                                    </span>
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Approved Budget:</strong> ₱{jobOrder.budget}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Location:</strong> {jobOrder.location}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Supplier:</strong> {jobOrder.supplier}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Item Works:</strong> {jobOrder.itemWorks}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Period Covered:</strong> {jobOrder.period_covered}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Date Needed:</strong> {jobOrder.dateNeeded}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Prepared By:</strong> {jobOrder.preparedBy}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Checked By:</strong> {jobOrder.checkedBy}
+                                </div>
+                                <div className="mb-1">
+                                    <strong>Approved By:</strong> {jobOrder.approvedBy}
+                                </div>
+                            </CardContent>
+                            
+                            <CardFooter>
+                                <Link
+                                    href={route("job-order-details", {
+                                        jo_no: jobOrder.jo_no,
+                                    })}
+                                >
+                                    <Button
+                                        variant="primary"
+                                        className="w-full bg-slate-600 hover:bg-slate-800 text-white"
+                                    >
+                                        View Details
+                                    </Button>
+                                </Link>
+                            </CardFooter>
+                        </Card>
+                    ))
+                )}
             </div>
-
-
-
         </AuthenticatedLayout>
     );
 }

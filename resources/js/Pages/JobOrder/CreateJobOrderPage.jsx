@@ -158,9 +158,9 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
             <div className="p-0">
                 <div className="max-w-7xl">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="bg-white border-b border-gray-200">
+                        <div className="bg-white">
 
-                            <div className="p-2">
+                            <div>
                                 <h2 className="text-2xl font-bold text-gray-800">
                                     {project.description}
                                 </h2>
