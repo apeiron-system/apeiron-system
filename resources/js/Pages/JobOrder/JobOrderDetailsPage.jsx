@@ -35,6 +35,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         supplier: jobOrder.supplier || "",
         dateNeeded: jobOrder.dateNeeded || "",
         status: jobOrder.status || "",
+        budget: jobOrder.budget || 0,
         progress: jobOrder.progress || 0,
     });
 
@@ -138,6 +139,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             ['Supplier:', formData.supplier, '', '', '', '', ''],
             ['Date Needed:', formData.dateNeeded, '', '', '', '', ''],
             ['Status:', formData.status, '', '', '', '', ''],
+            ['Approved Budget:', formData.budget, '', '', '', '', ''],
             ['Progress:', `${formData.progress}%`, '', '', '', '', ''],
             ['Total Cost:', `₱${calculateGrandTotal().toLocaleString()}`, '', '', '', '', ''],
             ['', '', '', '', '', '', ''],
@@ -223,6 +225,32 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         XLSX.writeFile(wb, fileName);
     };
 
+    // Handle form submission
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+        const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, formData);
+        if (response.data.success) {
+            console.log('Job order updated successfully');
+            // Close the modal and refresh or redirect as necessary
+            setIsModalOpen(false);
+            window.location.href = `/job-order-details?jo_no=${jobOrderId}`;
+        } else {
+            console.error('Failed to update job order:', response.data.message);
+            alert('Error updating job order');
+        }
+        } catch (error) {
+        console.error('Error updating job order:', error);
+        alert('Failed to update job order');
+        }
+    };
+    
+    const handleCancelEditing = () => {
+        setIsModalOpen(false);
+        window.location.href = `/job-order-details?jo_no=${jobOrder.jo_no}`;
+    }
+
     const handleDelete = async (jobOrderId) => {
         // Log the jobOrderId we're about to delete
         console.log('Deleting job order with ID:', jobOrderId);
@@ -297,7 +325,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 <div className="w-full flex flex-col">
                     <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
-                        Total Job Order Cost: <span className="text-yellow-500">₱{calculateGrandTotal().toLocaleString()}</span>
+                        Total Job Order Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
                     </h3>
                     <div className="w-full h-[calc(100vh-15rem)] lg:w-7/10 bg-white rounded-md py-4 pr-4 overflow-y-auto">
                         {Object.keys(currentBoqParts).map((part, idx) => {
@@ -308,7 +336,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                     <h4 className="font-semibold text-lg">{part}</h4>
 
                                     <div className="text-left text-gray-700 text-sm mb-1">
-                                        Subtotal: <span className="text-yellow-500">₱{subtotal.toLocaleString()}</span>
+                                        Subtotal: <span className="text-yellow-500 font-semibold">₱{subtotal.toLocaleString()}</span>
                                     </div>
 
                                     <div className="bg-white shadow rounded overflow-hidden">
@@ -387,8 +415,9 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 mt-4">
-                        {[ 
+                    <div className="grid grid-rows-6 grid-cols-1 gap-1.5 mt-4">
+                        {[
+                            ["Approved Budget", "₱" + formData.budget],
                             ["Status", formData.status],
                             ["Location", formData.location],
                             ["Item Works", formData.itemWorks],
@@ -455,7 +484,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         </div>
                     </div>
 
-                    <form>
+                    <form onSubmit={handleFormSubmit}>
                         <div className="flex justify-between items-center mb-2">
                             <InputLabel htmlFor="jo_name">Job Order Name:</InputLabel>
                             <TextInput
@@ -531,7 +560,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         </div>
                         <div className="col-span-2 flex justify-end mt-4">
                             <Button
-                                onClick={() => setShowModal(false)}
+                                onClick={handleCancelEditing}
                                 variant="outline"
                                 className="mr-2"
                             >
