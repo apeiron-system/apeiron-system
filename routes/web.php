@@ -47,11 +47,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
 
+    // Store Job Order
     Route::post('/store-job-order', [JobOrderController::class, 'store'])
         ->name('store-job-order');
 
     // Job Order Details
     Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
+        ->name('job-order-details');
+
+    // Delete Job Order
+    Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
         ->name('job-order-details');
     
     // Job Order Item Billing

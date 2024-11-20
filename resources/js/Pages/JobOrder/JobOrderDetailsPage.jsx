@@ -25,8 +25,6 @@ import {
 import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, boqParts }) {
-    // console.log(boqParts);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     
     const [formData, setFormData] = useState({
@@ -225,19 +223,56 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         XLSX.writeFile(wb, fileName);
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (jobOrderId) => {
+        // Log the jobOrderId we're about to delete
+        console.log('Deleting job order with ID:', jobOrderId);
+    
+        // Ask for confirmation before proceeding with deletion
         if (confirm("Are you sure you want to delete this job order?")) {
             try {
-                await axios.delete(`/job-orders/${jobOrder.project_id}`);
-                router.visit(route('job-order'), {
-                    method: 'get'
-                });
+                // Send DELETE request to the server to delete the job order
+                const response = await axios.delete(`/job-order-details?jo_no=${jobOrderId}`);
+                
+                // If the delete operation is successful
+                if (response.data.success) {
+                    console.log('Job order deleted successfully:', response.data);
+    
+                    // If the delete operation is successful
+                    if (response.status === 200 || response.status === 204) {
+                        console.log('Job order deleted successfully:', response.data);
+
+                        // Redirect to the "job-order" page after successful deletion
+                        window.location.href = `/job-order?project_id=${jobOrder.project_id}`;  // Replace with the correct URL or route if necessary
+                    } else {
+                        // Handle failure in the delete operation (check if the response isn't 200 or 204)
+                        console.error('Failed to delete job order:', response.data.message || response.statusText);
+                        alert('Failed to delete job order: ' + (response.data.message || response.statusText));
+                    }
+    
+                    // If you want to show a success modal or message, you can trigger that here as well
+                } else {
+                    // Handle failure in the delete operation (e.g., if there are business logic issues)
+                    console.error('Failed to delete job order:', response.data.message);
+                    alert('Failed to delete job order: ' + response.data.message);
+                }
             } catch (error) {
-                console.error('Error deleting job order:', error);
-                alert('Failed to delete job order. Please try again.');
+                // Handle errors that occur during the delete request
+                if (error.response) {
+                    // Server responded with an error (e.g., validation issues, unauthorized request)
+                    console.error('Server responded with error:', error.response.data);
+                    alert('Error: ' + error.response.data.message);
+                } else if (error.request) {
+                    // No response was received from the server
+                    console.error('No response received:', error.request);
+                    alert('No response received from server');
+                } else {
+                    // An error occurred in setting up the request
+                    console.error('Error:', error.message);
+                    alert('Error deleting job order: ' + error.message);
+                }
             }
         }
-    };
+    };    
 
     return (
         <AuthenticatedLayout
@@ -369,12 +404,12 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     </div>
 
                     <div className="flex gap-4 mt-6">
-                        <Button
-                            onClick={handleDelete}
-                            className="bg-red-500 text-white"
-                        >
-                            Delete
-                        </Button>
+                    <Button
+                        onClick={() => handleDelete(jobOrder.jo_no)}
+                        className="bg-red-500 text-white"
+                    >
+                        Delete
+                    </Button>
 
                         <Button
                             onClick={() => setIsModalOpen(true)}

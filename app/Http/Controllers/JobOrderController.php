@@ -214,45 +214,45 @@ class JobOrderController extends Controller
     }
 
     public function update(Request $request, $jobOrderId)
-{
-    try {
-        // Validate the incoming request data
-        $validated = $request->validate([
-            'jo_name' => 'required|string|max:255',
-            'contract_id' => 'required|exists:contracts,id',
-            'location' => 'required|string|max:255',
-            'supplier' => 'required|string|max:255',
-            'itemWorks' => 'required|string|max:255',
-            'dateNeeded' => 'required|date',
-            'status' => 'required|string|max:255',
-        ]);
+    {
+        try {
+            // Validate the incoming request data
+            $validated = $request->validate([
+                'jo_name' => 'required|string|max:255',
+                'contract_id' => 'required|exists:contracts,id',
+                'location' => 'required|string|max:255',
+                'supplier' => 'required|string|max:255',
+                'itemWorks' => 'required|string|max:255',
+                'dateNeeded' => 'required|date',
+                'status' => 'required|string|max:255',
+            ]);
 
-        // Find the job order by its ID
-        $jobOrder = JobOrder::findOrFail($jobOrderId);
+            // Find the job order by its ID
+            $jobOrder = JobOrder::findOrFail($jobOrderId);
 
-        // Update the job order with validated data
-        $jobOrder->update($validated);
+            // Update the job order with validated data
+            $jobOrder->update($validated);
 
-        // Optionally, log the successful update
-        Log::info('Job order updated successfully', [
-            'job_order_id' => $jobOrderId,
-            'updated_data' => $validated,
-        ]);
+            // Optionally, log the successful update
+            Log::info('Job order updated successfully', [
+                'job_order_id' => $jobOrderId,
+                'updated_data' => $validated,
+            ]);
 
-        // Redirect back to the job order details page with a success message
-        return redirect()->route('job_orders.index', ['project_id' => $jobOrder->project_id])
-            ->with('success', 'Job order updated successfully.');
+            // Redirect back to the job order details page with a success message
+            return redirect()->route('job_orders.index', ['project_id' => $jobOrder->project_id])
+                ->with('success', 'Job order updated successfully.');
 
-    } catch (\Exception $e) {
-        // Log any errors
-        Log::error('Error updating job order: ' . $e->getMessage(), [
-            'job_order_id' => $jobOrderId,
-            'trace' => $e->getTraceAsString()
-        ]);
+        } catch (\Exception $e) {
+            // Log any errors
+            Log::error('Error updating job order: ' . $e->getMessage(), [
+                'job_order_id' => $jobOrderId,
+                'trace' => $e->getTraceAsString()
+            ]);
 
-        // Return an error response to the frontend
-        return redirect()->back()->with('error', 'An error occurred while updating the job order.');
+            // Return an error response to the frontend
+            return redirect()->back()->with('error', 'An error occurred while updating the job order.');
+        }
     }
-}
 
 }

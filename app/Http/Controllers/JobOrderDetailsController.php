@@ -80,4 +80,32 @@ class JobOrderDetailsController extends Controller
             ]);
         }
     }
+
+    public function destroy(Request $request)
+    {
+            $jobOrderId = $request->query('jo_no');
+
+            // If the job order does not exist
+            if (!$jobOrderId) {
+                return response()->json(['success' => false, 'message' => 'Job order ID not found.'], 404);
+            }
+
+            // Find the job order by its ID
+            $jobOrder = JobOrder::where('jo_no', $jobOrderId)->firstOrFail();
+
+            // Delete the job order
+            $jobOrder->delete();
+            
+            // Optionally, log the successful deletion
+            Log::info('Job order deleted successfully', [
+                'jo_no' => $jobOrderId,
+            ]);
+
+            // Return a success response
+            return response()->json([
+                'success' => true,
+                'message' => 'Job order deleted successfully!'
+            ], 200);
+
+    }
 }
