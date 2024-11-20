@@ -2,8 +2,8 @@ import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNaviga
 import ProjectsTable from "@/Components/contract/project/ProjectsTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import ContractHeader from "@/Componentss/contract/ContractHeader";
-import AddProjectNavigation from "@/Componentss/contract/project/AddProjectNavigation";
+import ContractHeader from "@/Components/contract/ContractHeader";
+import AddProjectNavigation from "@/Components/contract/project/AddProjectNavigation";
 import { useState } from "react";
 import { Input } from "@/Components/ui/input";
 import { router } from "@inertiajs/react";

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
 use App\Http\Controllers\ItemController;
@@ -25,7 +26,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/job-order', function() {
+Route::get('/job-order', function () {
     return Inertia::render('JobOrder/JobOrderPage');
 })->middleware(['auth', 'verified'])->name('job-order');
 
@@ -33,32 +34,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/progress-report', function () {
-    return Inertia::render('ProgressReport/ProgressReportPage');
-})->middleware(['auth', 'verified'])->name('progress-report');
-
-Route::get('/project-par', function () {
-    return Inertia::render('ProgressReport/ProjectPARPage');
-})->middleware(['auth', 'verified'])->name('project-par');
-
-Route::get('/par-details', function () {
-    return Inertia::render('ProgressReport/ParDetailsPage');
-})->middleware(['auth', 'verified'])->name('par-details');
-
-Route::get('/par-contract-details', function () {
-    return Inertia::render('ProgressReport/ParContractDetailsPage');
-})->middleware(['auth', 'verified'])->name('par-contract-details');
-
-Route::get('/jo-details', function () {
-    return Inertia::render('ProgressReport/JODetailsPage');
-})->middleware(['auth', 'verified'])->name('jo-details');
-
-Route::get('/par-job-order', function () {
-    return Inertia::render('ProgressReport/ParJobOrderPage');
-})->middleware(['auth', 'verified'])->name('par-job-order');
-
 //contract
-
 
 Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
 
@@ -135,7 +111,7 @@ Route::delete('/contracts/{contractId}/items/{itemId}/bids', [ContractItemContro
 
 
 //project
-    
+
 Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
 
 Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.create');
@@ -200,7 +176,42 @@ Route::prefix('item')->group(function () {
 });
 
 
+//Progress report Contracts Page
+Route::get('/progress-report', [ProgressReportController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('progress-report');
 
+Route::prefix('/progress-report')->group(function () {
+    Route::get('/contracts/{contractId}', [ProgressReportController::class, 'showContract'])
+        ->name('progress-report.contract');
+
+    // Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])
+    //     ->name('progress-report.project');
+
+    // Route::get('/contracts/{contractId}/project/{projectId}/part/{partId}', [ProgressReportController::class, 'showPart'])
+    //     ->name('progress-report.part');
+
+    // Route::get('/contracts/{contractId}/project/{projectId}/part/{partId}/item/{itemId}', [ProgressReportController::class, 'showItem'])
+    //     ->name('progress-report.item');
+});
+
+
+
+Route::get('/par-details', function () {
+    return Inertia::render('ProgressReport/ParDetailsPage/ParDetailsPage');
+})->middleware(['auth', 'verified'])->name('par-details');
+
+Route::get('/par-contract-details', function () {
+    return Inertia::render('ProgressReport/ParDetailsPage/ParContractDetailsPage');
+})->middleware(['auth', 'verified'])->name('par-contract-details');
+
+Route::get('/jo-details', function () {
+    return Inertia::render('ProgressReport/ParDetailsPage/JODetailsPage');
+})->middleware(['auth', 'verified'])->name('jo-details');
+
+Route::get('/par-job-order', function () {
+    return Inertia::render('ProgressReport/ParDetailsPage/ParJobOrderPage');
+})->middleware(['auth', 'verified'])->name('par-job-order');
 
 
 
