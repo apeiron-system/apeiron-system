@@ -9,20 +9,20 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, FileDown } from "lucide-react";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import Checkbox from "@/Components/Checkbox";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; // Import ShadCN Table components
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,11 +35,9 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
         periodCovered: "2022-2026",
         supplier: "Name of Supplier",
         dateNeeded: "2022-2026",
-        status: "on-going", // default status
-        progress: 40, // Sample progress value (in percentage)
+        status: "on-going",
+        progress: 40,
     });
-
-    
 
     const [BoQParts, setBoQParts] = useState({
         "Part A": [
@@ -54,22 +52,19 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
             { itemNo: "005", description: "Labor", unit: "hours", quantity: 200, unitCost: 120, amount: 24000, weight: 30 },
             { itemNo: "006", description: "Electrical Wiring", unit: "m", quantity: 500, unitCost: 50, amount: 25000, weight: 20 },
         ],
-    });    
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
-
-    // Function to determine the color of the progress bar based on the progress percentage
     const getProgressBarColor = (progress) => {
-        if (progress >= 100) return "bg-green-500"; // Green for 100%
-        if (progress >= 50) return "bg-yellow-500"; // Yellow for below 100%
-        return "bg-red-500"; // Red for below 50%
+        if (progress >= 100) return "bg-green-500";
+        if (progress >= 50) return "bg-yellow-500";
+        return "bg-red-500";
     };
 
-    // Calculate grand total
     const calculateGrandTotal = () => {
         return Object.values(BoQParts).reduce((total, part) => {
             return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
@@ -88,11 +83,150 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                     quantity: 1,
                     unitCost: 100,
                     amount: 100,
-                    weight: 0, // Default weight percentage
+                    weight: 0,
                 },
             ],
         }));
-    };    
+    };
+
+    const exportToExcel = () => {
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        
+        // Set column widths
+        const defaultColWidth = [
+            { wch: 15 }, // Default width for columns
+            { wch: 40 }, // Description column wider
+            { wch: 10 }, // Unit
+            { wch: 12 }, // Quantity
+            { wch: 15 }, // Unit Cost
+            { wch: 15 }, // Amount
+            { wch: 12 }  // Weight
+        ];
+    
+        // Styles for cells
+        const headerStyle = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "4F46E5" } }, // Indigo color
+            alignment: { horizontal: "center", vertical: "center" },
+            border: {
+                top: { style: "thin" },
+                right: { style: "thin" },
+                bottom: { style: "thin" },
+                left: { style: "thin" }
+            }
+        };
+    
+        // Create JO Details worksheet
+        const joDetailsData = [
+            ['JOB ORDER DETAILS', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', ''],
+            ['Job Order Name:', formData.jo_name, '', '', '', '', ''],
+            ['Project Description:', formData.project_desc, '', '', '', '', ''],
+            ['Contract Name:', formData.contract_name, '', '', '', '', ''],
+            ['Location:', formData.location, '', '', '', '', ''],
+            ['Item Works:', formData.itemWorks, '', '', '', '', ''],
+            ['Period Covered:', formData.periodCovered, '', '', '', '', ''],
+            ['Supplier:', formData.supplier, '', '', '', '', ''],
+            ['Date Needed:', formData.dateNeeded, '', '', '', '', ''],
+            ['Status:', formData.status, '', '', '', '', ''],
+            ['Progress:', `${formData.progress}%`, '', '', '', '', ''],
+            ['Total Cost:', `₱${calculateGrandTotal().toLocaleString()}`, '', '', '', '', ''],
+            ['', '', '', '', '', '', ''],
+        ];
+        
+        const joDetailsWs = XLSX.utils.aoa_to_sheet(joDetailsData);
+        joDetailsWs['!cols'] = defaultColWidth;
+        joDetailsWs['!merges'] = [
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } } // Merge title cells
+        ];
+        
+        // Style the title
+        joDetailsWs['A1'] = { 
+            v: 'JOB ORDER DETAILS',
+            s: {
+                font: { bold: true, sz: 16 },
+                alignment: { horizontal: "center" }
+            }
+        };
+        
+        XLSX.utils.book_append_sheet(wb, joDetailsWs, 'Job Order Details');
+    
+        // Create BoQ worksheet with enhanced formatting
+        let boqData = [];
+        
+        // Add main header
+        boqData.push(['BILL OF QUANTITIES', '', '', '', '', '', '']);
+        boqData.push(['', '', '', '', '', '', '']); // Empty row for spacing
+        
+        Object.entries(BoQParts).forEach(([partName, items]) => {
+            // Add part header
+            boqData.push([partName.toUpperCase(), '', '', '', '', '', '']);
+            
+            // Add table headers
+            boqData.push([
+                'Item No.',
+                'Description',
+                'Unit',
+                'Quantity',
+                'Unit Cost',
+                'Amount',
+                'Weight (%)'
+            ]);
+            
+            // Add items
+            items.forEach(item => {
+                boqData.push([
+                    item.itemNo,
+                    item.description,
+                    item.unit,
+                    item.quantity,
+                    item.unitCost,
+                    item.amount,
+                    item.weight
+                ]);
+            });
+            
+            // Add subtotal
+            const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+            boqData.push(['', '', '', '', 'Subtotal:', subtotal, '']);
+            boqData.push(['', '', '', '', '', '', '']); // Empty row for spacing
+        });
+        
+        // Add grand total
+        boqData.push(['', '', '', '', 'GRAND TOTAL:', calculateGrandTotal(), '']);
+        
+        const boqWs = XLSX.utils.aoa_to_sheet(boqData);
+        boqWs['!cols'] = defaultColWidth;
+        
+        // Add styling to BoQ worksheet
+        const range = XLSX.utils.decode_range(boqWs['!ref']);
+        for (let R = 0; R <= range.e.r; R++) {
+            for (let C = 0; C <= range.e.c; C++) {
+                const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+                if (!boqWs[cellRef]) continue;
+                
+                // Style for headers (Part names and column headers)
+                if (R === 0 || boqWs[cellRef].v === 'Item No.' || 
+                    (typeof boqWs[cellRef].v === 'string' && 
+                    boqWs[cellRef].v.toUpperCase() === boqWs[cellRef].v && 
+                    boqWs[cellRef].v.length > 0)) {
+                    boqWs[cellRef].s = headerStyle;
+                }
+                
+                // Style for amounts and totals
+                if (C === 5 && typeof boqWs[cellRef].v === 'number') {
+                    boqWs[cellRef].z = '"₱"#,##0.00'; // Format as currency
+                }
+            }
+        }
+        
+        XLSX.utils.book_append_sheet(wb, boqWs, 'Bill of Quantities');
+    
+        // Save the file
+        const fileName = `${formData.jo_name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+    };
 
     return (
         <AuthenticatedLayout
@@ -100,10 +234,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
             className="fixed top-0 left-0 right-0 bg-white z-20 shadow-md"
             header={
                 <div className="flex items-center">
-                    <Link href={route("job-order", { 
-                            // project_id: jobOrder.project_id
-                        })}
-                    >
+                    <Link href={route("job-order", {})}>
                         <button className="text-slate-500 hover:text-slate-700 mr-4 flex items-center">
                             <ChevronLeft size={20} />
                         </button>
@@ -116,11 +247,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
         >
             <Head title="Job Order Details" />
 
-
-
-            {/* Flex Container for JO Details and Bill of Quantities */}
             <div className="flex flex-row-reverse gap-6">
-                {/* Bill of Quantities - BoQ Parts Section (Right Side - Scrollable) */}
                 <div className="w-full flex flex-col">
                     <h3 className="text-xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
@@ -134,7 +261,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                                 <div key={idx} className="mb-8">
                                     <h4 className="font-semibold text-lg">{part}</h4>
 
-                                    {/* Subtotal displayed below Part Name */}
                                     <div className="text-left text-gray-700 text-sm mb-1">
                                         Subtotal: <span className="text-yellow-500">₱{subtotal.toLocaleString()}</span>
                                     </div>
@@ -150,7 +276,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                                                         "Quantity",
                                                         "Unit Cost",
                                                         "Amount",
-                                                        "Weight (%)", // Update header to indicate percentage
+                                                        "Weight (%)",
                                                     ].map((header, idx) => (
                                                         <TableHead key={idx}>{header}</TableHead>
                                                     ))}
@@ -166,15 +292,12 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                                                             <TableCell>{item.quantity}</TableCell>
                                                             <TableCell>{item.unitCost}</TableCell>
                                                             <TableCell>{item.amount}</TableCell>
-                                                            <TableCell>{item.weight}%</TableCell> {/* Display weight as percentage */}
+                                                            <TableCell>{item.weight}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell
-                                                            colSpan={7} // Updated colspan to match the new column count
-                                                            className="px-4 py-4 text-center text-gray-500"
-                                                        >
+                                                        <TableCell colSpan={7} className="px-4 py-4 text-center text-gray-500">
                                                             No items found.
                                                         </TableCell>
                                                     </TableRow>
@@ -183,13 +306,12 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                                         </Table>
                                     </div>
 
-                                    {/* Add Pay Item button */}
                                     <div className="col-span-2 flex justify-end mt-4">
                                         <button
-                                                onClick={() => addDummyPayItem(part)}
-                                                className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-600 rounded-lg"
-                                            >
-                                                Add Pay Item
+                                            onClick={() => addDummyPayItem(part)}
+                                            className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-800 rounded-lg"
+                                        >
+                                            Add Pay Item
                                         </button>
                                     </div>
                                 </div>
@@ -198,25 +320,18 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                     </div>
                 </div>
 
-
-
-                {/* JO Details Section (Left  Side - Fixed) */}
                 <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">
-                    
                     <div className="text-gray-900">
-                        
                         <div className="pb-4">
                             <div className="text-xl font-semibold">{formData.jo_name}</div>
-                            <div className="text-sm text-gray-600">{formData.project_desc}</div>
+                            <div className="text-lg text-gray-600">{formData.project_desc}</div>
                             <div className="text-sm text-gray-500">{formData.contract_name}</div>
                         </div>
 
                         <div className="flex flex-row items-center">
                             <div className="w-4/5 bg-gray-200 h-3 rounded-lg mr-4 flex flex-row">
                                 <div
-                                    className={`h-full rounded-full ${getProgressBarColor(
-                                        formData.progress
-                                        )}`}
+                                    className={`h-full rounded-full ${getProgressBarColor(formData.progress)}`}
                                     style={{
                                         width: `${formData.progress || 0}%`,
                                     }}
@@ -224,9 +339,8 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                             </div>
                             <span className="text-sm">{formData.progress}%</span>
                         </div>
-
                     </div>
-                    
+
                     <div className="grid grid-cols-1 gap-4 mt-4">
                         {[
                             ["Status", formData.status],
@@ -242,22 +356,38 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                             </div>
                         ))}
                     </div>
-                    
-                    <Button
-                        onClick={() => setIsModalOpen(true)}
-                        className="mt-6 bg-gray-500 text-white"
-                    >
-                        Edit
-                    </Button>
+
+                    <div className="flex gap-4 mt-6">
+                        <Button
+                            onClick={() => {
+                                if (confirm("Are you sure you want to delete this job order?")) {
+                                    console.log("Job order deleted.");
+                                }
+                            }}
+                            className="bg-red-500 text-white"
+                        >
+                            Delete
+                        </Button>
+
+                        <Button
+                            onClick={() => setIsModalOpen(true)}
+                            className="bg-gray-500 text-white"
+                        >
+                            Edit
+                        </Button>
+
+                        <Button
+                            onClick={exportToExcel}
+                            className="bg-green-500 text-white flex items-center gap-2"
+                        >
+                            <FileDown size={16} />
+                            Export Job Order
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            {/* Edit Modal */}
-            <Modal
-                show={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                maxWidth="lg"
-            >
+            <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="lg">
                 <div className="p-6">
                     <h3 className="text-lg font-semibold mb-4">
                         Edit Job Order Details
@@ -272,18 +402,10 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
                                     </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem
-                                        onClick={() => {
-                                            /* Logic to change status to on-going */
-                                        }}
-                                    >
+                                    <DropdownMenuItem onClick={() => {}}>
                                         on-going
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        onClick={() => {
-                                            /* Logic to change status to completed */
-                                        }}
-                                    >
+                                    <DropdownMenuItem onClick={() => {}}>
                                         completed
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -293,9 +415,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder }) {
 
                     <form>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="jo_name">
-                                Job Order Name:
-                            </InputLabel>
+                            <InputLabel htmlFor="jo_name">Job Order Name:</InputLabel>
                             <TextInput
                                 id="jo_name"
                                 name="jo_name"
