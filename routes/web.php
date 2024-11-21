@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
 use App\Http\Controllers\ItemController;
@@ -25,20 +26,15 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::get('/job-order', function () {
     return Inertia::render('JobOrder/JobOrderPage');
 })->middleware(['auth', 'verified'])->name('job-order');
 
-Route::get('/progress-report', function () {
-    return Inertia::render('ProgressReport/ProgressReportPage');
-})->middleware(['auth', 'verified'])->name('progress-report');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 //contract
-
 
 Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
 
@@ -115,7 +111,7 @@ Route::delete('/contracts/{contractId}/items/{itemId}/bids', [ContractItemContro
 
 
 //project
-    
+
 Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
 
 Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.create');
@@ -180,8 +176,29 @@ Route::prefix('item')->group(function () {
 });
 
 
+//Progress report Contracts Page
+Route::get('/progress-report', [ProgressReportController::class, 'index_contracts'])
+    ->middleware(['auth', 'verified'])
+    ->name('progress-report');
 
+Route::prefix('/progress-report')->group(function () {
+    Route::get('/contracts/{contractId}', [ProgressReportController::class, 'showContract'])->name('progress-report.contract');
 
+    Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])
+        ->name('progress-report.project');
 
+    Route::post('/contracts/{contractId}/project/{projectId}/add', [ProgressReportController::class, 'store'])->middleware(['auth', 'verified']);
+
+    Route::get('/contracts/{contractId}/project/{projectId}/show', [ProgressReportController::class, 'index_par'])->middleware(['auth', 'verified']);
+
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}', [ProgressReportController::class, 'showProgressReport'])
+        ->name('progress-report.report');
+
+    Route::post('/contracts/{contractId}/project/{projectId}/report/{reportId}/edit', [ProgressReportController::class, 'storeProgressReportItem'])
+        ->name('progress-report.item');
+
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}/accomplishments', [ProgressReportController::class, 'getAccomplishments'])
+        ->name('progress-report.accomplishments');
+});
 
 require __DIR__ . '/auth.php';

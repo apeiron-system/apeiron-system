@@ -1,5 +1,5 @@
-import ContractForm from "@/Componentss/contract/ContractForm";
-import ContractTabNavigation from "@/Componentss/contract/ContractTabNavigation";
+import ContractForm from "@/Components/contract/ContractForm";
+import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft } from "lucide-react";

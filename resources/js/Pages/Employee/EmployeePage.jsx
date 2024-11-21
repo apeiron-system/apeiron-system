@@ -1,6 +1,6 @@
-import TabNavigation from "@/Componentss/TabbedNavigation";
-import EmployeeTabNavigation from "@/Componentss/employee/EmployeeTabNavigation";
-import EmployeeTable from "@/Componentss/employee/EmployeeTable";
+import TabNavigation from "@/Components/TabbedNavigation";
+import EmployeeTabNavigation from "@/Components/employee/EmployeeTabNavigation";
+import EmployeeTable from "@/Components/employee/EmployeeTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 

@@ -1,7 +1,7 @@
-import ProjectHeader from "@/Componentss/contract/project/ProjectHeader";
-import ProjectPartTabNavigation from "@/Componentss/contract/project/ProjectPart/ProjectPartTabNavigation";
+import ProjectHeader from "@/Components/contract/project/ProjectHeader";
+import ProjectPartTabNavigation from "@/Components/contract/project/ProjectPart/ProjectPartTabNavigation";
 
-import ProjectPartTable from "@/Componentss/contract/project/ProjectPart/ProjectPartTable";
+import ProjectPartTable from "@/Components/contract/project/ProjectPart/ProjectPartTable";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Button } from "@/Components/ui/button";

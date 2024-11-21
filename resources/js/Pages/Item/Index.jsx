@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import ContractCard from "@/Componentss/item/ContractCard";
+import ContractCard from "@/Components/item/ContractCard";
 
 export default function Index({ auth, contracts }) {
     console.log(contracts);

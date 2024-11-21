@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from "axios"; // Ensure axios is imported
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
-import ProjectPartItemTable from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/ProjectPartItemTable";
-import AddProjectPartItemModal from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/AddProjectPartItemModal";
+import ProjectPartItemTable from "@/Components/contract/project/ProjectPart/ProjectPartItem/ProjectPartItemTable";
+import AddProjectPartItemModal from "@/Components/contract/project/ProjectPart/ProjectPartItem/AddProjectPartItemModal";
 import { Link, router } from "@inertiajs/react";
 import { ChevronLeft, Plus, Download } from "lucide-react";
 
