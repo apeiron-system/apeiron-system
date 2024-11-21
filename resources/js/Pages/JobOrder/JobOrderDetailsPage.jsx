@@ -87,8 +87,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         return progress;
     };
     
-    // Update `progress` whenever `formData.budget` or `totalCost` changes
-    // Function to update job order progress in the database
+    // Update the job order progress in the database
     const updateJobOrderProgress = async (progress) => {
         try {
             const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, {
@@ -106,17 +105,53 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         }
     };
 
-    // Recalculate progress and update database when budget or grand total changes
+    // Update the job order status in the database
+    const updateJobOrderStatus = async (status) => {
+        try {
+            const response = await axios.put(`/job-order-status?jo_no=${jobOrder.jo_no}`, {
+                ...formData,
+                status: status,  // Update the status to "completed" or "on-going"
+            });
+
+            if (response.data.success) {
+                console.log('Job order status updated to:', status);
+            } else {
+                console.error('Failed to update job order status:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error updating job order status:', error);
+        }
+    };
+
+    // Handle the progress calculation and status update when budget or progress changes
     useEffect(() => {
         const calculatedProgress = calculateProgress();
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            progress: calculatedProgress, // Update the progress field
-        }));
-
-        // Update the progress in the database
-        updateJobOrderProgress(calculatedProgress);
-    }, [formData.budget, calculateGrandTotal()]);
+    
+        // Only update progress if it has changed
+        if (calculatedProgress !== formData.progress) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                progress: calculatedProgress, // Update progress in formData
+            }));
+    
+            // Update the progress in the database
+            updateJobOrderProgress(calculatedProgress);
+        }
+    
+        // Determine the new status based on the progress
+        const newStatus = calculatedProgress === 100 ? "completed" : "on-going";
+        
+        // Update the status only if it has changed
+        if (formData.status !== newStatus) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                status: newStatus,  // Update status in formData
+            }));
+    
+            // Update the status in the database (await the response)
+            updateJobOrderStatus(newStatus);
+        }
+    }, [formData.budget, formData.progress, calculateGrandTotal()]);
 
     const formatDate = (date) => {
         if (!date) return "";
@@ -135,7 +170,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     unit: "unit",
                     quantity: 0,
                     unitCost: 0,
-                    amount: 100,
+                    amount: 1000,
                     weight: 0,
                 },
             ],
@@ -268,13 +303,28 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     // Handle form submission
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-    
+        
         try {
-            // Send a PUT request to update the job order details
-            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, formData);
+            // Calculate the progress
+            const calculatedProgress = calculateProgress();
+            const newStatus = calculatedProgress >= 100 ? "completed" : "on-going";
+    
+            // Update form data with calculated progress and new status
+            const updatedFormData = {
+                ...formData,
+                progress: calculatedProgress,
+                status: newStatus, // Update the status based on progress
+            };
+    
+            // Send a PUT request to update the job order details with progress and status
+            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, updatedFormData);
     
             if (response.data.success) {
                 console.log('Job order updated successfully');
+                
+                // After successful update, update the status in the database as well
+                await updateJobOrderStatus(newStatus);  // Update the status if needed
+                
                 // Close the modal and refresh or redirect as necessary
                 setIsModalOpen(false);
                 window.location.href = `/job-order-details?jo_no=${jobOrder.jo_no}`;

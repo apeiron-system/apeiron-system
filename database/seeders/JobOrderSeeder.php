@@ -24,7 +24,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Jane Doe',
                         'approvedBy' => 'Mark Smith',
                         'itemWorks' => 'Item Work A1 description',
-                        'status' => 'completed',
                         'budget' => 100000.00, // Added budget
                     ],
                     [
@@ -37,7 +36,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Bob White',
                         'approvedBy' => 'Eva Black',
                         'itemWorks' => 'Item Work A2 description',
-                        'status' => 'on-going',
                         'budget' => 200000.00, // Added budget
                     ],
                     [
@@ -50,7 +48,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Rachel Blue',
                         'approvedBy' => 'Sarah Yellow',
                         'itemWorks' => 'Item Work A3 description',
-                        'status' => 'on-going',
                         'budget' => 150000.00, // Added budget
                     ],
                 ],
@@ -65,7 +62,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Sophia Harris',
                         'approvedBy' => 'James Clark',
                         'itemWorks' => 'Item Work B1 description',
-                        'status' => 'on-going',
                         'budget' => 120000.00, // Added budget
                     ],
                     [
@@ -78,7 +74,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Liam Moore',
                         'approvedBy' => 'Daniel Lee',
                         'itemWorks' => 'Item Work B2 description',
-                        'status' => 'on-going',
                         'budget' => 180000.00, // Added budget
                     ],
                     [
@@ -91,7 +86,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Emma Taylor',
                         'approvedBy' => 'Noah White',
                         'itemWorks' => 'Item Work B3 description',
-                        'status' => 'on-going',
                         'budget' => 140000.00, // Added budget
                     ],
                 ],
@@ -106,7 +100,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Sophia Wright',
                         'approvedBy' => 'James Parker',
                         'itemWorks' => 'Item Work C1 description',
-                        'status' => 'on-going',
                         'budget' => 130000.00, // Added budget
                     ],
                     [
@@ -119,7 +112,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Oliver Scott',
                         'approvedBy' => 'Daniel Young',
                         'itemWorks' => 'Item Work C2 description',
-                        'status' => 'on-going',
                         'budget' => 170000.00, // Added budget
                     ],
                     [
@@ -132,7 +124,6 @@ class JobOrderSeeder extends Seeder
                         'checkedBy' => 'Lucas Anderson',
                         'approvedBy' => 'Sophia Hill',
                         'itemWorks' => 'Item Work C3 description',
-                        'status' => 'on-going',
                         'budget' => 160000.00, // Added budget
                     ],
                 ],
