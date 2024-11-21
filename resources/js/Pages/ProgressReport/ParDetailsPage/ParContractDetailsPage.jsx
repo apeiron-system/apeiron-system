@@ -287,7 +287,7 @@ export default function ParContractDetails({
                                                     {item.quantity}
                                                 </td>
                                                 <td className="px-4 py-2 border text-right">
-                                                    {unitCost.toFixed(2)}
+                                                    {unitCost}
                                                 </td>
                                                 <td className="px-4 py-2 border text-right">
                                                     {amount.toFixed(2)}
@@ -346,11 +346,11 @@ export default function ParContractDetails({
                                                 {item.amount_this_period || ""}
                                             </td>
                                             <td className="border border-gray-300 px-4 py-2 text-center">
-                                                {item.to_date_weight_percent ||
+                                                {item.to_date_weight_percent ? item.to_date_weight_percent + "%" :
                                                     ""}
                                             </td>
                                             <td className="border border-gray-300 px-4 py-2 text-center">
-                                                {item.balance_weight_percent ||
+                                                {item.balance_weight_percent ? item.balance_weight_percent + "%" :
                                                     ""}
                                             </td>
                                             <td className="border border-gray-300 px-4 py-2 text-center">
