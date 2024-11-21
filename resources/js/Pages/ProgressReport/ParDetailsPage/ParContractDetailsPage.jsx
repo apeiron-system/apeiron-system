@@ -1,334 +1,512 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { Head, useForm } from "@inertiajs/react";
+import { useEffect, useMemo, useState } from "react";
 
-export default function ParContractDetails({ auth }) {
-    const [selectedDetail, setSelectedDetail] = useState(null);
-    const [activeTab, setActiveTab] = useState('boq');
-    
-    const [boqPage, setBoqPage] = useState(1);
-    const [boqItemsPerPage] = useState(5);
-
-    const [accomPage, setAccomPage] = useState(1);
-    const [accomItemsPerPage] = useState(5);
-
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [accomEditData, setAccomEditData] = useState(null);
-
-    useEffect(() => {
-        const detail = sessionStorage.getItem('selectedDetail');
-        if (detail) {
-            setSelectedDetail(JSON.parse(detail));
-            sessionStorage.removeItem('selectedDetail');
-        }
-    }, []);
-
-    const handlePopupToggle = (accomData) => {
-        setIsPopupVisible(!isPopupVisible);
-        setAccomEditData(accomData);
-    };
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        // Assuming the form data is stored in accomEditData state
-        const updatedAccomData = {
-            quantity: {
-                previous: e.target.quantityPrevious.value,
-                thisPeriod: e.target.quantityThisPeriod.value,
-                toDate: e.target.quantityToDate.value,
-                balance: e.target.quantityBalance.value,
-            },
-            amount: {
-                previous: e.target.amountPrevious.value,
-                thisPeriod: e.target.amountThisPeriod.value,
-                toDate: e.target.amountToDate.value,
-                balance: e.target.amountBalance.value,
-            },
-            weights: {
-                toDate: e.target.weightsToDate.value,
-                balance: e.target.weightsBalance.value,
-            },
-            remarks: e.target.remarks.value,
-        };
-
-        // Update the selectedDetail's accomplishments
-        setSelectedDetail((prevState) => {
-            const updatedAccomplishments = [...prevState.accomplishments, updatedAccomData];
-            return { ...prevState, accomplishments: updatedAccomplishments };
-        });
-
-        setIsPopupVisible(false); // Close the popup after saving
-    };
-
-    const getDuration = (startDate, endDate) => {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return `${start.toLocaleDateString(undefined, options)} - ${end.toLocaleDateString(undefined, options)}`;
-    };
+export default function ParContractDetails({
+    auth,
+    progressReport,
+    contract,
+    project,
+    employees,
+    items,
+    bids,
+}) {
+    const [activeTab, setActiveTab] = useState("boq");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState(null);
+    const [accomplishments, setAccomplishments] = useState([]);
 
     const formatDate = (date) => {
         const parsedDate = new Date(date);
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return (
-            <span className="font-bold text-lg">
-                {`As of ${parsedDate.toLocaleDateString(undefined, options)}`}
-            </span>
-        );
+        return parsedDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
     };
+
+    // Function to get employee name
+    const getEmployeeName = (employeeId) => {
+        const employee = employees.find((emp) => emp.id === employeeId);
+        return employee
+            ? `${employee.first_name} ${employee.last_name}`
+            : "N/A";
+    };
+
+    // Function to fetch the latest bid amount for an item
+    const getLatestBid = (itemId, contractId) => {
+        const latestBid = bids
+            .filter(
+                (bid) =>
+                    bid.item_id === itemId && bid.contract_id === contractId
+            )
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+        return latestBid?.bid_amount || 0; // Default to 0 if no bid found
+    };
+
+    // Function to calculate Amount (Php)
+    const calculateAmount = (quantity, unitCost) => {
+        return quantity * unitCost;
+    };
+
+    // Function to calculate Weight %
+    const calculateWeightPercentage = (amount, totalAmount) => {
+        return totalAmount > 0
+            ? ((amount / totalAmount) * 100).toFixed(2)
+            : "0.00";
+    };
+
+    // Calculate the total amount for all items
+    const getTotalAmount = () => {
+        return items.reduce((sum, item) => {
+            const unitCost = getLatestBid(item.id, item.contract_id);
+            const amount = calculateAmount(item.quantity || 0, unitCost);
+            return sum + amount;
+        }, 0);
+    };
+
+    const totalAmount = getTotalAmount(); // Compute total amount for all items
+
+    // Initialize form using Inertia's useForm hook
+    const { data, setData, post, reset } = useForm({
+        accomplishment_report_id: progressReport.id,
+        contract_part_id: contract.id,
+        pay_item_no: null,
+        quantity_this_period: "",
+        amount_this_period: "",
+        to_date_weight_percent: "",
+        balance_weight_percent: "",
+        remarks: "",
+    });
+
+    const fetchAccomplishments = async () => {
+        try {
+            const response = await fetch(
+                `/progress-report/contracts/${contract.id}/project/${project.id}/report/${progressReport.id}/accomplishments`
+            );
+            if (response.ok) {
+                const data = await response.json();
+                setAccomplishments(data);
+            } else {
+                console.error(
+                    "Failed to fetch accomplishments:",
+                    response.statusText
+                );
+            }
+        } catch (error) {
+            console.error("Error fetching accomplishments:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAccomplishments(); // Fetch data on initial load
+    }, []);
+
+    // Function to open the modal with the selected item's data
+    const handleEdit = (item) => {
+        const existingAccomplishment = accomplishments.find(
+            (accom) => accom.pay_item_no === item.id
+        );
+
+        setCurrentItem(item);
+        setData({
+            accomplishment_report_id: progressReport.id,
+            contract_part_id: contract.id,
+            pay_item_no: item.id,
+            quantity_this_period:
+                existingAccomplishment?.quantity_this_period || "",
+            amount_this_period:
+                existingAccomplishment?.amount_this_period || "",
+            to_date_weight_percent:
+                existingAccomplishment?.to_date_weight_percent || "",
+            balance_weight_percent:
+                existingAccomplishment?.balance_weight_percent || "",
+            remarks: existingAccomplishment?.remarks || "",
+        });
+        setIsModalOpen(true);
+    };
+
+    // Function to handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        post(`/progress-report/contracts/${contract.id}/project/${project.id}/report/${progressReport.id}/edit`, {
+            onSuccess: () => {
+                reset();
+                setIsModalOpen(false);
+                fetchAccomplishments(); // Refresh the table after saving
+            },
+        });
+    };
+
+    // Merge accomplishments data with items
+    const mergedItems = items.map((item) => {
+        const accomplishment = accomplishments.find(
+            (accom) => accom.pay_item_no === item.id
+        );
+        return {
+            ...item,
+            ...accomplishment, // Merge accomplishment data if it exists
+        };
+    });
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <div className="flex items-center space-x-2">
-                    <button onClick={() => window.location.href = route('par-details')} className="flex items-center text-gray-700 hover:text-gray-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    <button onClick={() => window.history.back()}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 19l-7-7 7-7"
+                            />
                         </svg>
                     </button>
-                    <h2 className="font-bold text-xl text-gray-900 flex-1">
+                    <h2 className="font-bold text-xl text-gray-900">
                         Progress Accomplishment Report Details
                     </h2>
                 </div>
             }
         >
-            <Head title="Progress Accomplishment Report Details" />
+            <Head title="PAR Details" />
+            <div className="p-6">
+                <h1 className="text-2xl font-bold">{project.project_name}</h1>
+                <p>
+                    <strong>Contract:</strong> {contract.description}
+                </p>
+                <p>
+                    <strong>Location:</strong> {contract.location}
+                </p>
+                <p>
+                    <strong>Status:</strong> {contract.status}
+                </p>
+                <p>
+                    <strong>Date:</strong>{" "}
+                    {formatDate(progressReport.created_at)}
+                </p>
 
-            <div className="pb-4 mb-6">
-                <div className="flex items-center justify-between ml-12 mr-12">
-                    <div>
-                        <h1 className="text-2xl font-bold">
-                            Project Name (PAR#)
-                        </h1>
-                        <h2 className="font-semibold">
-                            <span className="font-semibold">Contract Name:</span> {selectedDetail?.contractName}
-                        </h2>
-                    </div>
-                </div>
-
-                <div className="flex space-x-8 text-sm ml-12 mr-12">
-                    <h2><span className="font-semibold">Contract ID:</span> {selectedDetail?.contractId}</h2>
-                    <h2><span className="font-semibold">Location:</span> {selectedDetail?.location}</h2>
-                </div>
-
-                <div className="ml-12 mr-12 mt-4 text-sm">
-                    <h2>{formatDate(selectedDetail?.date)}</h2>
-                </div>
-
-                {/* Tabs for Bill of Quantities and Accomplishments */}
-                <div className="tabs mt-6 ml-12 mr-12">
-                    <div className="tabs mt-6 flex items-center justify-between">
-                        <ul className="flex space-x-4 border-b">
-                            <li
-                                onClick={() => setActiveTab('boq')}
-                                className={`cursor-pointer py-2 px-4 ${activeTab === 'boq' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}
-                            >
-                                Bill of Quantities
-                            </li>
-                            <li
-                                onClick={() => setActiveTab('accom')}
-                                className={`cursor-pointer py-2 px-4 ${activeTab === 'accom' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600'}`}
-                            >
-                                Accomplishments
-                            </li>
-                        </ul>
-
-                        {activeTab === 'accom' && (
-                            <div className="relative group">
-                                <button
-                                    onClick={() => handlePopupToggle({})}  // Pass relevant accomData if needed
-                                    className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-200"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 48 48">
-                                        <path d="M 40.5 6 C 40.11625 6 39.732453 6.1464531 39.439453 6.4394531 L 21.462891 24.417969 L 20 28 L 23.582031 26.537109 L 41.560547 8.5605469 C 42.145547 7.9745469 42.145547 7.0254531 41.560547 6.4394531 C 41.267547 6.1464531 40.88375 6 40.5 6 z M 12.5 7 C 9.4802259 7 7 9.4802259 7 12.5 L 7 35.5 C 7 38.519774 9.4802259 41 12.5 41 L 35.5 41 C 38.519774 41 41 38.519774 41 35.5 L 41 18.5 A 1.50015 1.50015 0 1 0 38 18.5 L 38 35.5 C 38 36.898226 36.898226 38 35.5 38 L 12.5 38 C 11.101774 38 10 36.898226 10 35.5 L 10 12.5 C 10 11.101774 11.101774 10 12.5 10 L 29.5 10 A 1.50015 1.50015 0 1 0 29.5 7 L 12.5 7 z"></path>
-                                    </svg>
-                                </button>
-                                <span className="absolute left-1/2 bottom-full mb-2 w-max transform -translate-x-1/2 text-xs text-black bg-gray-200 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Edit
-                                </span>
-                            </div>
-                        )}
+                {/* Tabs */}
+                <div className="mt-6">
+                    <div className="border-b flex space-x-4">
+                        <button
+                            className={`pb-2 ${
+                                activeTab === "boq"
+                                    ? "border-b-2 border-blue-600"
+                                    : ""
+                            }`}
+                            onClick={() => setActiveTab("boq")}
+                        >
+                            Bill of Quantities
+                        </button>
+                        <button
+                            className={`pb-2 ${
+                                activeTab === "accom"
+                                    ? "border-b-2 border-blue-600"
+                                    : ""
+                            }`}
+                            onClick={() => setActiveTab("accom")}
+                        >
+                            Accomplishments
+                        </button>
                     </div>
 
-                    {/* Bill of Quantities Table */}
-                    {activeTab === 'boq' && (
+                    {/* Bill of Quantities Tab */}
+                    {activeTab === "boq" && (
+                        <div className="mt-4">
+                            <table className="table-auto w-full text-sm border border-gray-300">
+                                <thead>
+                                    <tr>
+                                        <th className="px-4 py-2 border">
+                                            Item
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Description
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Type
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Unit
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Quantity
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Unit Cost (Php)
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Amount (Php)
+                                        </th>
+                                        <th className="px-4 py-2 border">
+                                            Weight %
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {items.map((item, index) => {
+                                        const unitCost = getLatestBid(
+                                            item.id,
+                                            item.contract_id
+                                        );
+                                        const amount = calculateAmount(
+                                            item.quantity || 0,
+                                            unitCost
+                                        );
+                                        const weightPercentage =
+                                            calculateWeightPercentage(
+                                                amount,
+                                                totalAmount
+                                            );
+
+                                        return (
+                                            <tr
+                                                key={index}
+                                                className="hover:bg-gray-100"
+                                            >
+                                                <td className="px-4 py-2 border">
+                                                    {item.id}
+                                                </td>
+                                                <td className="px-4 py-2 border">
+                                                    {item.description}
+                                                </td>
+                                                <td className="px-4 py-2 border">
+                                                    {item.type}
+                                                </td>
+                                                <td className="px-4 py-2 border">
+                                                    {item.unit}
+                                                </td>
+                                                <td className="px-4 py-2 border">
+                                                    {item.quantity}
+                                                </td>
+                                                <td className="px-4 py-2 border text-right">
+                                                    {unitCost.toFixed(2)}
+                                                </td>
+                                                <td className="px-4 py-2 border text-right">
+                                                    {amount.toFixed(2)}
+                                                </td>
+                                                <td className="px-4 py-2 border text-right">
+                                                    {weightPercentage} %
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {/* Accomplishment Tab */}
+                    {activeTab === "accom" && (
                         <div className="mt-4">
                             <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
                                 <thead>
                                     <tr>
-                                        <th className="border border-gray-300 px-1 py-2 text-center">ITEM NO.</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">DESCRIPTION</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">UNIT</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">QTY.</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">UNIT COST (PhP)</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">AMOUNT (PhP)</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            ITEM
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            QUANTITY THIS PERIOD
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            AMOUNT THIS PERIOD
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            TO DATE WEIGHT %
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            BALANCE WEIGHT %
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            REMARKS
+                                        </th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                            EDIT
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {selectedDetail?.billOfQuantities && paginateData(selectedDetail.billOfQuantities, boqPage, boqItemsPerPage).map((item, index) => (
+                                    {mergedItems.map((item, index) => (
                                         <tr key={index}>
-                                            <td className="border border-gray-300 px-4 py-2">{item.itemNo}</td>
-                                            <td className="border border-gray-300 px-4 py-2">{item.description}</td>
-                                            <td className="border border-gray-300 px-4 py-2">{item.unit}</td>
-                                            <td className="border border-gray-300 px-4 py-2">{item.qty}</td>
-                                            <td className="border border-gray-300 px-4 py-2">{item.unitCost}</td>
-                                            <td className="border border-gray-300 px-4 py-2 text-right">{item.amount}</td>
-                                            <td className="border border-gray-300 px-4 py-2 text-right">{item.weightPercentage}</td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.description}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.quantity_this_period ||
+                                                    ""}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.amount_this_period || ""}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.to_date_weight_percent ||
+                                                    ""}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.balance_weight_percent ||
+                                                    ""}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                {item.remarks || ""}
+                                            </td>
+                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                                <button
+                                                    onClick={() =>
+                                                        handleEdit(item)
+                                                    }
+                                                    className="px-2 py-1 bg-blue-600 text-white rounded"
+                                                >
+                                                    Edit
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                     )}
-
-                    {/* Accomplishments Table */}
-                    {activeTab === 'accom' && (
-                        <div className="mt-4">
-                            <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="4">QUANTITY</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="4">AMOUNT</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="1">TO DATE %</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center" colSpan="2">BALANCE %</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">REMARKS</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Previous</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">This Period</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">To Date</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Balance</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Previous</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">This Period</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">To Date</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Balance</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">Weight %</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {selectedDetail?.accomplishments && paginateData(selectedDetail.accomplishments, accomPage, accomItemsPerPage).map((item, index) => (
-                                        <tr key={index}>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}  
                 </div>
 
-                {/* Authorized Representatives Section */}
-                <div className="ml-12 mr-12 mt-20">
-                    <h3 className="text-md font-bold mb-4">Authorized Representatives:</h3>
-                    <div className="grid grid-cols-4 gap-4">
+                {/* Popup Form */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                        <div className="bg-white p-6 rounded shadow-lg w-1/2">
+                            <h2 className="text-lg font-bold mb-4">
+                                Edit Accomplishment for{" "}
+                                {currentItem?.description}
+                            </h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label>Quantity This Period</label>
+                                        <input
+                                            type="number"
+                                            value={data.quantity_this_period}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "quantity_this_period",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label>Amount This Period</label>
+                                        <input
+                                            type="number"
+                                            value={data.amount_this_period}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "amount_this_period",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label>To Date Weight %</label>
+                                        <input
+                                            type="number"
+                                            value={data.to_date_weight_percent}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "to_date_weight_percent",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label>Balance Weight %</label>
+                                        <input
+                                            type="number"
+                                            value={data.balance_weight_percent}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "balance_weight_percent",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label>Remarks</label>
+                                        <textarea
+                                            value={data.remarks}
+                                            onChange={(e) =>
+                                                setData(
+                                                    "remarks",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="w-full border p-2 rounded"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex justify-end space-x-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="px-4 py-2 border border-gray-500 text-gray-500 rounded"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* Authorized Representatives */}
+                <div className="mt-10">
+                    <h3 className="text-lg font-bold mb-4">
+                        Authorized Representatives:
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <h4 className="font-bold">Prepared by:</h4>
+                            <strong>Prepared by:</strong>{" "}
+                            {getEmployeeName(
+                                progressReport?.prepared_by_employee_id
+                            )}
                         </div>
                         <div>
-                            <h4 className="font-bold">Reviewed by:</h4>
+                            <strong>Reviewed by:</strong>{" "}
+                            {getEmployeeName(
+                                progressReport?.reviewed_by_employee_id
+                            )}
                         </div>
                         <div>
-                            <h4 className="font-bold">Checked by:</h4>
+                            <strong>Checked by:</strong>{" "}
+                            {getEmployeeName(
+                                progressReport?.checked_by_employee_id
+                            )}
                         </div>
                         <div>
-                            <h4 className="font-bold">Approved by:</h4>
+                            <strong>Approved by:</strong>{" "}
+                            {getEmployeeName(
+                                progressReport?.approved_by_employee_id
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Pop-up Form */}
-            {isPopupVisible && (
-                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 pl-8 rounded-lg shadow-lg w-1/2">
-                        <h2 className="font-bold text-lg">Edit Accomplishment</h2>
-                        <form onSubmit={handleFormSubmit}>
-                            <div className="mt-4">
-                                <h3 className="font-semibold">Quantity</h3>
-                                <div className="flex space-x-3">
-                                    <div className="flex-1">
-                                        <label className="block text-sm">Previous</label>
-                                        <input type="number" name="quantityPrevious" defaultValue={accomEditData?.quantity?.previous} className="w-full border p-2 rounded" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-sm">This Period</label>
-                                        <input type="number" name="quantityThisPeriod" defaultValue={accomEditData?.quantity?.thisPeriod} className="w-full border p-2 rounded" />
-                                    </div>
-                                </div>
-                                <div className="flex space-x-4 mt-4">
-                                    <div className="flex-1">
-                                        <label className="block text-sm">To Date</label>
-                                        <input type="number" name="quantityToDate" defaultValue={accomEditData?.quantity?.toDate} className="w-full border p-2 rounded" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-sm">Balance</label>
-                                        <input type="number" name="quantityBalance" defaultValue={accomEditData?.quantity?.balance} className="w-full border p-2 rounded" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-4">
-                                <h3 className="font-semibold">Amount</h3>
-                                <div className="flex space-x-4">
-                                    <div className="flex-1">
-                                        <label className="block text-sm">Previous</label>
-                                        <input type="number" name="amountPrevious" defaultValue={accomEditData?.amount?.previous} className="w-full border p-2 rounded" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-sm">This Period</label>
-                                        <input type="number" name="amountThisPeriod" defaultValue={accomEditData?.amount?.thisPeriod} className="w-full border p-2 rounded" />
-                                    </div>
-                                </div>
-                                <div className="flex space-x-4 mt-4">
-                                    <div className="flex-1">
-                                        <label className="block text-sm">To Date</label>
-                                        <input type="number" name="amountToDate" defaultValue={accomEditData?.amount?.toDate} className="w-full border p-2 rounded" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-sm">Balance</label>
-                                        <input type="number" name="amountBalance" defaultValue={accomEditData?.amount?.balance} className="w-full border p-2 rounded" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-3">
-                                <h3 className="font-semibold">Weights</h3>
-                                <div className="flex space-x-4">
-                                    <div className="flex-1">
-                                        <label className="block text-sm">To Date %</label>
-                                        <input type="number" name="weightsToDate" defaultValue={accomEditData?.weights?.toDate} className="w-full border p-2 rounded" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label className="block text-sm">Balance %</label>
-                                        <input type="number" name="weightsBalance" defaultValue={accomEditData?.weights?.balance} className="w-full border p-2 rounded" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Remarks Field */}
-                            <div className="mt-4">
-                                <h3 className="font-semibold">Remarks</h3>
-                                <div className="mt-1">
-                                    <textarea
-                                        name="remarks"
-                                        defaultValue={accomEditData?.remarks}
-                                        className="w-full border p-1 rounded"
-                                        rows="2"
-                                        placeholder="Enter remarks here"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="mt-4 flex justify-end gap-1">
-                                <button type="button" onClick={() => setIsPopupVisible(false)} className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150">Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
         </AuthenticatedLayout>
     );
 }

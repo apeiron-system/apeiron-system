@@ -191,26 +191,14 @@ Route::prefix('/progress-report')->group(function () {
 
     Route::get('/contracts/{contractId}/project/{projectId}/show', [ProgressReportController::class, 'index_par'])->middleware(['auth', 'verified']);
 
-    // Route::get('/contracts/{contractId}/project/{projectId}/part/{partId}', [ProgressReportController::class, 'showPart'])
-    //     ->name('progress-report.part');
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}', [ProgressReportController::class, 'showProgressReport'])
+        ->name('progress-report.report');
 
-    // Route::get('/contracts/{contractId}/project/{projectId}/part/{partId}/item/{itemId}', [ProgressReportController::class, 'showItem'])
-    //     ->name('progress-report.item');
+    Route::post('/contracts/{contractId}/project/{projectId}/report/{reportId}/edit', [ProgressReportController::class, 'storeProgressReportItem'])
+        ->name('progress-report.item');
+
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}/accomplishments', [ProgressReportController::class, 'getAccomplishments'])
+        ->name('progress-report.accomplishments');
 });
-
-
-// Route::get('/par-contract-details', function () {
-//     return Inertia::render('ProgressReport/ParDetailsPage/ParContractDetailsPage');
-// })->middleware(['auth', 'verified'])->name('par-contract-details');
-
-// Route::get('/jo-details', function () {
-//     return Inertia::render('ProgressReport/ParDetailsPage/JODetailsPage');
-// })->middleware(['auth', 'verified'])->name('jo-details');
-
-// Route::get('/par-job-order', function () {
-//     return Inertia::render('ProgressReport/ParDetailsPage/ParJobOrderPage');
-// })->middleware(['auth', 'verified'])->name('par-job-order');
-
-
 
 require __DIR__ . '/auth.php';

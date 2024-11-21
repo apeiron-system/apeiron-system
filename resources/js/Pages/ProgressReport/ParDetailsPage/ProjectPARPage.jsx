@@ -2,6 +2,15 @@ import EmployeesDialog from "@/Components/contract/EmployeesDialog";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table";
 
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -158,9 +167,10 @@ export default function ProjectPARPage({ auth, project, contract, employees }) {
 
     const getEmployeeName = (id) => {
         const employee = employees.find((emp) => emp.id === id);
-        return employee ? `${employee.first_name} ${employee.last_name}` : "N/A";
+        return employee
+            ? `${employee.first_name} ${employee.last_name}`
+            : "N/A";
     };
-    
 
     return (
         <AuthenticatedLayout
@@ -223,61 +233,57 @@ export default function ProjectPARPage({ auth, project, contract, employees }) {
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="table-auto w-full border-collapse border border-gray-300">
-                            <thead>
-                                <tr>
-                                    <th className="px-4 py-2 border-b border-gray-200 text-left">
-                                        Date
-                                    </th>
-                                    <th className="px-4 py-2 border-b border-gray-200 text-left">
-                                        Checked By
-                                    </th>
-                                    <th className="px-4 py-2 border-b border-gray-200 text-left">
-                                        Reviewed By
-                                    </th>
-                                    <th className="px-4 py-2 border-b border-gray-200 text-left">
-                                        Approved By
-                                    </th>
-                                    <th className="px-4 py-2 border-b border-gray-200 text-left">
-                                        Prepared By
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Date</TableHead>
+                                    <TableHead>Checked By</TableHead>
+                                    <TableHead>Reviewed By</TableHead>
+                                    <TableHead>Approved By</TableHead>
+                                    <TableHead>Prepared By</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
                                 {progressReports.map((report, index) => (
-                                    <tr
-                                        key={index}
-                                        className="border-b border-gray-200 hover:bg-gray-100"
+                                    <TableRow
+                                        className="hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => {
+                                            console.log(
+                                                "Navigating to:",
+                                                `/progress-report/contracts/${contract.id}/project/${project.id}/report/${report.id}`
+                                            );
+                                            window.location.href = `/progress-report/contracts/${contract.id}/project/${project.id}/report/${report.id}`;
+                                        }}
                                     >
-                                        <td className="px-4 py-2">
+                                        <TableCell className="px-4 py-2">
                                             {formatDate(
                                                 report.accomplishment_date
                                             )}
-                                        </td>
-                                        <td className="px-4 py-2">
+                                        </TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {getEmployeeName(
                                                 report.checked_by_employee_id
                                             )}
-                                        </td>
-                                        <td className="px-4 py-2">
+                                        </TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {getEmployeeName(
                                                 report.reviewed_by_employee_id
                                             )}
-                                        </td>
-                                        <td className="px-4 py-2">
+                                        </TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {getEmployeeName(
                                                 report.approved_by_employee_id
                                             )}
-                                        </td>
-                                        <td className="px-4 py-2">
+                                        </TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {getEmployeeName(
                                                 report.prepared_by_employee_id
                                             )}
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
             </div>
