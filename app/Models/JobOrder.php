@@ -13,8 +13,11 @@ class JobOrder extends Model
     // Define the table associated with the model
     protected $table = 'job_orders';
 
-    // Define the primary key if it's not 'id'
+    // Define the primary key
     protected $primaryKey = 'jo_no';
+
+    // Ensure the primary key is not auto-incrementing if it's not numeric
+    public $incrementing = false;
 
     // Define the fillable fields for mass assignment
     protected $fillable = [
@@ -36,29 +39,28 @@ class JobOrder extends Model
         'progress',
     ];
 
-    // Specify the date format if needed
+    // Specify the date format and casting
     protected $casts = [
-        'dateNeeded' => 'datetime',  // Automatically cast to a Carbon instance
+        'dateNeeded' => 'datetime',  // Automatically cast to Carbon instance
     ];
 
-    // Define relationships (if any)
+    // Relationships
 
-    // JobOrder belongs to a Contract
+    // Belongs to Contract
     public function contract()
     {
         return $this->belongsTo(Contract::class, 'contract_id');
     }
 
-    // JobOrder belongs to a Project
+    // Belongs to Project
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
 
+    // Has Many BOQs
     public function billingOfQuantities(): HasMany
     {
         return $this->hasMany(BoQ::class, 'jo_no');
     }
-
-    
 }

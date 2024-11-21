@@ -14,19 +14,16 @@ class ProjectSeeder extends Seeder
             1 => [
                 [
                     'description' => 'Project A',
-                    // 'progress' => 100.0,
                     'status' => 'completed',
                     'location' => 'Manila',
                 ],
                 [
                     'description' => 'Project B',
-                    // 'progress' => 50.0,
                     'status' => 'on-going',
                     'location' => 'Cebu',
                 ],
                 [
                     'description' => 'Project C',
-                    // 'progress' => 40.0,
                     'status' => 'on-going',
                     'location' => 'Davao',
                 ],
@@ -35,19 +32,16 @@ class ProjectSeeder extends Seeder
             2 => [
                 [
                     'description' => 'Project A',
-                    // 'progress' => 30.0,
                     'status' => 'on-going',
                     'location' => 'Manila',
                 ],
                 [
                     'description' => 'Project B',
-                    // 'progress' => 25.0,
                     'status' => 'on-going',
                     'location' => 'Cebu',
                 ],
                 [
                     'description' => 'Project C',
-                    // 'progress' => 20.0,
                     'status' => 'on-going',
                     'location' => 'Iloilo',
                 ],
@@ -56,19 +50,16 @@ class ProjectSeeder extends Seeder
             3 => [
                 [
                     'description' => 'Project A',
-                    // 'progress' => 100.0,
                     'status' => 'completed',
                     'location' => 'Davao',
                 ],
                 [
                     'description' => 'Project B',
-                    // 'progress' => 60.0,
                     'status' => 'on-going',
                     'location' => 'Manila',
                 ],
                 [
                     'description' => 'Project C',
-                    // 'progress' => 40.0,
                     'status' => 'on-going',
                     'location' => 'Cebu',
                 ],
@@ -77,19 +68,16 @@ class ProjectSeeder extends Seeder
             4 => [
                 [
                     'description' => 'Project A',
-                    // 'progress' => 100.0,
                     'status' => 'completed',
                     'location' => 'Iloilo',
                 ],
                 [
                     'description' => 'Project B',
-                    // 'progress' => 100.0,
                     'status' => 'completed',
                     'location' => 'Davao',
                 ],
                 [
                     'description' => 'Project C',
-                    // 'progress' => 40.0,
                     'status' => 'on-going',
                     'location' => 'Manila',
                 ],
@@ -98,19 +86,16 @@ class ProjectSeeder extends Seeder
             5 => [
                 [
                     'description' => 'Project A',
-                    // 'progress' => 10.0,
                     'status' => 'on-going',
                     'location' => 'Cebu',
                 ],
                 [
                     'description' => 'Project B',
-                    // 'progress' => 10.0,
                     'status' => 'on-going',
                     'location' => 'Iloilo',
                 ],
                 [
                     'description' => 'Project C',
-                    // 'progress' => 40.0,
                     'status' => 'on-going',
                     'location' => 'Davao',
                 ],

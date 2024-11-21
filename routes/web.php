@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
 
-    // Store Job Order
+    // Add Job Order
     Route::post('/store-job-order', [JobOrderController::class, 'store'])
         ->name('store-job-order');
 
@@ -58,11 +58,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Delete Job Order
     Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
         ->name('job-order-details');
-    
-    // Job Order Item Billing
-    Route::get('/job-order-item-billing', function () {
-        return Inertia::render('JobOrder/JobOrderItemBillingPage');
-    })->name('job-order-item-billing');
+
+    // Update Job Order
+    Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
+        ->name('job-order-update');
 
     // Item Management
     Route::get('/item', function () {

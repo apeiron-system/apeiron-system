@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
@@ -39,6 +39,8 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         progress: jobOrder.progress || 0,
     });
 
+    // alert("first: "+formData.progress);
+
     // Convert boqParts array to grouped object based on part_name
     const groupedBoqParts = boqParts.reduce((acc, item) => {
         const partName = item.part_name || "Uncategorized";
@@ -56,8 +58,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         });
         return acc;
     }, {});
-
-    // console.log(groupedBoqParts);
 
     const [currentBoqParts, setCurrentBoqParts] = useState(groupedBoqParts);
 
@@ -78,6 +78,46 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         }, 0);
     };
 
+    // Dynamic progress percentage calculation
+    const calculateProgress = () => {
+        const totalCost = calculateGrandTotal();
+        const budget = formData.budget || 1; // Prevent division by zero
+        const progress = Math.min((totalCost / budget) * 100, 100); // Cap progress at 100%
+    
+        return progress;
+    };
+    
+    // Update `progress` whenever `formData.budget` or `totalCost` changes
+    // Function to update job order progress in the database
+    const updateJobOrderProgress = async (progress) => {
+        try {
+            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, {
+                ...formData,
+                progress: progress,  // Include the updated progress value
+            });
+
+            if (response.data.success) {
+                console.log('Job order progress updated successfully');
+            } else {
+                console.error('Failed to update job order progress:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error updating job order progress:', error);
+        }
+    };
+
+    // Recalculate progress and update database when budget or grand total changes
+    useEffect(() => {
+        const calculatedProgress = calculateProgress();
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            progress: calculatedProgress, // Update the progress field
+        }));
+
+        // Update the progress in the database
+        updateJobOrderProgress(calculatedProgress);
+    }, [formData.budget, calculateGrandTotal()]);
+
     const formatDate = (date) => {
         if (!date) return "";
         const newDate = new Date(date);
@@ -95,7 +135,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     unit: "unit",
                     quantity: 0,
                     unitCost: 0,
-                    amount: 0,
+                    amount: 100,
                     weight: 0,
                 },
             ],
@@ -228,21 +268,23 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     // Handle form submission
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
-        const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, formData);
-        if (response.data.success) {
-            console.log('Job order updated successfully');
-            // Close the modal and refresh or redirect as necessary
-            setIsModalOpen(false);
-            window.location.href = `/job-order-details?jo_no=${jobOrderId}`;
-        } else {
-            console.error('Failed to update job order:', response.data.message);
-            alert('Error updating job order');
-        }
+            // Send a PUT request to update the job order details
+            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, formData);
+    
+            if (response.data.success) {
+                console.log('Job order updated successfully');
+                // Close the modal and refresh or redirect as necessary
+                setIsModalOpen(false);
+                window.location.href = `/job-order-details?jo_no=${jobOrder.jo_no}`;
+            } else {
+                console.error('Failed to update job order:', response.data.message);
+                alert('Error updating job order');
+            }
         } catch (error) {
-        console.error('Error updating job order:', error);
-        alert('Failed to update job order');
+            console.error('Error updating job order:', error);
+            alert('Failed to update job order');
         }
     };
     
@@ -458,33 +500,34 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 </div>
             </div>
 
-            <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)} maxWidth="lg">
+            {/* onClose={() => setIsModalOpen(false)} */}
+            <Modal show={isModalOpen} maxWidth="lg">
                 <div className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">
-                        Edit Job Order Details
-                    </h3>
-                    <div>
-                        <div className="flex justify-between items-center">
-                            <InputLabel htmlFor="status">Status</InputLabel>
+                    <h3 className="text-lg font-semibold mb-4">Edit Job Order Details</h3>
+                    <form onSubmit={handleFormSubmit}>
+                        <div className="flex justify-between items-center mb-2">
+                            <InputLabel htmlFor="status">Status:</InputLabel>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
-                                    <button className="block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <button className="block w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm 
+                                        focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                         {formData.status}
                                     </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem onClick={() => {}}>
+                                    <DropdownMenuItem onClick={() =>
+                                        setFormData({ ...formData, status: "on-going" })
+                                    }>
                                         On-going
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => {}}>
+                                    <DropdownMenuItem onClick={() =>
+                                        setFormData({ ...formData, status: "completed" })
+                                    }>
                                         Completed
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
-                    </div>
-
-                    <form onSubmit={handleFormSubmit}>
                         <div className="flex justify-between items-center mb-2">
                             <InputLabel htmlFor="jo_name">Job Order Name:</InputLabel>
                             <TextInput
@@ -497,7 +540,18 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="location">Location</InputLabel>
+                            <InputLabel htmlFor="budget">Approved Budget:</InputLabel>
+                            <TextInput
+                                id="budget"
+                                name="budget"
+                                value={formData.budget}
+                                onChange={handleInputChange}
+                                placeholder="Enter New Approved Budget"
+                                className="w-80"
+                            />
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                            <InputLabel htmlFor="location">Location:</InputLabel>
                             <TextInput
                                 id="location"
                                 name="location"
@@ -508,22 +562,18 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="itemsWork">
-                                Items Work
-                            </InputLabel>
+                            <InputLabel htmlFor="itemsWork">Item Works:</InputLabel>
                             <TextInput
-                                id="itemsWork"
-                                name="itemsWork"
-                                value={formData.itemsWork}
+                                id="itemWorks"
+                                name="itemWorks"
+                                value={formData.itemWorks}
                                 onChange={handleInputChange}
-                                placeholder="Enter New Items Work"
+                                placeholder="Enter New Item Works"
                                 className="w-80"
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="periodCovered">
-                                Period Covered
-                            </InputLabel>
+                            <InputLabel htmlFor="periodCovered">Period Covered:</InputLabel>
                             <TextInput
                                 id="periodCovered"
                                 name="periodCovered"
@@ -534,7 +584,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="supplier">Supplier</InputLabel>
+                            <InputLabel htmlFor="supplier">Supplier:</InputLabel>
                             <TextInput
                                 id="supplier"
                                 name="supplier"
@@ -545,9 +595,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             />
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="dateNeeded">
-                                Date Needed
-                            </InputLabel>
+                            <InputLabel htmlFor="dateNeeded">Date Needed:</InputLabel>
                             <TextInput
                                 id="dateNeeded"
                                 name="dateNeeded"
@@ -559,25 +607,16 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             />
                         </div>
                         <div className="col-span-2 flex justify-end mt-4">
-                            <Button
-                                onClick={handleCancelEditing}
-                                variant="outline"
-                                className="mr-2"
-                            >
+                            <Button onClick={handleCancelEditing} variant="outline" className="mr-2">
                                 Cancel
                             </Button>
-                            <Button
-                                onClick={() => {
-                                    /* Save changes logic */
-                                }}
-                            >
+                            <Button type="submit">
                                 Confirm
                             </Button>
                         </div>
                     </form>
                 </div>
             </Modal>
-            
         </AuthenticatedLayout>
     );
 }
