@@ -6,6 +6,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
+
+use App\Http\Controllers\JobOrderContractController;
+use App\Http\Controllers\JobOrderProjectController;
+use App\Http\Controllers\JobOrderController;
+
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
 use App\Http\Controllers\ProjectPartItemController;
@@ -64,6 +69,43 @@ Route::delete("/contract/{contract_id}/project/{project_id}/delete", [ProjectCon
 Route::get("/contract/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.view');
 
 Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.project.update');
+
+
+//job orders
+
+    // Job Order Contracts Page
+    Route::get('/job-order-contracts', [JobOrderContractController::class, 'index'])
+        ->name('job-order-contracts');
+
+    // Job Order Projects
+    Route::get('/job-order-projects', [JobOrderProjectController::class, 'index'])
+        ->name('job-order-projects');
+
+    // Job Order
+    Route::get('/job-order', [JobOrderController::class, 'index'])
+        ->name('job-order');
+
+    // Create Job Order
+    Route::get('/create-job-order', [JobOrderController::class, 'create'])
+        ->name('create-job-order');
+
+    // // Add Job Order
+    // Route::post('/store-job-order', [JobOrderController::class, 'store'])
+    // ->name('store-job-order');
+
+    // // Job Order Details
+    // Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
+    // ->name('job-order-details');
+
+    // // Delete Job Order
+    // Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
+    // ->name('job-order-details');
+
+    // // Update Job Order
+    // Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
+    // ->name('job-order-update');
+
+
 
 
 //employees
