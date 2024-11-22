@@ -13,7 +13,7 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
         let sortedItems = [...items];
         
         sortedItems = sortedItems.filter(project =>
-            project.description.toLowerCase().includes(searchTerm.toLowerCase())
+            project.project_name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         if (sortOrder === 'latest') {
@@ -82,42 +82,45 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {sortedItems(projects).length > 0 ? (
                     sortedItems(projects).map((project, index) => (
-                        <Card key={index} className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                            <CardHeader>
-                                <CardTitle className="text-xl font-semibold text-gray-800">{project.description}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {/* Progress Bar with Color Based on Status */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center w-full">
-                                        <span className="whitespace-nowrap">Progress</span>
-                                        <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
-                                            <div
-                                                className={`h-full rounded-lg ${
-                                                    project.progress < 50
-                                                        ? 'bg-red-500'
-                                                        : project.status === 'on-going'
-                                                        ? 'bg-yellow-500'
-                                                        : 'bg-green-500'
-                                                }`}
-                                                style={{ width: `${project.progress}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-sm">{project.progress}%</span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                            <Link href={route("job-order", { 
+                        <Link 
+                            href={route("job-order", { 
                                 contract_id: project.contract_id, 
                                 project_id: project.id 
-                                })}>
-                                <Button variant="primary" className="w-full bg-slate-600 hover:bg-slate-800 text-white">
-                                    View Details
-                                </Button>
-                            </Link>
-                            </CardFooter>
-                        </Card>
+                            })}
+                            key={index}
+                            className="block bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                        >
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-semibold text-gray-800">
+                                        {project.project_name}
+                                    </CardTitle>
+                                    <p className="text-gray-600">Project ID: {project.id}</p>
+                                    <p className="text-gray-600">Status: {project.status}</p>
+                                </CardHeader>
+                                <CardContent>
+                                    {/* Progress Bar with Color Based on Status */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center w-full">
+                                            <span className="whitespace-nowrap">Progress</span>
+                                            <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
+                                                <div
+                                                    className={`h-full rounded-lg ${
+                                                        project.progress < 50
+                                                            ? 'bg-red-500'
+                                                            : project.status === 'on-going'
+                                                            ? 'bg-yellow-500'
+                                                            : 'bg-green-500'
+                                                    }`}
+                                                    style={{ width: `${project.progress}%` }}
+                                                ></div>
+                                            </div>
+                                            <span className="text-sm">{project.progress}%</span>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
                     ))
                 ) : (
                     <div className="text-center col-span-full">
@@ -125,7 +128,6 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     </div>
                 )}
             </div>
-            
         </AuthenticatedLayout>
     );
 }

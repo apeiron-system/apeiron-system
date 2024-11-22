@@ -31,10 +31,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/job-order', function () {
-    return Inertia::render('JobOrder/JobOrderPage');
-})->middleware(['auth', 'verified'])->name('job-order');
-
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -77,31 +73,31 @@ Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectCont
     Route::get('/job-order-contracts', [JobOrderContractController::class, 'index'])
         ->name('job-order-contracts');
 
-    // Job Order Projects
+    // Job Order Projects Page
     Route::get('/job-order-projects', [JobOrderProjectController::class, 'index'])
         ->name('job-order-projects');
 
-    // Job Order
+    // Job Order Page
     Route::get('/job-order', [JobOrderController::class, 'index'])
         ->name('job-order');
 
-    // Create Job Order
+    // Create Job Order Page
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
 
-    // // Add Job Order
+    // // Add Job Order Page
     // Route::post('/store-job-order', [JobOrderController::class, 'store'])
     // ->name('store-job-order');
 
-    // // Job Order Details
+    // // Job Order Details Page
     // Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
     // ->name('job-order-details');
 
-    // // Delete Job Order
+    // // Delete Job Order Page
     // Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
     // ->name('job-order-details');
 
-    // // Update Job Order
+    // // Update Job Order Page
     // Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
     // ->name('job-order-update');
 

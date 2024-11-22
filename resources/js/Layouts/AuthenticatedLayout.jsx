@@ -51,7 +51,7 @@ export default function Authenticated({ user, header, children }) {
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
                         <NavLink
-                            href={route("job-order")}
+                            href={route("job-order-contracts")}
                             active={currentRoute === "job-order"}
                         >
                             <NotebookPen className="mr-2" /> Job Order

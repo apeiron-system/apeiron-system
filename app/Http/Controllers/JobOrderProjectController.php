@@ -6,7 +6,6 @@ use App\Models\JobOrderContractModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 
 class JobOrderProjectController extends Controller
 {
@@ -26,29 +25,15 @@ class JobOrderProjectController extends Controller
                 $query->orderBy('id', 'asc');
             }])->findOrFail($contractId);
 
-            // Start a database transaction to update the progress of each project
-            DB::beginTransaction();
-
-            // Map project data to pass to the view, including calculating and updating average progress for each project
+            // Map project data to pass to the view
             $projects = $contract->projects->map(function ($project) {
-                // Calculate the average progress of all job orders for the project
-                $averageProgress = $project->jobOrders->avg('progress'); // Assuming jobOrders relationship is defined on the project model
-
-                // Update the project progress in the database
-                $project->progress = round($averageProgress, 2); // Set the new progress
-                $project->save(); // Save the updated progress to the database
-
                 return [
                     'id' => $project->id,
-                    'description' => $project->description,
-                    'progress' => $project->progress, // Use the updated progress
+                    'project_name' => $project->project_name,
                     'status' => $project->status,
                     'location' => $project->location,
                 ];
             });
-
-            // Commit the transaction after successful updates
-            DB::commit();
 
             return Inertia::render('JobOrder/JobOrderProjectsPage', [
                 'auth' => [
@@ -63,9 +48,6 @@ class JobOrderProjectController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            // Rollback the transaction in case of any errors
-            DB::rollBack();
-
             // Log the error
             Log::error('Error in ProjectController@index: ' . $e->getMessage(), [
                 'contract_id' => $request->query('contract_id'),
