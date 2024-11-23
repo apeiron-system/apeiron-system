@@ -18,8 +18,15 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create()
     {
+
+        //if there is one user in the database, redirect to login page
+
+        if(User::count() > 0){
+            return redirect("login");
+        }
+
         return Inertia::render('Auth/Register');
     }
 

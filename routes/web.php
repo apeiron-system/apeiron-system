@@ -10,6 +10,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
 use App\Http\Controllers\ProjectPartItemController;
 use App\Http\Controllers\BOQController;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
@@ -18,9 +19,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+
+
+    // check if application has already a user. if yes, set canRegister to false
+    $canRegister = User::count() === 0;
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
+        'canRegister' => (Route::has('register') && $canRegister),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
@@ -138,7 +144,7 @@ Route::patch("/contract/{contract_id}/project/{project_id}/part/{part_id}/update
 Route::delete("/contract/{contract_id}/project/{project_id}/part/{part_id}/delete", [ProjectPartController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.part.delete');
 
 
-//project-part-item     
+//project-part-item
 Route::get('contract/{contract_id}/project/{project_id}/part/{id}', [ProjectPartItemController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.part.view');
 
 Route::get('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item', [ProjectPartItemController::class, 'getContractItems'])->name('contract.project.part.item.add')->middleware(['auth', 'verified']);

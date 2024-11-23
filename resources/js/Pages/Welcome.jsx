@@ -1,4 +1,3 @@
-
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import { Button } from "@/Components/ui/button";
 import {
@@ -11,7 +10,7 @@ import {
 
 import { Head, Link } from "@inertiajs/react";
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ auth, canRegister }) {
     return (
         <>
             <Head title="Welcome" />
@@ -49,17 +48,19 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         </Link>
                                     </div>
                                     <div className="mt-2">
-                                        <Link
-                                            href={route("register")}
-                                            className=""
-                                        >
-                                            <Button
-                                                variant="outline"
-                                                className="w-full"
+                                        {canRegister && (
+                                            <Link
+                                                href={route("register")}
+                                                className=""
                                             >
-                                                Register
-                                            </Button>
-                                        </Link>
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full"
+                                                >
+                                                    Register
+                                                </Button>
+                                            </Link>
+                                        )}
                                     </div>
                                 </>
                             )}
