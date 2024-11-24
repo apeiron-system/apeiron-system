@@ -7,6 +7,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectPartController;
+
+use App\Http\Controllers\JobOrderContractController;
+use App\Http\Controllers\JobOrderProjectController;
+use App\Http\Controllers\JobOrderController;
+
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
 use App\Http\Controllers\ProjectPartItemController;
@@ -33,10 +38,6 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
-Route::get('/job-order', function () {
-    return Inertia::render('JobOrder/JobOrderPage');
-})->middleware(['auth', 'verified'])->name('job-order');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -71,6 +72,43 @@ Route::group(
         Route::patch("/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->name('contract.project.update');
     }
 );
+
+//job orders
+
+    // Job Order Contracts Page
+    Route::get('/job-order-contracts', [JobOrderContractController::class, 'index'])
+        ->name('job-order-contracts');
+
+    // Job Order Projects Page
+    Route::get('/job-order-projects', [JobOrderProjectController::class, 'index'])
+        ->name('job-order-projects');
+
+    // Job Order Page
+    Route::get('/job-order', [JobOrderController::class, 'index'])
+        ->name('job-order');
+
+    // Create Job Order Page
+    Route::get('/create-job-order', [JobOrderController::class, 'create'])
+        ->name('create-job-order');
+
+    // // Add Job Order Page
+    // Route::post('/store-job-order', [JobOrderController::class, 'store'])
+    // ->name('store-job-order');
+
+    // // Job Order Details Page
+    // Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
+    // ->name('job-order-details');
+
+    // // Delete Job Order Page
+    // Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
+    // ->name('job-order-details');
+
+    // // Update Job Order Page
+    // Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
+    // ->name('job-order-update');
+
+
+
 
 //employees
 

@@ -15,8 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-            // ProgressAccomplishmentSeeder::class,
-            // PayItemProgressAccomplishmentSeeder::class,
+            EmployeeSeeder::class,
+            ContractSeeder::class,
+            ProjectSeeder::class,
         ]);
     }
 }

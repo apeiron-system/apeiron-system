@@ -88,10 +88,10 @@ export default function Authenticated({ user, header, children }) {
                                     user,
                                     PermissionsEnum.JOB_ORDER_MANAGEMENT
                                 )
-                                    ? route("job-order")
+                                    ? route("job-order-contracts")
                                     : "#"
                             }
-                            active={currentRoute === "job-order"}
+                            active={currentRoute === "job-order-contracts"}
                             className={
                                 !hasPermission(
                                     user,
