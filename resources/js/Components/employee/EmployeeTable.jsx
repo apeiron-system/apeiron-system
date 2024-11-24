@@ -28,6 +28,14 @@ export default function EmployeeTable({ employees }) {
         }
     };
 
+    const handleUserManagement = () => {
+        if (selectedEmployeeId) {
+            router.get(`/employees/user-management/${selectedEmployeeId}`);
+        } else {
+            alert("Please select an employee to manage user");
+        }
+    }
+
     const handleDelete = () => {
         if (selectedEmployeeId) {
             // Perform delete action with selectedEmployeeId
@@ -89,7 +97,8 @@ export default function EmployeeTable({ employees }) {
                 </TableBody>
             </Table>
             {employees.length !== 0 && (
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-4 gap-2">
+                    <Button onClick={handleUserManagement}>Manage User</Button>
                     <Button onClick={handleEdit} className="mr-2">
                         Edit
                     </Button>

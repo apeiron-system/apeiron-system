@@ -12,6 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import EmployeeUserManagementSection from "./EmployeeUserManagementSection";
+import { useState } from "react";
 
 const schema = z.object({
     first_name: z.string().min(1, { message: "First name is required" }),
@@ -34,7 +36,7 @@ const schema = z.object({
     employee_role: z.string().min(1, { message: "Employee role is required" }),
 });
 
-export default function EmployeeForm({ employee }) {
+export default function EmployeeForm({ employee}) {
     const form = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -52,6 +54,7 @@ export default function EmployeeForm({ employee }) {
             employee_role: employee?.employee_role ?? "",
         },
     });
+
 
     const onSubmit = (values) => {
         if (employee && employee.id) {

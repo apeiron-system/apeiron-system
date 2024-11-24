@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionsEnum;
 use App\Models\EmployeeModel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class EmployeeController extends Controller
 {
@@ -75,5 +83,94 @@ class EmployeeController extends Controller
         $employee->delete();
 
         return redirect()->route('employees');
+    }
+
+    public function userManagement(Request $request, $id)
+    {
+        //get the current employee details
+
+        $employee = EmployeeModel::find($id);
+
+
+        $user = User::find($employee->user_id);
+
+        //get the user roles
+        $permissions = null;
+        if ($user) {
+            $permissions = $user->permissions->pluck("name");
+        }
+
+        //get the user details
+        return Inertia::render('Employee/UserManagement/Show', [
+            "employee" => $employee,
+            "user" => $user,
+            "permissions" => $permissions
+
+        ]);
+    }
+    public function updateUserManagement(Request $request, $id)
+    {
+        $employee = EmployeeModel::find($id);
+
+        // If system access is not enabled, remove user association
+        if (!$request->systemAccess) {
+            $user = User::find($employee->user_id);
+            if ($user) {
+                Log::info("shit");
+                $user->delete();
+            }
+
+            $employee->user_id = null;
+            $employee->save();
+
+            return redirect()->route('employees');
+        }
+
+        // Create or update the user if system access is enabled
+        $user = User::find($employee->user_id);
+        if (!$user) {
+            $user = new User();
+            $user->name = $employee->first_name . " " . $employee->last_name;
+            $user->email = $employee->email_address;
+            $user->password = Hash::make($request->password);
+            $user->save(); // Update employee with the new user ID
+            $employee->user_id = $user->id;
+            $employee->save();
+        } else {
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+        }
+
+
+
+        // Process and save permissions using Spatie
+        $permissions = $request->permissions;
+
+        // Clear all existing permissions first
+        $user->syncPermissions([]);
+
+        if (in_array(PermissionsEnum::CONTRACT_MANAGEMENT->value, $permissions)) {
+            $user->givePermissionTo(PermissionsEnum::CONTRACT_MANAGEMENT->value);
+        }
+
+        if (in_array(PermissionsEnum::EMPLOYEE_MANAGEMENT->value, $permissions)) {
+            $user->givePermissionTo(PermissionsEnum::EMPLOYEE_MANAGEMENT->value);
+        }
+
+        if (in_array(PermissionsEnum::JOB_ORDER_MANAGEMENT->value, $permissions)) {
+            $user->givePermissionTo(PermissionsEnum::JOB_ORDER_MANAGEMENT->value);
+        }
+
+        if (in_array(PermissionsEnum::ITEM_MANAGEMENT->value, $permissions)) {
+            $user->givePermissionTo(PermissionsEnum::ITEM_MANAGEMENT->value);
+        }
+
+        if (in_array(PermissionsEnum::PROGRESS_REPORT_MANAGEMENT->value, $permissions)) {
+            $user->givePermissionTo(PermissionsEnum::PROGRESS_REPORT_MANAGEMENT->value);
+        }
+
+        return $this->userManagement($request, $id);
     }
 }

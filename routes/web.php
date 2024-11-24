@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PermissionsEnum;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
 use App\Http\Controllers\ProjectPartItemController;
 use App\Http\Controllers\BOQController;
+use App\Http\Middleware\CheckPermission;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
@@ -23,9 +26,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+
+
+    // check if application has already a user. if yes, set canRegister to false
+    $canRegister = User::count() === 0;
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
+        'canRegister' => (Route::has('register') && $canRegister),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
@@ -37,35 +45,33 @@ Route::get('/dashboard', function () {
 
 //contract
 
-Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
+Route::group(
+    [
+        'prefix' => 'contract',
+        'middleware' => ['auth', 'verified', 'checkPermission' . ':' . PermissionsEnum::CONTRACT_MANAGEMENT->value],
+    ],
+    function () {
+        Route::get('/', [ContractController::class, 'index'])->name('contract.index');
+        Route::get('/create', [ContractController::class, 'create'])->name('contract.create');
+        Route::post('/', [ContractController::class, 'store'])->name('contract.store');
+        Route::get('/{contract}', [ContractController::class, 'show'])->name('contract.show');
+        Route::get('/{contract}/edit', [ContractController::class, 'edit'])->name('contract.edit');
+        Route::put('/{contract}', [ContractController::class, 'update'])->name('contract.update');
+        Route::delete('/{contract}', [ContractController::class, 'destroy'])->name('contract.destroy');
 
-Route::get("/contract/{id}", [ContractController::class, 'viewContract'])->middleware(['auth', 'verified'])->name('contract.view');
+        Route::get("/{id}/project/add", [ProjectController::class, 'add'])->name('contract.project.add');
 
-Route::get("/contract/add/contract", [ContractController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.add');
+        Route::post("/{contract_id}/project/add", [ProjectController::class, 'create'])->name('contract.project.create');
 
-Route::get("/contract/{id}/edit", [ContractController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.edit');
+        Route::get("/{contract_id}/project/{project_id}/edit", [ProjectController::class, 'edit'])->name('contract.project.edit');
 
-Route::post("/contract/add", [ContractController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.create');
+        Route::delete("/{contract_id}/project/{project_id}/delete", [ProjectController::class, 'delete'])->name('contract.project.delete');
 
-Route::patch("/contract/{id}/update", [ContractController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.update');
+        Route::get("/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->name('contract.project.view');
 
-Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.delete');
-
-
-//project
-
-Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
-
-Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.create');
-
-Route::get("/contract/{contract_id}/project/{project_id}/edit", [ProjectController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.project.edit');
-
-Route::delete("/contract/{contract_id}/project/{project_id}/delete", [ProjectController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.delete');
-
-Route::get("/contract/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.view');
-
-Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.project.update');
-
+        Route::patch("/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->name('contract.project.update');
+    }
+);
 
 //job orders
 
@@ -106,90 +112,81 @@ Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectCont
 
 //employees
 
-Route::get('/employees', [EmployeeController::class, 'view'])->middleware(['auth', 'verified'])->name('employees');
+Route::middleware([
+    'auth',
+    'verified',
+    'checkPermission' . ':' . PermissionsEnum::EMPLOYEE_MANAGEMENT->value
+])->group(function () {
+    Route::get('/employees', [EmployeeController::class, 'view'])->name('employees');
 
-Route::get('/employees/add', function () {
-    return Inertia::render('Employee/AddEmployeePage');
-})->middleware(['auth', 'verified'])->name('employee.add');
+    Route::get('/employees/add', function () {
+        return Inertia::render('Employee/AddEmployeePage');
+    })->name('employee.add');
 
-Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->middleware(['auth', 'verified'])->name('employees.edit');
+    Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
 
-Route::post('/employees/add', [EmployeeController::class, 'create'])->middleware(['auth', 'verified'])->name('employees.create');
+    Route::post('/employees/add', [EmployeeController::class, 'create'])->name('employees.create');
 
-Route::patch('/employees/{id}/update', [EmployeeController::class, 'update'])->middleware(['auth', 'verified'])->name('employees.update');
+    Route::patch('/employees/{id}/update', [EmployeeController::class, 'update'])->name('employees.update');
 
-Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->middleware(['auth', 'verified'])->name('employees.delete');
+    Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->name('employees.delete');
+
+    Route::get('/employees/user-management/{id}', [EmployeeController::class, 'userManagement'])->name('employees.usermanagement');
+
+    Route::put('/employees/user-management/{id}', [EmployeeController::class, 'updateUserManagement'])->name('employees.usermanagement.update');
+});
+
+
+
+
 
 //contract
 
-Route::get("/contract", [ContractController::class, 'view'])->middleware(['auth', 'verified'])->name('contract');
+Route::middleware([
+    'auth',
+    'verified',
+    'checkPermission' . ':' . PermissionsEnum::CONTRACT_MANAGEMENT->value
+])->group(function () {
+    // Contract Routes
+    Route::get("/contract", [ContractController::class, 'view'])->name('contract');
+    Route::get("/contract/{id}", [ContractController::class, 'viewContract'])->name('contract.view');
+    Route::get("/contract/add/contract", [ContractController::class, 'add'])->name('contract.add');
+    Route::get("/contract/{id}/edit", [ContractController::class, 'edit'])->name('contract.edit');
+    Route::post("/contract/add", [ContractController::class, 'create'])->name('contract.create');
+    Route::patch("/contract/{id}/update", [ContractController::class, 'update'])->name('contract.update');
+    Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->name('contract.delete');
 
-Route::get("/contract/{id}", [ContractController::class, 'viewContract'])->middleware(['auth', 'verified'])->name('contract.view');
+    // Contract Item Routes
+    Route::get('/contracts/{contractId}/items', [ContractItemController::class, 'showItemsForContract'])->name('contract.items');
+    Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('contract.item.bid');
+    Route::post('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
+    Route::delete('/contracts/{contractId}/items/{itemId}/bids', [ContractItemController::class, 'deleteBids'])->name('item.contract.bids.delete');
 
-Route::get("/contract/add/contract", [ContractController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.add');
+    // Project Routes
+    Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->name('contract.project.add');
+    Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->name('contract.project.create');
+    Route::get("/contract/{contract_id}/project/{project_id}/edit", [ProjectController::class, 'edit'])->name('contract.project.edit');
+    Route::delete("/contract/{contract_id}/project/{project_id}/delete", [ProjectController::class, 'delete'])->name('contract.project.delete');
+    Route::get("/contract/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->name('contract.project.view');
+    Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->name('contract.project.update');
 
-Route::get("/contract/{id}/edit", [ContractController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.edit');
+    // Project Part Routes
+    Route::get("/contract/{contract_id}/project/{project_id}/part/add", [ProjectPartController::class, 'add'])->name('contract.project.part.add');
+    Route::post("/contract/{contract_id}/project/{project_id}/part/add", [ProjectPartController::class, 'create'])->name('contract.project.part.create');
+    Route::get("/contract/{contract_id}/project/{project_id}/part/{part_id}/edit", [ProjectPartController::class, 'edit'])->name('contract.project.part.edit');
+    Route::patch("/contract/{contract_id}/project/{project_id}/part/{part_id}/update", [ProjectPartController::class, 'update'])->name('contract.project.part.update');
+    Route::delete("/contract/{contract_id}/project/{project_id}/part/{part_id}/delete", [ProjectPartController::class, 'delete'])->name('contract.project.part.delete');
 
-Route::post("/contract/add", [ContractController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.create');
+    // Project Part Item Routes
+    Route::get('contract/{contract_id}/project/{project_id}/part/{id}', [ProjectPartItemController::class, 'view'])->name('contract.project.part.view');
+    Route::get('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item', [ProjectPartItemController::class, 'getContractItems'])->name('contract.project.part.item.add');
+    Route::post('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/add', [ProjectPartItemController::class, 'storeProjectPartItem'])->name('contract.project.part.item.store');
+    Route::delete('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/{item_id}/delete', [ProjectPartItemController::class, 'destroy'])->name('contract.project.part.item.delete');
 
-Route::patch("/contract/{id}/update", [ContractController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.update');
-
-Route::delete("/contract/{id}/delete", [ContractController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.delete');
-
-//contract item
-
-Route::get('/contracts/{contractId}/items', [ContractItemController::class, 'showItemsForContract'])->name('contract.items');
-
-Route::get('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'showBidPage'])->name('contract.item.bid');
-
-Route::post('/contracts/{contractId}/items/{itemId}/bid', [ContractItemController::class, 'storeBid'])->name('item.contract.bid.store');
-
-Route::delete('/contracts/{contractId}/items/{itemId}/bids', [ContractItemController::class, 'deleteBids'])
-    ->name('item.contract.bids.delete');
-
-
-//project
-
-Route::get("/contract/{id}/project/add", [ProjectController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.add');
-
-Route::post("/contract/{contract_id}/project/add", [ProjectController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.create');
-
-Route::get("/contract/{contract_id}/project/{project_id}/edit", [ProjectController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.project.edit');
-
-Route::delete("/contract/{contract_id}/project/{project_id}/delete", [ProjectController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.delete');
-
-Route::get("/contract/{contract_id}/project/{project_id}", [ProjectController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.view');
-
-Route::patch("/contract/{contract_id}/project/{project_id}/update", [ProjectController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.project.update');
-
-
-//project-part
-
-Route::get("/contract/{contract_id}/project/{project_id}/part/add", [ProjectPartController::class, 'add'])->middleware(['auth', 'verified'])->name('contract.project.part.add');
-
-Route::post("/contract/{contract_id}/project/{project_id}/part/add", [ProjectPartController::class, 'create'])->middleware(['auth', 'verified'])->name('contract.project.part.create');
-
-Route::get("/contract/{contract_id}/project/{project_id}/part/{part_id}/edit", [ProjectPartController::class, 'edit'])->middleware(['auth', 'verified'])->name('contract.project.part.edit');
-
-Route::patch("/contract/{contract_id}/project/{project_id}/part/{part_id}/update", [ProjectPartController::class, 'update'])->middleware(['auth', 'verified'])->name('contract.project.part.update');
-
-Route::delete("/contract/{contract_id}/project/{project_id}/part/{part_id}/delete", [ProjectPartController::class, 'delete'])->middleware(['auth', 'verified'])->name('contract.project.part.delete');
-
-
-//project-part-item     
-Route::get('contract/{contract_id}/project/{project_id}/part/{id}', [ProjectPartItemController::class, 'view'])->middleware(['auth', 'verified'])->name('contract.project.part.view');
-
-Route::get('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item', [ProjectPartItemController::class, 'getContractItems'])->name('contract.project.part.item.add')->middleware(['auth', 'verified']);
-
-Route::post('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/add', [ProjectPartItemController::class, 'storeProjectPartItem'])->name('contract.project.part.item.store')->middleware(['auth', 'verified']);
-
-Route::delete('/contract/{contract_id}/project/{project_id}/part/{project_part_id}/item/{item_id}/delete', [ProjectPartItemController::class, 'destroy'])->name('contract.project.part.item.delete')->middleware(['auth', 'verified']);
-
-//BOQ
-
-Route::get('/contract/{contractId}/project/{projectId}/boq', [BOQController::class, 'view'])->middleware(['auth', 'verified'])->name('boq.view');
-
-Route::get('/contract/{contractId}/project/{projectId}/boq/download', [BOQController::class, 'download'])->middleware(['auth', 'verified'])->name('boq.download');
+    // BOQ Routes
+    Route::get('/contract/{contractId}/project/{projectId}/boq', [BOQController::class, 'view'])->name('boq.view');
+    Route::get('/contract/{contractId}/project/{projectId}/boq/download', [BOQController::class, 'download'])->name('boq.download');
+});
 
 
 //profile
@@ -201,42 +198,49 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get("/item", [ItemController::class, 'index'])->name('item');
 
-Route::prefix('item')->group(function () {
-    Route::get('/contracts/{contract}', [ItemController::class, 'contractIndex'])->name('item.contract'); // List items
-    Route::get('/contracts/{contract}/create', [ItemController::class, 'create'])->name('item.contract.create'); // Show create form
-    Route::post('/contracts/{contract}', [ItemController::class, 'store'])->name('item.contract.store'); // Store new item
-    Route::get('/contracts/{contract}/{item}', [ItemController::class, 'show'])->name('item.contract.show'); // Show single item (if needed)
-    Route::get('/contracts/{contract}/{item}/edit', [ItemController::class, 'edit'])->name('item.contract.edit'); // Show edit form
-    Route::post('/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
-    Route::post('/contracts/{contract}/item/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
+Route::middleware(
+    [
+        'auth',
+        'verified',
+        'checkPermission' . ':' . PermissionsEnum::ITEM_MANAGEMENT->value
+    ]
+)->group(function () {
+    Route::get("/item", [ItemController::class, 'index'])->name('item'); // List items
+    Route::get('/item/contracts/{contract}', [ItemController::class, 'contractIndex'])->name('item.contract'); // List items
+    Route::get('/item/contracts/{contract}/create', [ItemController::class, 'create'])->name('item.contract.create'); // Show create form
+    Route::post('/item/contracts/{contract}', [ItemController::class, 'store'])->name('item.contract.store'); // Store new item
+    Route::get('/item/contracts/{contract}/{item}', [ItemController::class, 'show'])->name('item.contract.show'); // Show single item (if needed)
+    Route::get('/item/contracts/{contract}/{item}/edit', [ItemController::class, 'edit'])->name('item.contract.edit'); // Show edit form
+    Route::post('/item/contracts/{contract}/{item}', [ItemController::class, 'update'])->name('item.contract.update'); // Update item
+    Route::post('/item/contracts/{contract}/item/delete', [ItemController::class, 'destroy'])->name('item.contract.destroy'); // Delete item
 });
 
 
 //Progress report Contracts Page
-Route::get('/progress-report', [ProgressReportController::class, 'index_contracts'])
-    ->middleware(['auth', 'verified'])
-    ->name('progress-report');
+Route::middleware(['auth', 'verified',
+    'checkPermission' . ':' . PermissionsEnum::PROGRESS_REPORT_MANAGEMENT->value
+])->prefix('/progress-report')->group(function () {
+    // Main Route
+    Route::get('/', [ProgressReportController::class, 'index_contracts'])->name('progress-report');
 
-Route::prefix('/progress-report')->group(function () {
+    // Contract Routes
     Route::get('/contracts/{contractId}', [ProgressReportController::class, 'showContract'])->name('progress-report.contract');
 
-    Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])
-        ->name('progress-report.project');
+    // Project Routes
+    Route::get('/contracts/{contractId}/project/{projectId}', [ProgressReportController::class, 'showProject'])->name('progress-report.project');
 
-    Route::post('/contracts/{contractId}/project/{projectId}/add', [ProgressReportController::class, 'store'])->middleware(['auth', 'verified']);
+    // Store a Progress Report for a Project
+    Route::post('/contracts/{contractId}/project/{projectId}/add', [ProgressReportController::class, 'store']);
 
-    Route::get('/contracts/{contractId}/project/{projectId}/show', [ProgressReportController::class, 'index_par'])->middleware(['auth', 'verified']);
+    // Show Progress Report Index (for Project)
+    Route::get('/contracts/{contractId}/project/{projectId}/show', [ProgressReportController::class, 'index_par']);
 
-    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}', [ProgressReportController::class, 'showProgressReport'])
-        ->name('progress-report.report');
+    // Individual Report Routes
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}', [ProgressReportController::class, 'showProgressReport'])->name('progress-report.report');
+    Route::post('/contracts/{contractId}/project/{projectId}/report/{reportId}/edit', [ProgressReportController::class, 'storeProgressReportItem'])->name('progress-report.item');
 
-    Route::post('/contracts/{contractId}/project/{projectId}/report/{reportId}/edit', [ProgressReportController::class, 'storeProgressReportItem'])
-        ->name('progress-report.item');
-
-    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}/accomplishments', [ProgressReportController::class, 'getAccomplishments'])
-        ->name('progress-report.accomplishments');
+    // Accomplishments for a Report
+    Route::get('/contracts/{contractId}/project/{projectId}/report/{reportId}/accomplishments', [ProgressReportController::class, 'getAccomplishments'])->name('progress-report.accomplishments');
 });
-
 require __DIR__ . '/auth.php';
