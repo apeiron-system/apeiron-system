@@ -9,7 +9,6 @@ import {
     CardContent,
     CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 export default function JobOrderPage({
     auth,
@@ -82,7 +81,7 @@ export default function JobOrderPage({
                             viewBox="0 0 24 24"
                             strokeWidth={1.3}
                             stroke="currentColor"
-                            className="w-4 h-4"
+                            className="w-4 h-4 "
                         >
                             <path
                                 strokeLinecap="round"
@@ -90,7 +89,7 @@ export default function JobOrderPage({
                                 d="M12 2c3.866 0 7 3.134 7 7 0 3.866-7 13-7 13S5 12.866 5 9c0-3.866 3.134-7 7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"
                             />
                         </svg>
-                        <span>{projectLocation || "Project Location"}</span>
+                        <span className="ml-1" > {projectLocation || "Project Location"}</span>
                     </div>
                 </div>
 
@@ -131,10 +130,10 @@ export default function JobOrderPage({
                     })}
                 >
                     <Card
-                        className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
+                        className="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-center hover:scale-105"
                         style={{ height: "440px" }}
                     >
-                        <Plus size={64} className="text-gray-500" />
+                        <Plus size={80} className="text-gray-500" />
                     </Card>
                 </Link>
 
@@ -144,85 +143,77 @@ export default function JobOrderPage({
                     </div>
                 ) : (
                     filteredJobOrders.map((jobOrder, index) => (
-                        <Card
+                        <Link
                             key={index}
-                            className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                            style={{ height: "440px" }}
+                            href={route("job-order-details", {
+                                jo_no: jobOrder.jo_no,
+                            })}
                         >
-                            <CardHeader>
-                                <CardTitle className="text-xl font-semibold text-gray-800">
-                                    {jobOrder.jo_name}
-                                </CardTitle>
+                            <Card
+                                className="px-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer transform hover:scale-105"
+                                style={{ height: "440px" }}
+                            >
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-semibold text-gray-800">
+                                        {jobOrder.jo_name}
+                                    </CardTitle>
 
-                                <div className="w-full flex justify-between items-center mt-2">
-                                    <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
-                                        <div
-                                            className={`h-full rounded-full ${getProgressBarColor(
-                                                jobOrder.progress
-                                            )}`}
-                                            style={{
-                                                width: `${jobOrder.progress || 0}%`,
-                                            }}
-                                        ></div>
+                                    <div className="w-full flex justify-between items-center mt-2">
+                                        <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
+                                            <div
+                                                className={`h-full rounded-full ${getProgressBarColor(
+                                                    jobOrder.progress
+                                                )}`}
+                                                style={{
+                                                    width: `${jobOrder.progress || 0}%`,
+                                                }}
+                                            ></div>
+                                        </div>
+                                        <span className="text-sm ml-2">{jobOrder.progress}%</span>
                                     </div>
-                                    <span className="text-sm ml-2">{jobOrder.progress}%</span>
-                                </div>
-                            </CardHeader>
+                                </CardHeader>
 
-                            <CardContent className="text-sm text-gray-600">
-                                <div className="mb-1">
-                                    <strong>Status:</strong>{" "}
-                                    <span
-                                        className={`font-medium ${
-                                            jobOrder.status === "completed"
-                                                ? "text-green-600"
-                                                : "text-yellow-600"
-                                        }`}
-                                    >
-                                        {jobOrder.status}
-                                    </span>
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Location:</strong> {jobOrder.location}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Supplier:</strong> {jobOrder.supplier}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Item Works:</strong> {jobOrder.itemWorks}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Period Covered:</strong> {jobOrder.period_covered}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Date Needed:</strong> {jobOrder.date_needed}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Prepared By:</strong> {jobOrder.prepared_by}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Checked By:</strong> {jobOrder.checked_by}
-                                </div>
-                                <div className="mb-1">
-                                    <strong>Approved By:</strong> {jobOrder.approved_by}
-                                </div>
-                            </CardContent>
+                                <CardContent className="text-sm text-gray-600">
+                                    <div className="mb-1">
+                                        <strong>Status: </strong>
+                                        <span
+                                            className={`font-medium ${
+                                                jobOrder.status === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-600"
+                                            }`}
+                                        >
+                                            {jobOrder.status}
+                                        </span>
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Location:</strong> {jobOrder.location}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Supplier:</strong> {jobOrder.supplier}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Item Works:</strong> {jobOrder.itemWorks}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Period Covered:</strong> {jobOrder.period_covered}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Date Needed:</strong> {jobOrder.date_needed}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Prepared By:</strong> {jobOrder.prepared_by}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Checked By:</strong> {jobOrder.checked_by}
+                                    </div>
+                                    <div className="mb-1">
+                                        <strong>Approved By:</strong> {jobOrder.approved_by}
+                                    </div>
+                                </CardContent>
 
-                            <CardFooter>
-                                <Link
-                                    href={route("job-order-details", {
-                                        jo_no: jobOrder.jo_no,
-                                    })}
-                                >
-                                    <Button
-                                        variant="primary"
-                                        className="w-full bg-slate-600 hover:bg-slate-800 text-white"
-                                    >
-                                        View Details
-                                    </Button>
-                                </Link>
-                            </CardFooter>
-                        </Card>
+                            </Card>
+                        </Link>
                     ))
                 )}
             </div>

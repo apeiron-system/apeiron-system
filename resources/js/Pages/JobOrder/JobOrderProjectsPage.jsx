@@ -105,7 +105,18 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                                         {project.project_name}
                                     </CardTitle>
                                     <p className="text-gray-600">Project ID: {project.id}</p>
-                                    <p className="text-gray-600">Status: {project.status}</p>
+                                    <div>
+                                        <strong className="text-gray-600">Status: </strong>
+                                        <span
+                                            className={`font-medium ${
+                                                project.status === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-600"
+                                            }`}
+                                        >
+                                            {project.status}
+                                        </span>
+                                    </div>
                                 </CardHeader>
                             </Card>
                         </Link>

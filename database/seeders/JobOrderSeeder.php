@@ -4,46 +4,56 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\ProjectModel;
+use App\Models\EmployeeModel;
 
 class JobOrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
     public function run(): void
     {
-        // Fetch all projects
-        $projects = DB::table('project')->get();
+        // Fetch specific employees for assigning roles
+        $preparedBy = EmployeeModel::where('email_address', 'john.doe@example.com')->first();
+        $checkedBy = EmployeeModel::where('email_address', 'jane.smith@example.com')->first();
+        $approvedBy = EmployeeModel::where('email_address', 'alan.brown@example.com')->first();
 
-        // Verify projects exist
+        // Ensure the employees are found
+        if (!$preparedBy || !$checkedBy || !$approvedBy) {
+            throw new \Exception('Required employees not found. Please check the EmployeeSeeder.');
+        }
+
+        // Get the projects
+        $projects = ProjectModel::all();
+
+        // Ensure there are projects to assign job orders to
         if ($projects->isEmpty()) {
-            throw new \Exception('No projects found. Please seed the Project table first.');
+            throw new \Exception('No projects found. Please check the ProjectSeeder.');
         }
 
-        $jobOrders = [];
-
+        // Insert job order records
         foreach ($projects as $project) {
-            // Assigning a job order for each project
-            $jobOrders[] = [
-                'contract_id' => $project->contract_id,
-                'project_id' => $project->id,
-                'jo_name' => "Job Order for {$project->project_name}",
-                'location' => "{$project->street_address}, {$project->barangay}, {$project->city}",
-                'supplier' => 'Default Supplier Co.',
-                'itemWorks' => ['material', 'labor', 'equipment'][array_rand(['material', 'labor', 'equipment'])],
-                'period_covered' => Carbon::now()->subDays(rand(10, 30))->format('Y-m-d') . ' to ' . Carbon::now()->addDays(rand(10, 30))->format('Y-m-d'),
-                'dateNeeded' => Carbon::now()->addDays(rand(1, 15)),
-                'preparedBy' => 'Default Preparer',
-                'checkedBy' => 'Default Checker',
-                'approvedBy' => 'Default Approver',
-                'status' => ['pending', 'ongoing', 'canceled', 'completed'][array_rand(['pending', 'ongoing', 'canceled', 'completed'])],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            DB::table('job_orders')->insert([
+                [
+                    'jo_name' => 'Job Order for ' . $project->project_name,
+                    'location' => $project->street_address . ', ' . $project->barangay . ', ' . $project->city . ', ' . $project->province,
+                    'supplier' => 'Supplier ' . $project->id,
+                    'itemWorks' => 'material', // Adjust as necessary (material, labor, equipment)
+                    'period_covered' => '2024-01-01 to 2024-12-31', // Example period, adjust as necessary
+                    'dateNeeded' => now()->addDays(10), // Example date, adjust as necessary
+                    'preparedBy' => $preparedBy->id, // Use the employee's ID
+                    'checkedBy' => $checkedBy->id,   // Use the employee's ID
+                    'approvedBy' => $approvedBy->id, // Use the employee's ID
+                    'status' => 'pending', // Default status
+                    'contract_id' => $project->contract_id,
+                    'project_id' => $project->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
         }
-
-        // Insert job orders into the database
-        DB::table('job_orders')->insert($jobOrders);
     }
 }
