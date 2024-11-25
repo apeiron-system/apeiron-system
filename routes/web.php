@@ -54,7 +54,7 @@ Route::group(
         Route::get('/', [ContractController::class, 'index'])->name('contract.index');
         Route::get('/create', [ContractController::class, 'create'])->name('contract.create');
         Route::post('/', [ContractController::class, 'store'])->name('contract.store');
-        Route::get('/{contract}', [ContractController::class, 'show'])->name('contract.show');
+        Route::get('/{contract}', [ContractController::class, 'viewContract'])->name('contract.show');
         Route::get('/{contract}/edit', [ContractController::class, 'edit'])->name('contract.edit');
         Route::put('/{contract}', [ContractController::class, 'update'])->name('contract.update');
         Route::delete('/{contract}', [ContractController::class, 'destroy'])->name('contract.destroy');
