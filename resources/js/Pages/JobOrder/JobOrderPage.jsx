@@ -20,9 +20,8 @@ export default function JobOrderPage({
     projectLocation,
 }) {
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all"); // Changed default to "all"
+    const [statusFilter, setStatusFilter] = useState("all");
 
-    // Sort job orders by date
     const sortedJobOrders = [...(jobOrder || [])].sort((a, b) => {
         if (a.created_at && b.created_at) {
             return new Date(b.created_at) - new Date(a.created_at);
@@ -30,7 +29,6 @@ export default function JobOrderPage({
         return b.jo_no - a.jo_no;
     });
 
-    // Combined filtering for both search term and status
     const filteredJobOrders = sortedJobOrders.filter((jobOrder) => {
         const matchesSearch = jobOrder.jo_name?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === "all" || jobOrder.status === statusFilter;
@@ -39,10 +37,9 @@ export default function JobOrderPage({
 
     const handleClearSearch = () => {
         setSearchTerm("");
-        setStatusFilter("all"); // Reset status filter when clearing
+        setStatusFilter("all");
     };
 
-    // Function to determine the color of the progress bar based on the progress percentage
     const getProgressBarColor = (progress) => {
         if (progress >= 100) return "bg-green-500";
         if (progress >= 50) return "bg-yellow-500";
@@ -80,27 +77,23 @@ export default function JobOrderPage({
                     </div>
                     <div className="pb-4 flex items-center text-gray-500">
                         <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.3}
-                                stroke="currentColor"
-                                className="w-4 h-4"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 2c3.866 0 7 3.134 7 7 0 3.866-7 13-7 13S5 12.866 5 9c0-3.866 3.134-7 7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"
-                                />
-                            </svg>
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.3}
+                            stroke="currentColor"
+                            className="w-4 h-4"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 2c3.866 0 7 3.134 7 7 0 3.866-7 13-7 13S5 12.866 5 9c0-3.866 3.134-7 7-7zm0 4a3 3 0 110 6 3 3 0 010-6z"
+                            />
+                        </svg>
                         <span>{projectLocation || "Project Location"}</span>
-                        <span className="ml-1 text-slate-500 items-center">
-                            
-                        </span>
                     </div>
                 </div>
 
-                {/* Search and Sort */}
                 <div className="flex items-center mb-4">
                     <div className="flex items-center">
                         <input
@@ -131,9 +124,7 @@ export default function JobOrderPage({
                 </div>
             </div>
 
-            {/* Job Orders List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {/* Add Job Order Button as First Card */}
                 <Link
                     href={route("create-job-order", {
                         project_id: projectId,
@@ -147,7 +138,6 @@ export default function JobOrderPage({
                     </Card>
                 </Link>
 
-                {/* Job Order Cards */}
                 {filteredJobOrders.length === 0 ? (
                     <div className="col-span-full text-center text-gray-500 py-8">
                         No job orders found matching your criteria
@@ -193,9 +183,6 @@ export default function JobOrderPage({
                                     </span>
                                 </div>
                                 <div className="mb-1">
-                                    <strong>Approved Budget:</strong> ₱{jobOrder.budget}
-                                </div>
-                                <div className="mb-1">
                                     <strong>Location:</strong> {jobOrder.location}
                                 </div>
                                 <div className="mb-1">
@@ -208,19 +195,19 @@ export default function JobOrderPage({
                                     <strong>Period Covered:</strong> {jobOrder.period_covered}
                                 </div>
                                 <div className="mb-1">
-                                    <strong>Date Needed:</strong> {jobOrder.dateNeeded}
+                                    <strong>Date Needed:</strong> {jobOrder.date_needed}
                                 </div>
                                 <div className="mb-1">
-                                    <strong>Prepared By:</strong> {jobOrder.preparedBy}
+                                    <strong>Prepared By:</strong> {jobOrder.prepared_by}
                                 </div>
                                 <div className="mb-1">
-                                    <strong>Checked By:</strong> {jobOrder.checkedBy}
+                                    <strong>Checked By:</strong> {jobOrder.checked_by}
                                 </div>
                                 <div className="mb-1">
-                                    <strong>Approved By:</strong> {jobOrder.approvedBy}
+                                    <strong>Approved By:</strong> {jobOrder.approved_by}
                                 </div>
                             </CardContent>
-                            
+
                             <CardFooter>
                                 <Link
                                     href={route("job-order-details", {
@@ -239,7 +226,6 @@ export default function JobOrderPage({
                     ))
                 )}
             </div>
-            
         </AuthenticatedLayout>
     );
 }

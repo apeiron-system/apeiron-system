@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             ContractSeeder::class,
             ProjectSeeder::class,
+            JobOrderSeeder::class,
         ]);
     }
 }
