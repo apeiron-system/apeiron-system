@@ -36,13 +36,6 @@ class JobOrderProjectController extends Controller
             });
 
             return Inertia::render('JobOrder/JobOrderProjectsPage', [
-                'auth' => [
-                    'user' => $request->user() ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'email' => $request->user()->email,
-                    ] : null
-                ],
                 'projects' => $projects,
                 'contractName' => $contract->contract_name,
             ]);

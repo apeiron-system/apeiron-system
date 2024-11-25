@@ -1,28 +1,30 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import { ChevronLeft } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 
 export default function JobOrderProjectsPage({ auth, projects, contractName }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('latest');
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("latest");
 
+    // Sort and filter projects
     const sortedItems = (items) => {
-        let sortedItems = [...items];
-        
-        sortedItems = sortedItems.filter(project =>
+        let filteredItems = [...items];
+
+        // Filter projects by search term
+        filteredItems = filteredItems.filter((project) =>
             project.project_name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-        if (sortOrder === 'latest') {
-            sortedItems.sort((a, b) => (a.id < b.id ? 1 : -1)); // Using id instead of item_no
-        } else if (sortOrder === 'oldest') {
-            sortedItems.sort((a, b) => (a.id > b.id ? 1 : -1)); // Using id instead of item_no
+        // Sort projects based on sortOrder
+        if (sortOrder === "latest") {
+            filteredItems.sort((a, b) => (a.id < b.id ? 1 : -1));
+        } else if (sortOrder === "oldest") {
+            filteredItems.sort((a, b) => (a.id > b.id ? 1 : -1));
         }
 
-        return sortedItems;
+        return filteredItems;
     };
 
     const handleSortOrderChange = (e) => {
@@ -30,7 +32,7 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
     };
 
     const handleClearSearch = () => {
-        setSearchTerm('');
+        setSearchTerm("");
     };
 
     return (
@@ -51,19 +53,25 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
         >
             <Head title="Projects" />
 
-            <h2 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">{contractName}</h2>
+            {/* Instructional Text */}
+            <h2 className="font-bold text-2xl text-gray-1000 leading-tight">
+                {contractName}
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+                Select a project below to view its associated job orders.
+            </p>
 
-            {/* Search and Sort */}
+            {/* Search and Sort Section */}
             <div className="pb-4 flex items-center mb-4">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search Project"
+                    placeholder="Search projects by name"
                 />
-                <button 
-                    onClick={handleClearSearch} 
+                <button
+                    onClick={handleClearSearch}
                     className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
                 >
                     Clear
@@ -73,8 +81,8 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                     onChange={handleSortOrderChange}
                     value={sortOrder}
                 >
-                    <option value="latest">Latest</option>
-                    <option value="oldest">Oldest</option>
+                    <option value="latest">Sort by Latest</option>
+                    <option value="oldest">Sort by Oldest</option>
                 </select>
             </div>
 
@@ -82,13 +90,14 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {sortedItems(projects).length > 0 ? (
                     sortedItems(projects).map((project, index) => (
-                        <Link 
-                            href={route("job-order", { 
-                                contract_id: project.contract_id, 
-                                project_id: project.id 
+                        <Link
+                            href={route("job-order", {
+                                contract_id: project.contract_id,
+                                project_id: project.id,
                             })}
                             key={index}
                             className="block bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            title={`Click to view job orders associated with this project`}
                         >
                             <Card>
                                 <CardHeader>
@@ -98,33 +107,15 @@ export default function JobOrderProjectsPage({ auth, projects, contractName }) {
                                     <p className="text-gray-600">Project ID: {project.id}</p>
                                     <p className="text-gray-600">Status: {project.status}</p>
                                 </CardHeader>
-                                <CardContent>
-                                    {/* Progress Bar with Color Based on Status */}
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center w-full">
-                                            <span className="whitespace-nowrap">Progress</span>
-                                            <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
-                                                <div
-                                                    className={`h-full rounded-lg ${
-                                                        project.progress < 50
-                                                            ? 'bg-red-500'
-                                                            : project.status === 'on-going'
-                                                            ? 'bg-yellow-500'
-                                                            : 'bg-green-500'
-                                                    }`}
-                                                    style={{ width: `${project.progress}%` }}
-                                                ></div>
-                                            </div>
-                                            <span className="text-sm">{project.progress}%</span>
-                                        </div>
-                                    </div>
-                                </CardContent>
                             </Card>
                         </Link>
                     ))
                 ) : (
                     <div className="text-center col-span-full">
-                        <p className="text-gray-900">No projects found matching "{searchTerm}".</p>
+                        <p className="text-gray-900">
+                            No projects found matching "{searchTerm}". Try refining your search or
+                            adjusting the sort order.
+                        </p>
                     </div>
                 )}
             </div>
