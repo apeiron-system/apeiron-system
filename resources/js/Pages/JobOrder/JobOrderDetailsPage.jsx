@@ -26,7 +26,7 @@ import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, boqParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+    alert(jobOrder.status);
     const [formData, setFormData] = useState({
         jo_name: jobOrder.jo_name || "",
         location: jobOrder.location || "",
@@ -238,7 +238,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             // Update form data with new status
             const updatedFormData = {
                 ...formData,
-                status: newStatus,
             };
     
             // Send a PUT request to update the job order details with status
@@ -246,9 +245,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     
             if (response.data.success) {
                 console.log('Job order updated successfully');
-                
-                // After successful update, update the status in the database as well
-                await updateJobOrderStatus(newStatus);  // Update the status if needed
                 
                 // Close the modal and refresh or redirect as necessary
                 setIsModalOpen(false);
@@ -437,7 +433,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         ))}
                     </div>
 
-                    <div className="flex gap-4 mt-6">
+                    <div className="flex gap-4">
                     <Button
                         onClick={() => handleDelete(jobOrder.jo_no)}
                         className="bg-red-500 text-white"

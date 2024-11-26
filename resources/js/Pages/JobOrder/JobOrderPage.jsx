@@ -199,16 +199,16 @@ export default function JobOrderPage({
                                         <strong>Period Covered:</strong> {jobOrder.period_covered}
                                     </div>
                                     <div className="mb-1">
-                                        <strong>Date Needed:</strong> {jobOrder.date_needed}
+                                        <strong>Date Needed:</strong> {jobOrder.dateNeeded}
                                     </div>
                                     <div className="mb-1">
-                                        <strong>Prepared By:</strong> {jobOrder.prepared_by}
+                                        <strong>Prepared By:</strong> {jobOrder.preparedBy}
                                     </div>
                                     <div className="mb-1">
-                                        <strong>Checked By:</strong> {jobOrder.checked_by}
+                                        <strong>Checked By:</strong> {jobOrder.checkedBy}
                                     </div>
                                     <div className="mb-1">
-                                        <strong>Approved By:</strong> {jobOrder.approved_by}
+                                        <strong>Approved By:</strong> {jobOrder.approvedBy}
                                     </div>
                                 </CardContent>
 

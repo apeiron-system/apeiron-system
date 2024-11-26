@@ -14,10 +14,10 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
         jobOrderName: "",
         location: "",
         supplier: "",
-        itemWorks: "", 
+        itemWorks: "",
         periodCovered: "",
         dateNeeded: "",
-        preparedBy: "", 
+        preparedBy: "",
         checkedBy: "",
         approvedBy: "",
         status: "pending",
@@ -82,9 +82,8 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
     };
 
     const handleConfirmSubmit = () => {
-        // First log what we're sending
         console.log('Sending data:', formData);
-    
+        
         axios.post(route('store-job-order'), formData)
             .then(response => {
                 if (response.data.success) {
@@ -93,10 +92,45 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
                     setIsSubmittedModalOpen(true);
                 } else {
                     console.error('Failed to create job order:', response.data.message);
+                    alert(response.data.message || 'Failed to create job order');
                 }
             })
-    };
+            .catch(error => {
+                console.error('Full error object:', error);
     
+                // More comprehensive error handling
+                if (error.response) {
+                    // Server responded with an error status
+                    console.error('Server error details:', error.response);
+    
+                    // Safely handle different error scenarios
+                    const errorMessage = error.response.data?.message || 
+                                         error.response.data?.error || 
+                                         'An unexpected server error occurred';
+                    
+                    // Parse and display validation errors if they exist
+                    if (error.response.data?.errors) {
+                        const errorMessages = Object.entries(error.response.data.errors)
+                            .map(([field, messages]) => 
+                                `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
+                            )
+                            .join('\n');
+                        
+                        alert(`Validation Errors:\n${errorMessages}`);
+                    } else {
+                        alert(`Error: ${errorMessage}`);
+                    }
+                } else if (error.request) {
+                    // Request was made but no response received
+                    console.error('No response received:', error.request);
+                    alert('No response received from server. Please check your network connection.');
+                } else {
+                    // Something happened in setting up the request
+                    console.error('Error setting up request:', error.message);
+                    alert('Error creating job order: ' + error.message);
+                }
+            });
+    };
 
     const closeModal = () => {
         setIsExitModalOpen(false);
