@@ -26,6 +26,11 @@ class JobOrderSeeder extends Seeder
             throw new \Exception('Required employees not found. Please check the EmployeeSeeder.');
         }
 
+        // Helper function to construct full name
+        $getFullName = function ($employee) {
+            return trim("{$employee->first_name} {$employee->middle_name} {$employee->last_name}");
+        };
+
         // Get the projects
         $projects = ProjectModel::all();
 
@@ -44,9 +49,9 @@ class JobOrderSeeder extends Seeder
                     'itemWorks' => 'material', // Adjust as necessary (material, labor, equipment)
                     'period_covered' => '2024-01-01 to 2024-12-31', // Example period, adjust as necessary
                     'dateNeeded' => now()->addDays(10), // Example date, adjust as necessary
-                    'preparedBy' => $preparedBy->id, // Use the employee's ID
-                    'checkedBy' => $checkedBy->id,   // Use the employee's ID
-                    'approvedBy' => $approvedBy->id, // Use the employee's ID
+                    'preparedBy' => $getFullName($preparedBy),
+                    'checkedBy' => $getFullName($checkedBy),
+                    'approvedBy' => $getFullName($approvedBy),
                     'status' => 'pending', // Default status
                     'contract_id' => $project->contract_id,
                     'project_id' => $project->id,

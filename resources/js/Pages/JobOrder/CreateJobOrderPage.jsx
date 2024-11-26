@@ -95,27 +95,6 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
                     console.error('Failed to create job order:', response.data.message);
                 }
             })
-            .catch(error => {
-                if (error.response) {
-                    // The server responded with a status code outside of 2xx
-                    console.error('Validation errors:', error.response.data.errors);
-                    
-                    // You could set these errors in state to display them to the user
-                    const errorMessages = Object.values(error.response.data.errors)
-                        .flat()
-                        .join('\n');
-                        
-                    alert('Validation failed:\n' + errorMessages);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    console.error('No response received:', error.request);
-                    alert('No response received from server');
-                } else {
-                    // Something happened in setting up the request
-                    console.error('Error:', error.message);
-                    alert('Error creating job order: ' + error.message);
-                }
-            });
     };
     
 

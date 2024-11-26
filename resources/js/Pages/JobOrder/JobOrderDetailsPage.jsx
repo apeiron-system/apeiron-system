@@ -34,12 +34,11 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         periodCovered: jobOrder.period_covered || "",
         supplier: jobOrder.supplier || "",
         dateNeeded: jobOrder.dateNeeded || "",
+        preparedBy: jobOrder.preparedBy || "",
+        checkedBy: jobOrder.checkedBy || "",
+        approvedBy: jobOrder.approvedBy || "",
         status: jobOrder.status || "",
-        budget: jobOrder.budget || 0,
-        progress: jobOrder.progress || 0,
     });
-
-    // alert("first: "+formData.progress);
 
     // Convert boqParts array to grouped object based on part_name
     const groupedBoqParts = boqParts.reduce((acc, item) => {
@@ -54,7 +53,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             quantity: parseFloat(item.quantity),
             unitCost: parseFloat(item.unit_cost),
             amount: parseFloat(item.amount),
-            weight: parseFloat(item.weight)
         });
         return acc;
     }, {});
@@ -66,43 +64,10 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const getProgressBarColor = (progress) => {
-        if (progress >= 100) return "bg-green-500";
-        if (progress >= 50) return "bg-yellow-500";
-        return "bg-red-500";
-    };
-
     const calculateGrandTotal = () => {
         return Object.values(currentBoqParts).reduce((total, part) => {
             return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
         }, 0);
-    };
-
-    // Dynamic progress percentage calculation
-    const calculateProgress = () => {
-        const totalCost = calculateGrandTotal();
-        const budget = formData.budget || 1; // Prevent division by zero
-        const progress = Math.min((totalCost / budget) * 100, 100); // Cap progress at 100%
-    
-        return progress;
-    };
-    
-    // Update the job order progress in the database
-    const updateJobOrderProgress = async (progress) => {
-        try {
-            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, {
-                ...formData,
-                progress: progress,  // Include the updated progress value
-            });
-
-            if (response.data.success) {
-                console.log('Job order progress updated successfully');
-            } else {
-                console.error('Failed to update job order progress:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error updating job order progress:', error);
-        }
     };
 
     // Update the job order status in the database
@@ -123,36 +88,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         }
     };
 
-    // Handle the progress calculation and status update when budget or progress changes
-    useEffect(() => {
-        const calculatedProgress = calculateProgress();
-    
-        // Only update progress if it has changed
-        if (calculatedProgress !== formData.progress) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                progress: calculatedProgress, // Update progress in formData
-            }));
-    
-            // Update the progress in the database
-            updateJobOrderProgress(calculatedProgress);
-        }
-    
-        // Determine the new status based on the progress
-        const newStatus = calculatedProgress === 100 ? "completed" : "on-going";
-        
-        // Update the status only if it has changed
-        if (formData.status !== newStatus) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                status: newStatus,  // Update status in formData
-            }));
-    
-            // Update the status in the database (await the response)
-            updateJobOrderStatus(newStatus);
-        }
-    }, [formData.budget, formData.progress, calculateGrandTotal()]);
-
     const formatDate = (date) => {
         if (!date) return "";
         const newDate = new Date(date);
@@ -171,7 +106,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     quantity: 0,
                     unitCost: 0,
                     amount: 1000,
-                    weight: 0,
                 },
             ],
         }));
@@ -214,8 +148,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             ['Supplier:', formData.supplier, '', '', '', '', ''],
             ['Date Needed:', formData.dateNeeded, '', '', '', '', ''],
             ['Status:', formData.status, '', '', '', '', ''],
-            ['Approved Budget:', formData.budget, '', '', '', '', ''],
-            ['Progress:', `${formData.progress}%`, '', '', '', '', ''],
             ['Total Cost:', `₱${calculateGrandTotal().toLocaleString()}`, '', '', '', '', ''],
             ['', '', '', '', '', '', ''],
         ];
@@ -249,8 +181,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 'Unit',
                 'Quantity',
                 'Unit Cost',
-                'Amount',
-                'Weight (%)'
+                'Amount'
             ]);
             
             items.forEach(item => {
@@ -260,8 +191,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     item.unit,
                     item.quantity,
                     item.unitCost,
-                    item.amount,
-                    item.weight
+                    item.amount
                 ]);
             });
             
@@ -305,18 +235,13 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         e.preventDefault();
         
         try {
-            // Calculate the progress
-            const calculatedProgress = calculateProgress();
-            const newStatus = calculatedProgress >= 100 ? "completed" : "on-going";
-    
-            // Update form data with calculated progress and new status
+            // Update form data with new status
             const updatedFormData = {
                 ...formData,
-                progress: calculatedProgress,
-                status: newStatus, // Update the status based on progress
+                status: newStatus,
             };
     
-            // Send a PUT request to update the job order details with progress and status
+            // Send a PUT request to update the job order details with status
             const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, updatedFormData);
     
             if (response.data.success) {
@@ -442,7 +367,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                                         "Quantity",
                                                         "Unit Cost",
                                                         "Amount",
-                                                        "Weight (%)",
                                                     ].map((header, idx) => (
                                                         <TableHead key={idx}>{header}</TableHead>
                                                     ))}
@@ -458,7 +382,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                                             <TableCell>{item.quantity}</TableCell>
                                                             <TableCell>{item.unitCost}</TableCell>
                                                             <TableCell>{item.amount}</TableCell>
-                                                            <TableCell>{item.weight}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 ) : (
@@ -493,33 +416,23 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <div className="text-lg text-gray-600">{projectName || "No Project"}</div>
                             <div className="text-sm text-gray-500">{contractName|| "No Contract"}</div>
                         </div>
-
-                        <div className="flex flex-row items-center">
-                            <div className="w-4/5 bg-gray-200 h-3 rounded-lg mr-4 flex flex-row">
-                                <div
-                                    className={`h-full rounded-full ${getProgressBarColor(formData.progress)}`}
-                                    style={{
-                                        width: `${formData.progress || 0}%`,
-                                    }}
-                                ></div>
-                            </div>
-                            <span className="text-sm">{formData.progress}%</span>
-                        </div>
                     </div>
 
-                    <div className="grid grid-rows-6 grid-cols-1 gap-1.5 mt-4">
+                    <div className="grid grid-rows-5 grid-cols-2 gap-1 mt-2">
                         {[
-                            ["Approved Budget", "₱" + formData.budget],
                             ["Status", formData.status],
                             ["Location", formData.location],
                             ["Item Works", formData.itemWorks],
                             ["Period Covered", formData.periodCovered],
                             ["Supplier", formData.supplier],
                             ["Date Needed", formatDate(formData.dateNeeded)],
+                            ["Prepared By", formData.preparedBy],
+                            ["Checked By", formData.checkedBy],
+                            ["Approved By", formData.approvedBy],
                         ].map(([label, value], idx) => (
                             <div key={idx}>
-                                <div className="text-sm text-gray-600">{label}:</div>
-                                <div>{value}</div>
+                                <strong>{label}:</strong>
+                                <div className="text-sm text-gray-600">{value}</div>
                             </div>
                         ))}
                     </div>
@@ -586,17 +499,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                 value={formData.jo_name}
                                 onChange={handleInputChange}
                                 placeholder="Enter New Job Order Name"
-                                className="w-80"
-                            />
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="budget">Approved Budget:</InputLabel>
-                            <TextInput
-                                id="budget"
-                                name="budget"
-                                value={formData.budget}
-                                onChange={handleInputChange}
-                                placeholder="Enter New Approved Budget"
                                 className="w-80"
                             />
                         </div>
