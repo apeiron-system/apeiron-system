@@ -26,7 +26,7 @@ import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, boqParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    alert(jobOrder.status);
+    
     const [formData, setFormData] = useState({
         jo_name: jobOrder.jo_name || "",
         location: jobOrder.location || "",
