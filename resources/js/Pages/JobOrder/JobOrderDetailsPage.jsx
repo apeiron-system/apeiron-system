@@ -70,24 +70,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         }, 0);
     };
 
-    // Update the job order status in the database
-    const updateJobOrderStatus = async (status) => {
-        try {
-            const response = await axios.put(`/job-order-status?jo_no=${jobOrder.jo_no}`, {
-                ...formData,
-                status: status,  // Update the status to "completed" or "on-going"
-            });
-
-            if (response.data.success) {
-                console.log('Job order status updated to:', status);
-            } else {
-                console.error('Failed to update job order status:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error updating job order status:', error);
-        }
-    };
-
     const formatDate = (date) => {
         if (!date) return "";
         const newDate = new Date(date);
@@ -109,125 +91,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 },
             ],
         }));
-    };
-
-    const exportToExcel = () => {
-        const wb = XLSX.utils.book_new();
-        
-        const defaultColWidth = [
-            { wch: 15 },
-            { wch: 40 },
-            { wch: 10 },
-            { wch: 12 },
-            { wch: 15 },
-            { wch: 15 },
-            { wch: 12 }
-        ];
-    
-        const headerStyle = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "4F46E5" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            border: {
-                top: { style: "thin" },
-                right: { style: "thin" },
-                bottom: { style: "thin" },
-                left: { style: "thin" }
-            }
-        };
-    
-        const joDetailsData = [
-            ['JOB ORDER DETAILS', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', ''],
-            ['Job Order Name:', formData.jo_name, '', '', '', '', ''],
-            ['Project Name:', projectName, '', '', '', '', ''],
-            ['Contract Name:', contractName, '', '', '', '', ''],
-            ['Location:', formData.location, '', '', '', '', ''],
-            ['Item Works:', formData.itemWorks, '', '', '', '', ''],
-            ['Period Covered:', formData.periodCovered, '', '', '', '', ''],
-            ['Supplier:', formData.supplier, '', '', '', '', ''],
-            ['Date Needed:', formData.dateNeeded, '', '', '', '', ''],
-            ['Status:', formData.status, '', '', '', '', ''],
-            ['Total Cost:', `₱${calculateGrandTotal().toLocaleString()}`, '', '', '', '', ''],
-            ['', '', '', '', '', '', ''],
-        ];
-        
-        const joDetailsWs = XLSX.utils.aoa_to_sheet(joDetailsData);
-        joDetailsWs['!cols'] = defaultColWidth;
-        joDetailsWs['!merges'] = [
-            { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }
-        ];
-        
-        joDetailsWs['A1'] = { 
-            v: 'JOB ORDER DETAILS',
-            s: {
-                font: { bold: true, sz: 16 },
-                alignment: { horizontal: "center" }
-            }
-        };
-        
-        XLSX.utils.book_append_sheet(wb, joDetailsWs, 'Job Order Details');
-    
-        let boqData = [];
-        boqData.push(['BILL OF QUANTITIES', '', '', '', '', '', '']);
-        boqData.push(['', '', '', '', '', '', '']);
-        
-        Object.entries(currentBoqParts).forEach(([partName, items]) => {
-            boqData.push([partName.toUpperCase(), '', '', '', '', '', '']);
-            
-            boqData.push([
-                'Item No.',
-                'Description',
-                'Unit',
-                'Quantity',
-                'Unit Cost',
-                'Amount'
-            ]);
-            
-            items.forEach(item => {
-                boqData.push([
-                    item.itemNo,
-                    item.description,
-                    item.unit,
-                    item.quantity,
-                    item.unitCost,
-                    item.amount
-                ]);
-            });
-            
-            const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-            boqData.push(['', '', '', '', 'Subtotal:', subtotal, '']);
-            boqData.push(['', '', '', '', '', '', '']);
-        });
-        
-        boqData.push(['', '', '', '', 'GRAND TOTAL:', calculateGrandTotal(), '']);
-        
-        const boqWs = XLSX.utils.aoa_to_sheet(boqData);
-        boqWs['!cols'] = defaultColWidth;
-        
-        const range = XLSX.utils.decode_range(boqWs['!ref']);
-        for (let R = 0; R <= range.e.r; R++) {
-            for (let C = 0; C <= range.e.c; C++) {
-                const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-                if (!boqWs[cellRef]) continue;
-                
-                if (R === 0 || boqWs[cellRef].v === 'Item No.' || 
-                    (typeof boqWs[cellRef].v === 'string' && 
-                    boqWs[cellRef].v.toUpperCase() === boqWs[cellRef].v && 
-                    boqWs[cellRef].v.length > 0)) {
-                    boqWs[cellRef].s = headerStyle;
-                }
-                
-                if (C === 5 && typeof boqWs[cellRef].v === 'number') {
-                    boqWs[cellRef].z = '"₱"#,##0.00';
-                }
-            }
-        }
-        
-        XLSX.utils.book_append_sheet(wb, boqWs, 'Bill of Quantities');
-    
-        const fileName = `${formData.jo_name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-        XLSX.writeFile(wb, fileName);
     };
 
     // Handle form submission
@@ -446,14 +309,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             className="bg-gray-500 text-white"
                         >
                             Edit
-                        </Button>
-
-                        <Button
-                            onClick={exportToExcel}
-                            className="bg-green-500 text-white flex items-center gap-2"
-                        >
-                            <FileDown size={16} />
-                            Export
                         </Button>
                     </div>
                 </div>
