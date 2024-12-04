@@ -76,6 +76,11 @@ Route::group(
 
 //job orders
 
+Route::group(
+    [
+    "middleware" => ['auth', 'verified', 'checkPermission' . ':' . PermissionsEnum::JOB_ORDER_MANAGEMENT->value],
+    ], function () {
+
     // Job Order Contracts Page
     Route::get('/job-order-contracts', [JobOrderContractController::class, 'index'])
         ->name('job-order-contracts');
@@ -108,6 +113,8 @@ Route::group(
     Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
     ->name('job-order-update');
 
+    }
+);
 
 
 
