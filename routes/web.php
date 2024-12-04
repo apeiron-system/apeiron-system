@@ -11,6 +11,7 @@ use App\Http\Controllers\ProjectPartController;
 use App\Http\Controllers\JobOrderContractController;
 use App\Http\Controllers\JobOrderProjectController;
 use App\Http\Controllers\JobOrderController;
+use App\Http\Controllers\JobOrderDetailsController;
 
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
@@ -91,21 +92,21 @@ Route::group(
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
 
-    // // Add Job Order Page
-    // Route::post('/store-job-order', [JobOrderController::class, 'store'])
-    // ->name('store-job-order');
+    // Job Order Details Page
+    Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
+        ->name('job-order-details');
 
-    // // Job Order Details Page
-    // Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
-    // ->name('job-order-details');
+    // Add Job Order Page
+    Route::post('/store-job-order', [JobOrderController::class, 'store'])
+    ->name('store-job-order');
 
-    // // Delete Job Order Page
-    // Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
-    // ->name('job-order-details');
+    // Delete Job Order Page
+    Route::delete('/job-order-details', [JobOrderDetailsController::class, 'destroy'])
+        ->name('job-order-details');
 
-    // // Update Job Order Page
-    // Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
-    // ->name('job-order-update');
+    // Update Job Order Page
+    Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
+    ->name('job-order-update');
 
 
 

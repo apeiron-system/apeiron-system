@@ -9,30 +9,24 @@ class JobOrderModel extends Model
 {
     protected $table = 'job_orders';
 
-    // Define the primary key
     protected $primaryKey = 'jo_no';
 
-    // Ensure the primary key is not auto-incrementing if it's not numeric
     public $incrementing = false;
 
     // Define the fillable fields for mass assignment
     protected $fillable = [
         'contract_id',
         'project_id',
-        'project_desc',
-        'contract_name',
         'jo_name',
         'location',
         'supplier',
         'itemWorks',
         'period_covered',
-        'dateNeeded', 
+        'dateNeeded',
         'preparedBy',
         'checkedBy',
-        'approvedBy', 
-        'budget',
+        'approvedBy',
         'status',
-        'progress',
     ];
 
     // Specify the date format and casting
@@ -54,7 +48,7 @@ class JobOrderModel extends Model
         return $this->belongsTo(JobOrderProjectModel::class, 'project_id');
     }
 
-    // Has Many BOQs
+    // Has Many Billing of Quantities (BOQs)
     public function billingOfQuantities(): HasMany
     {
         return $this->hasMany(JobOrderBoqModel::class, 'jo_no');

@@ -4,22 +4,12 @@ import {
     Card,
     CardHeader,
     CardTitle,
-    CardContent,
-    CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/Components/ui/button";
 import { useState } from "react";
 
 export default function JobOrderContractsPage({ auth, activeContracts, pastContracts }) {
     const [searchTermActive, setSearchTermActive] = useState("");
     const [searchTermPast, setSearchTermPast] = useState(""); 
-
-    // Function to format the progress bar color based on progress
-    const getProgressColor = (progress) => {
-        if (progress < 50) return "bg-red-500";
-        if (progress < 80) return "bg-yellow-500";
-        return "bg-green-500";
-    };
 
     // Filter active contracts based on the search term
     const filteredActiveContracts = activeContracts.filter((contract) =>
@@ -45,9 +35,12 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             <Head title="Job Order Contracts" />
 
             {/* Active Contracts Section */}
-            <h3 className="pb-4 font-bold text-2xl text-gray-1000 leading-tight">
+            <h3 className="font-bold text-2xl text-gray-1000 leading-tight">
                 Active Contracts
             </h3>
+            <p className="text-sm text-gray-600 mb-4">
+                Select a contract below to view its associated projects.
+            </p>
             
             {/* Search Bar Section for Active Contracts*/}
             <div className="flex items-center mb-6">
@@ -56,7 +49,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                     value={searchTermActive}
                     onChange={(e) => setSearchTermActive(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search Contract Name"
+                    placeholder="Search Active Contract by Name"
                 />
                 <button
                     className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
@@ -73,6 +66,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                         href={route("job-order-projects", { contract_id: contract.id })}
                         key={contract.id}
                         className="bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 block"
+                        title="Click to view projects associated with this contract"
                     >
                         <Card>
                             <CardHeader>
@@ -82,18 +76,6 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                 <p className="text-gray-600">Contract ID: {contract.id}</p>
                                 <p className="text-gray-600">Status: {contract.status}</p>
                             </CardHeader>
-                            <CardContent>
-                                <div className="flex items-center justify-between">
-                                    <span className="whitespace-nowrap">Progress</span>
-                                    <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
-                                        <div
-                                            className={`h-full rounded-lg ${getProgressColor(contract.progress)}`}
-                                            style={{ width: `${contract.progress}%` }}
-                                        ></div>
-                                    </div>
-                                    <span className="text-sm">{contract.progress}%</span>
-                                </div>
-                            </CardContent>
                         </Card>
                     </Link>
                 ))
@@ -116,7 +98,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                     value={searchTermPast}
                     onChange={(e) => setSearchTermPast(e.target.value)}
                     className="w-1/4 px-3 py-1 mr-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search Past Contract Name"
+                    placeholder="Search Past Contract by Name"
                 />
                 <button
                     className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded-md hover:bg-gray-600"
@@ -147,18 +129,6 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
                                     <p className="text-gray-600">Contract ID: {contract.id}</p>
                                     <p className="text-gray-600">Status: {contract.status}</p>
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center justify-between">
-                                        <span className="whitespace-nowrap">Progress</span>
-                                        <div className="w-full bg-gray-200 h-3 rounded-lg mx-4">
-                                            <div
-                                                className={`h-full rounded-lg ${getProgressColor(contract.progress)}`}
-                                                style={{ width: `${contract.progress}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-sm">{contract.progress}%</span>
-                                    </div>
-                                </CardContent>
                             </Card>
                         </Link>
                     ))

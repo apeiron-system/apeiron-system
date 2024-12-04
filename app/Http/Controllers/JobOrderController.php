@@ -13,7 +13,6 @@ class JobOrderController extends Controller
 {
     public function index(Request $request)
     {
-        try {
             // Get project ID from the request (URL parameters)
             $projectId = $request->query('project_id');
 
@@ -47,25 +46,20 @@ class JobOrderController extends Controller
                     'checkedBy' => $jobOrder->checkedBy,
                     'approvedBy' => $jobOrder->approvedBy,
                     'itemWorks' => $jobOrder->itemWorks,
-                    'dateNeeded' => $jobOrder->dateNeeded ? $jobOrder->dateNeeded->format('Y-m-d') : null, // Handle null dates
-                    'progress' => $jobOrder->progress,
+                    'dateNeeded' => $jobOrder->dateNeeded ? $jobOrder->dateNeeded->format('Y-m-d') : null,
                     'status' => $jobOrder->status,
-                    'budget' => $jobOrder->budget,
                 ];
             });
 
             // Extract project name and location from the project
-            $projectName = $project->description;
-            $projectLocation = $project->location;
+            $projectName = $project->project_name;
+            $projectLocation = trim(
+                $project->street_address . ', ' . 
+                $project->barangay . ', ' . 
+                $project->city
+            );
 
             return Inertia::render('JobOrder/JobOrderPage', [
-                'auth' => [
-                    'user' => $request->user() ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'email' => $request->user()->email,
-                    ] : null
-                ],
                 'contractId' => $contractId, // Pass contract_id of the first job order
                 'projectId' => $projectId,
                 'jobOrder' => $jobOrder,
@@ -73,28 +67,6 @@ class JobOrderController extends Controller
                 'projectLocation' => $projectLocation, // Pass the project location to the frontend
             ]);
 
-        } catch (\Exception $e) {
-            // Log any errors that occur during the process
-            Log::error('Error in JobOrderController@index: ' . $e->getMessage(), [
-                'project_id' => $request->query('project_id'),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            // Return an error response to Inertia
-            return Inertia::render('JobOrder/JobOrderPage', [
-                'auth' => [
-                    'user' => $request->user() ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'email' => $request->user()->email,
-                    ] : null
-                ],
-                'contractId' => null, // Pass null if no job orders are found
-                'jobOrder' => [],
-                'projectName' => null, // Pass null if no project is found
-                'projectLocation' => null, // Pass null if no project is found
-            ]);
-        }
     }
 
     /**
@@ -114,13 +86,6 @@ class JobOrderController extends Controller
             $contract = JobOrderContractModel::findOrFail($project->contract_id);
 
             return Inertia::render('JobOrder/CreateJobOrderPage', [
-                'auth' => [
-                    'user' => $request->user() ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'email' => $request->user()->email,
-                    ] : null
-                ],
                 'project' => $project,
                 'contract' => $contract,
             ]);
@@ -130,13 +95,6 @@ class JobOrderController extends Controller
             ]);
 
             return Inertia::render('JobOrder/CreateJobOrderPage', [
-                'auth' => [
-                    'user' => $request->user() ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'email' => $request->user()->email,
-                    ] : null
-                ],
                 'project' => null,
                 'contract' => null,
             ]);
@@ -152,10 +110,9 @@ class JobOrderController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'contractId' => 'required|exists:contracts,id',
-            'projectId' => 'required|exists:projects,id',
+            'contractId' => 'required|exists:contract,id',
+            'projectId' => 'required|exists:project,id',
             'jobOrderName' => 'required|string|max:255',
-            'budget' => 'required|numeric|min:0',
             'location' => 'required|string|max:255',
             'supplier' => 'required|string|max:255',
             'itemWorks' => 'required|string|max:255',
@@ -181,9 +138,7 @@ class JobOrderController extends Controller
                 'preparedBy' => $validatedData['preparedBy'],
                 'checkedBy' => $validatedData['checkedBy'],
                 'approvedBy' => $validatedData['approvedBy'],
-                'budget' => $validatedData['budget'],
                 'status' =>  $validatedData['status'],
-                'progress' => 0,
             ];
 
             // Create the job order
@@ -213,7 +168,7 @@ class JobOrderController extends Controller
             // Validate the incoming request data
             $validated = $request->validate([
                 'jo_name' => 'required|string|max:255',
-                'contract_id' => 'required|exists:contracts,id',
+                'contract_id' => 'required|exists:contract,id',
                 'location' => 'required|string|max:255',
                 'supplier' => 'required|string|max:255',
                 'itemWorks' => 'required|string|max:255',

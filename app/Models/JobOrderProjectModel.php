@@ -11,7 +11,7 @@ class JobOrderProjectModel extends Model
     // Define the table name
     protected $table = 'project';
 
-    protected $primaryKey = 'project_id';
+    protected $primaryKey = 'id';
 
     // Define fillable fields based on the migration
     protected $fillable = [

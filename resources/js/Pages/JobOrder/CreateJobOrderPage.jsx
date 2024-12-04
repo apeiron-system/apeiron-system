@@ -3,7 +3,6 @@ import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import ExitJobOrderModal from "@/Components/ExitJobOrderModal";
-import SaveJobOrderModal from "@/Components/SaveJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
 import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
 import { ChevronLeft } from "lucide-react";
@@ -13,21 +12,19 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
         contractId: contract.id,
         projectId: project.id,
         jobOrderName: "",
-        budget: "",
         location: "",
         supplier: "",
-        itemWorks: "", 
+        itemWorks: "",
         periodCovered: "",
         dateNeeded: "",
-        preparedBy: "", 
+        preparedBy: "",
         checkedBy: "",
         approvedBy: "",
-        status: "on-going",
+        status: "pending",
     });
 
     // State for handling modals
     const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
 
@@ -66,7 +63,6 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
             contractId: contract.id,
             projectId: project.id,
             jobOrderName: "",
-            budget: "",
             location: "",
             supplier: "",
             itemWorks: "", 
@@ -75,7 +71,7 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
             preparedBy: "", 
             checkedBy: "",
             approvedBy: "",
-            status: "on-going",
+            status: "pending",
         });
         setIsExitModalOpen(false);
     };
@@ -86,9 +82,8 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
     };
 
     const handleConfirmSubmit = () => {
-        // First log what we're sending
         console.log('Sending data:', formData);
-    
+        
         axios.post(route('store-job-order'), formData)
             .then(response => {
                 if (response.data.success) {
@@ -97,35 +92,48 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
                     setIsSubmittedModalOpen(true);
                 } else {
                     console.error('Failed to create job order:', response.data.message);
+                    alert(response.data.message || 'Failed to create job order');
                 }
             })
             .catch(error => {
+                console.error('Full error object:', error);
+    
+                // More comprehensive error handling
                 if (error.response) {
-                    // The server responded with a status code outside of 2xx
-                    console.error('Validation errors:', error.response.data.errors);
+                    // Server responded with an error status
+                    console.error('Server error details:', error.response);
+    
+                    // Safely handle different error scenarios
+                    const errorMessage = error.response.data?.message || 
+                                         error.response.data?.error || 
+                                         'An unexpected server error occurred';
                     
-                    // You could set these errors in state to display them to the user
-                    const errorMessages = Object.values(error.response.data.errors)
-                        .flat()
-                        .join('\n');
+                    // Parse and display validation errors if they exist
+                    if (error.response.data?.errors) {
+                        const errorMessages = Object.entries(error.response.data.errors)
+                            .map(([field, messages]) => 
+                                `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
+                            )
+                            .join('\n');
                         
-                    alert('Validation failed:\n' + errorMessages);
+                        alert(`Validation Errors:\n${errorMessages}`);
+                    } else {
+                        alert(`Error: ${errorMessage}`);
+                    }
                 } else if (error.request) {
-                    // The request was made but no response was received
+                    // Request was made but no response received
                     console.error('No response received:', error.request);
-                    alert('No response received from server');
+                    alert('No response received from server. Please check your network connection.');
                 } else {
                     // Something happened in setting up the request
-                    console.error('Error:', error.message);
+                    console.error('Error setting up request:', error.message);
                     alert('Error creating job order: ' + error.message);
                 }
             });
     };
-    
 
     const closeModal = () => {
         setIsExitModalOpen(false);
-        setIsSaveModalOpen(false);
         setIsSubmitModalOpen(false);
         setIsSubmittedModalOpen(false);
     };
@@ -162,7 +170,7 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
 
                             <div>
                                 <h2 className="text-2xl font-bold text-gray-800">
-                                    {project.description}
+                                    {project.project_name}
                                 </h2>
                                 <p className="mt-1 text-lg text-gray-600">
                                     {contract.contract_name}
@@ -187,27 +195,6 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
                                                 onChange={handleChange}
                                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
                                                 placeholder="Enter Job Order Name"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label
-                                                htmlFor="budget"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Budget
-                                                <span className="text-red-500"> *</span>
-                                            </label>
-                                            <input
-                                                id="budget"
-                                                name="budget"
-                                                type="number"
-                                                min="0"
-                                                required
-                                                value={formData.budget}
-                                                onChange={handleChange}
-                                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                placeholder="Enter Budget Amount"
                                             />
                                         </div>
 
@@ -402,12 +389,6 @@ export default function CreateJobOrderPage({ auth, project, contract }) {
                     show={isExitModalOpen}
                     onClose={closeModal}
                     projectId={project.id}
-                />
-            )}
-            {isSaveModalOpen && (
-                <SaveJobOrderModal
-                    show={isSaveModalOpen}
-                    onClose={closeModal}
                 />
             )}
             {isSubmitModalOpen && (

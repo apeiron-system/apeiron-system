@@ -34,12 +34,11 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         periodCovered: jobOrder.period_covered || "",
         supplier: jobOrder.supplier || "",
         dateNeeded: jobOrder.dateNeeded || "",
+        preparedBy: jobOrder.preparedBy || "",
+        checkedBy: jobOrder.checkedBy || "",
+        approvedBy: jobOrder.approvedBy || "",
         status: jobOrder.status || "",
-        budget: jobOrder.budget || 0,
-        progress: jobOrder.progress || 0,
     });
-
-    // alert("first: "+formData.progress);
 
     // Convert boqParts array to grouped object based on part_name
     const groupedBoqParts = boqParts.reduce((acc, item) => {
@@ -54,7 +53,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             quantity: parseFloat(item.quantity),
             unitCost: parseFloat(item.unit_cost),
             amount: parseFloat(item.amount),
-            weight: parseFloat(item.weight)
         });
         return acc;
     }, {});
@@ -66,92 +64,11 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const getProgressBarColor = (progress) => {
-        if (progress >= 100) return "bg-green-500";
-        if (progress >= 50) return "bg-yellow-500";
-        return "bg-red-500";
-    };
-
     const calculateGrandTotal = () => {
         return Object.values(currentBoqParts).reduce((total, part) => {
             return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
         }, 0);
     };
-
-    // Dynamic progress percentage calculation
-    const calculateProgress = () => {
-        const totalCost = calculateGrandTotal();
-        const budget = formData.budget || 1; // Prevent division by zero
-        const progress = Math.min((totalCost / budget) * 100, 100); // Cap progress at 100%
-    
-        return progress;
-    };
-    
-    // Update the job order progress in the database
-    const updateJobOrderProgress = async (progress) => {
-        try {
-            const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, {
-                ...formData,
-                progress: progress,  // Include the updated progress value
-            });
-
-            if (response.data.success) {
-                console.log('Job order progress updated successfully');
-            } else {
-                console.error('Failed to update job order progress:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error updating job order progress:', error);
-        }
-    };
-
-    // Update the job order status in the database
-    const updateJobOrderStatus = async (status) => {
-        try {
-            const response = await axios.put(`/job-order-status?jo_no=${jobOrder.jo_no}`, {
-                ...formData,
-                status: status,  // Update the status to "completed" or "on-going"
-            });
-
-            if (response.data.success) {
-                console.log('Job order status updated to:', status);
-            } else {
-                console.error('Failed to update job order status:', response.data.message);
-            }
-        } catch (error) {
-            console.error('Error updating job order status:', error);
-        }
-    };
-
-    // Handle the progress calculation and status update when budget or progress changes
-    useEffect(() => {
-        const calculatedProgress = calculateProgress();
-    
-        // Only update progress if it has changed
-        if (calculatedProgress !== formData.progress) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                progress: calculatedProgress, // Update progress in formData
-            }));
-    
-            // Update the progress in the database
-            updateJobOrderProgress(calculatedProgress);
-        }
-    
-        // Determine the new status based on the progress
-        const newStatus = calculatedProgress === 100 ? "completed" : "on-going";
-        
-        // Update the status only if it has changed
-        if (formData.status !== newStatus) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                status: newStatus,  // Update status in formData
-            }));
-    
-            // Update the status in the database (await the response)
-            updateJobOrderStatus(newStatus);
-        }
-    }, [formData.budget, formData.progress, calculateGrandTotal()]);
 
     const formatDate = (date) => {
         if (!date) return "";
@@ -171,133 +88,9 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     quantity: 0,
                     unitCost: 0,
                     amount: 1000,
-                    weight: 0,
                 },
             ],
         }));
-    };
-
-    const exportToExcel = () => {
-        const wb = XLSX.utils.book_new();
-        
-        const defaultColWidth = [
-            { wch: 15 },
-            { wch: 40 },
-            { wch: 10 },
-            { wch: 12 },
-            { wch: 15 },
-            { wch: 15 },
-            { wch: 12 }
-        ];
-    
-        const headerStyle = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "4F46E5" } },
-            alignment: { horizontal: "center", vertical: "center" },
-            border: {
-                top: { style: "thin" },
-                right: { style: "thin" },
-                bottom: { style: "thin" },
-                left: { style: "thin" }
-            }
-        };
-    
-        const joDetailsData = [
-            ['JOB ORDER DETAILS', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', ''],
-            ['Job Order Name:', formData.jo_name, '', '', '', '', ''],
-            ['Project Name:', projectName, '', '', '', '', ''],
-            ['Contract Name:', contractName, '', '', '', '', ''],
-            ['Location:', formData.location, '', '', '', '', ''],
-            ['Item Works:', formData.itemWorks, '', '', '', '', ''],
-            ['Period Covered:', formData.periodCovered, '', '', '', '', ''],
-            ['Supplier:', formData.supplier, '', '', '', '', ''],
-            ['Date Needed:', formData.dateNeeded, '', '', '', '', ''],
-            ['Status:', formData.status, '', '', '', '', ''],
-            ['Approved Budget:', formData.budget, '', '', '', '', ''],
-            ['Progress:', `${formData.progress}%`, '', '', '', '', ''],
-            ['Total Cost:', `₱${calculateGrandTotal().toLocaleString()}`, '', '', '', '', ''],
-            ['', '', '', '', '', '', ''],
-        ];
-        
-        const joDetailsWs = XLSX.utils.aoa_to_sheet(joDetailsData);
-        joDetailsWs['!cols'] = defaultColWidth;
-        joDetailsWs['!merges'] = [
-            { s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }
-        ];
-        
-        joDetailsWs['A1'] = { 
-            v: 'JOB ORDER DETAILS',
-            s: {
-                font: { bold: true, sz: 16 },
-                alignment: { horizontal: "center" }
-            }
-        };
-        
-        XLSX.utils.book_append_sheet(wb, joDetailsWs, 'Job Order Details');
-    
-        let boqData = [];
-        boqData.push(['BILL OF QUANTITIES', '', '', '', '', '', '']);
-        boqData.push(['', '', '', '', '', '', '']);
-        
-        Object.entries(currentBoqParts).forEach(([partName, items]) => {
-            boqData.push([partName.toUpperCase(), '', '', '', '', '', '']);
-            
-            boqData.push([
-                'Item No.',
-                'Description',
-                'Unit',
-                'Quantity',
-                'Unit Cost',
-                'Amount',
-                'Weight (%)'
-            ]);
-            
-            items.forEach(item => {
-                boqData.push([
-                    item.itemNo,
-                    item.description,
-                    item.unit,
-                    item.quantity,
-                    item.unitCost,
-                    item.amount,
-                    item.weight
-                ]);
-            });
-            
-            const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-            boqData.push(['', '', '', '', 'Subtotal:', subtotal, '']);
-            boqData.push(['', '', '', '', '', '', '']);
-        });
-        
-        boqData.push(['', '', '', '', 'GRAND TOTAL:', calculateGrandTotal(), '']);
-        
-        const boqWs = XLSX.utils.aoa_to_sheet(boqData);
-        boqWs['!cols'] = defaultColWidth;
-        
-        const range = XLSX.utils.decode_range(boqWs['!ref']);
-        for (let R = 0; R <= range.e.r; R++) {
-            for (let C = 0; C <= range.e.c; C++) {
-                const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-                if (!boqWs[cellRef]) continue;
-                
-                if (R === 0 || boqWs[cellRef].v === 'Item No.' || 
-                    (typeof boqWs[cellRef].v === 'string' && 
-                    boqWs[cellRef].v.toUpperCase() === boqWs[cellRef].v && 
-                    boqWs[cellRef].v.length > 0)) {
-                    boqWs[cellRef].s = headerStyle;
-                }
-                
-                if (C === 5 && typeof boqWs[cellRef].v === 'number') {
-                    boqWs[cellRef].z = '"₱"#,##0.00';
-                }
-            }
-        }
-        
-        XLSX.utils.book_append_sheet(wb, boqWs, 'Bill of Quantities');
-    
-        const fileName = `${formData.jo_name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-        XLSX.writeFile(wb, fileName);
     };
 
     // Handle form submission
@@ -305,25 +98,16 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         e.preventDefault();
         
         try {
-            // Calculate the progress
-            const calculatedProgress = calculateProgress();
-            const newStatus = calculatedProgress >= 100 ? "completed" : "on-going";
-    
-            // Update form data with calculated progress and new status
+            // Update form data with new status
             const updatedFormData = {
                 ...formData,
-                progress: calculatedProgress,
-                status: newStatus, // Update the status based on progress
             };
     
-            // Send a PUT request to update the job order details with progress and status
+            // Send a PUT request to update the job order details with status
             const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, updatedFormData);
     
             if (response.data.success) {
                 console.log('Job order updated successfully');
-                
-                // After successful update, update the status in the database as well
-                await updateJobOrderStatus(newStatus);  // Update the status if needed
                 
                 // Close the modal and refresh or redirect as necessary
                 setIsModalOpen(false);
@@ -442,7 +226,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                                         "Quantity",
                                                         "Unit Cost",
                                                         "Amount",
-                                                        "Weight (%)",
                                                     ].map((header, idx) => (
                                                         <TableHead key={idx}>{header}</TableHead>
                                                     ))}
@@ -458,7 +241,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                                             <TableCell>{item.quantity}</TableCell>
                                                             <TableCell>{item.unitCost}</TableCell>
                                                             <TableCell>{item.amount}</TableCell>
-                                                            <TableCell>{item.weight}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 ) : (
@@ -493,38 +275,28 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <div className="text-lg text-gray-600">{projectName || "No Project"}</div>
                             <div className="text-sm text-gray-500">{contractName|| "No Contract"}</div>
                         </div>
-
-                        <div className="flex flex-row items-center">
-                            <div className="w-4/5 bg-gray-200 h-3 rounded-lg mr-4 flex flex-row">
-                                <div
-                                    className={`h-full rounded-full ${getProgressBarColor(formData.progress)}`}
-                                    style={{
-                                        width: `${formData.progress || 0}%`,
-                                    }}
-                                ></div>
-                            </div>
-                            <span className="text-sm">{formData.progress}%</span>
-                        </div>
                     </div>
 
-                    <div className="grid grid-rows-6 grid-cols-1 gap-1.5 mt-4">
+                    <div className="grid grid-rows-5 grid-cols-2 gap-1 mt-2">
                         {[
-                            ["Approved Budget", "₱" + formData.budget],
                             ["Status", formData.status],
                             ["Location", formData.location],
                             ["Item Works", formData.itemWorks],
                             ["Period Covered", formData.periodCovered],
                             ["Supplier", formData.supplier],
                             ["Date Needed", formatDate(formData.dateNeeded)],
+                            ["Prepared By", formData.preparedBy],
+                            ["Checked By", formData.checkedBy],
+                            ["Approved By", formData.approvedBy],
                         ].map(([label, value], idx) => (
                             <div key={idx}>
-                                <div className="text-sm text-gray-600">{label}:</div>
-                                <div>{value}</div>
+                                <strong>{label}:</strong>
+                                <div className="text-sm text-gray-600">{value}</div>
                             </div>
                         ))}
                     </div>
 
-                    <div className="flex gap-4 mt-6">
+                    <div className="flex gap-4">
                     <Button
                         onClick={() => handleDelete(jobOrder.jo_no)}
                         className="bg-red-500 text-white"
@@ -537,14 +309,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             className="bg-gray-500 text-white"
                         >
                             Edit
-                        </Button>
-
-                        <Button
-                            onClick={exportToExcel}
-                            className="bg-green-500 text-white flex items-center gap-2"
-                        >
-                            <FileDown size={16} />
-                            Export
                         </Button>
                     </div>
                 </div>
@@ -586,17 +350,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                 value={formData.jo_name}
                                 onChange={handleInputChange}
                                 placeholder="Enter New Job Order Name"
-                                className="w-80"
-                            />
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                            <InputLabel htmlFor="budget">Approved Budget:</InputLabel>
-                            <TextInput
-                                id="budget"
-                                name="budget"
-                                value={formData.budget}
-                                onChange={handleInputChange}
-                                placeholder="Enter New Approved Budget"
                                 className="w-80"
                             />
                         </div>
