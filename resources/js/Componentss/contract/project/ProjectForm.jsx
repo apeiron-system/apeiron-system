@@ -110,7 +110,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -136,7 +135,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     <option value="completed">Completed</option>
                                 </select>
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -158,7 +156,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -180,7 +177,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -202,7 +198,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -224,7 +219,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -246,7 +240,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -268,7 +261,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -291,7 +283,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -314,7 +305,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -337,7 +327,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -399,7 +388,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     }}
                                 />
                             </div>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
