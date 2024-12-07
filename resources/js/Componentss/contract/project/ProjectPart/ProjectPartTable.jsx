@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/Components/ui/table";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { Button } from "@/Components/ui/button";
 import { Link, router } from "@inertiajs/react";
 import {
@@ -97,7 +97,7 @@ export default function ProjectPartTable({
                                                     openDialog(projectPart.id); // Open dialog with selected part ID
                                                 }}
                                             >
-                                                <Trash2 className="w-4 h-4" />
+                                                <Trash className="w-4 h-4" />
                                             </Button>
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
