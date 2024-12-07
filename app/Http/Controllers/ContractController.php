@@ -71,7 +71,8 @@ class ContractController extends Controller
         $contract->amount = $request->amount;
         $contract->date = $request->date;
         $contract->authorized_representative_employee_id = $request->authorized_representative_employee_id;
-
+        $contract->submitted_by_employee_id = 1;
+        $contract->signing_authority_employee_id = 1;
         $contract->save();
 
 
