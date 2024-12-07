@@ -153,26 +153,26 @@ export default function ParDetailsPage({ auth, contract, projects }) {
                                             window.location.href = `/progress-report/contracts/${contract.id}/project/${projects.id}`;
                                         }}
                                     >
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.project_name}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.street_address},{" "}
                                             {projects.barangay}, {projects.city},{" "}
                                             {projects.province},{" "}
                                             {projects.zip_code},{" "}
                                             {projects.country}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.duration_in_days}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.num_of_units}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.abc_value}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {_.capitalize(projects.status)}
                                         </TableCell>
                                     </TableRow>
