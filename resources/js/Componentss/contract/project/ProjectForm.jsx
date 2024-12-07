@@ -120,9 +120,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                         <FormItem>
                             <FormLabel>
                                 Status
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <select
@@ -271,9 +268,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                         <FormItem>
                             <FormLabel>
                                 Duration in Days
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <input
@@ -293,9 +287,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                         <FormItem>
                             <FormLabel>
                                 Number of Units
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <input
@@ -315,9 +306,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                         <FormItem>
                             <FormLabel>
                                 ABC Value (PHP)
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <input

@@ -103,7 +103,11 @@ export default function ContractForm({ contract, employees }) {
                                 </div>
                             </FormLabel>
                             <FormControl>
-                                <input placeholder="Contract Name" {...field} />
+                                <input
+                                    className="input w-full border border-gray-300 rounded-md p-2"
+                                    placeholder="Contract Name"
+                                    {...field}
+                                />
                             </FormControl>
                         </FormItem>
                     )}
@@ -113,18 +117,7 @@ export default function ContractForm({ contract, employees }) {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel
-                                className={`${
-                                    form.formState.errors.status
-                                        ? "text-red-500"
-                                        : ""
-                                }`}
-                            >
-                                Status
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Status</FormLabel>
                             <FormControl>
                                 <select
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -144,13 +137,14 @@ export default function ContractForm({ contract, employees }) {
                     name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel  className={`${
-                    form.formState.errors.description ? "text-red-500" : ""
-                }`}>
+                            <FormLabel
+                                className={`${
+                                    form.formState.errors.description
+                                        ? "text-red-500"
+                                        : ""
+                                }`}
+                            >
                                 Description
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <textarea
@@ -209,12 +203,7 @@ export default function ContractForm({ contract, employees }) {
                     name="duration_in_days"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Duration in Days
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Duration in Days</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -231,12 +220,7 @@ export default function ContractForm({ contract, employees }) {
                     name="amount"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Amount (PHP)
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Amount (PHP)</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
