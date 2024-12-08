@@ -71,7 +71,7 @@ class ProjectPartController extends Controller
 
         $projectPart->save();
 
-        return redirect()->route('contract.project.view', ['contract_id' => $contract_id, 'project_id' => $project_id]);
+        return redirect()->route('contract.project.part.view', ['contract_id' => $contract_id, 'project_id' => $project_id, "id" => $project_part_id]);
     }
 
     public function delete($contract_id, $project_id, $project_part_id)

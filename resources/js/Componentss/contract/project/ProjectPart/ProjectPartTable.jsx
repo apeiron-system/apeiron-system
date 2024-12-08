@@ -75,18 +75,6 @@ export default function ProjectPartTable({
                             </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end space-x-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <Link
-                                            href={`/contract/${contract_id}/project/${project_id}/part/${projectPart.id}/edit`}
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </Link>
-                                    </Button>
-
                                     <AlertDialog open={isDialogOpen}>
                                         <AlertDialogTrigger asChild>
                                             <Button

@@ -5,7 +5,7 @@ import { Button } from "@/Components/ui/button";
 import ProjectPartItemTable from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/ProjectPartItemTable";
 import AddProjectPartItemModal from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/AddProjectPartItemModal";
 import { Link, router } from "@inertiajs/react";
-import { ChevronLeft, Plus, Download } from "lucide-react";
+import { ChevronLeft, Plus, Edit } from "lucide-react";
 
 export default function ViewProjectPartPage({
     auth,
@@ -53,16 +53,30 @@ export default function ViewProjectPartPage({
             user={auth.user}
             header={
                 <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                        <Link
-                            href={`/contract/${contract.id}/project/${project.id}`}
+                    <div className="flex items-center w-full justify-between">
+                        <div className="flex gap-2">
+                            {" "}
+                            <Link
+                                href={`/contract/${contract.id}/project/${project.id}/`}
+                            >
+                                <button className="text-gray-500">
+                                    <ChevronLeft />
+                                </button>
+                            </Link>
+                            <h2>Project Part - {projectParts.description}</h2>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <button className="text-gray-500">
-                                <ChevronLeft />
-                            </button>
-                        </Link>
-                        <h2>Project Part - {projectParts.description}</h2>
-                    </div>  
+                            <Link
+                                href={`/contract/${contract.id}/project/${project.id}/part/${projectParts.id}/edit`}
+                            >
+                                <Edit/>
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             }
         >
