@@ -5,7 +5,16 @@ import { Button } from "@/Components/ui/button";
 import ProjectPartItemTable from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/ProjectPartItemTable";
 import AddProjectPartItemModal from "@/Componentss/contract/project/ProjectPart/ProjectPartItem/AddProjectPartItemModal";
 import { Link, router } from "@inertiajs/react";
-import { ChevronLeft, Plus, Edit } from "lucide-react";
+import { ChevronLeft, Plus, Edit, Trash } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogFooter,
+    AlertDialogTitle,
+    AlertDialogDescription,
+} from "@/Components/ui/alert-dialog";
 
 export default function ViewProjectPartPage({
     auth,
@@ -19,6 +28,28 @@ export default function ViewProjectPartPage({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedType, setSelectedType] = useState("");
     const [modalData, setModalData] = useState([]); // Define modalData state
+
+    const [selectedPart, setSelectedPart] = useState(null); // Track the selected part for deletion
+    const [isDialogOpen, setIsDialogOpen] = useState(false); // Track the dialog's open state
+
+    const handleDelete = (partId) => {
+        if (!partId) return; // Ensure the part ID is valid
+        router.delete(
+            `/contract/${contract.id}/project/${project.id}/part/${partId}/delete`
+        );
+        setSelectedPart(null); // Reset selected part after deletion
+        setIsDialogOpen(false); // Close the dialog
+    };
+
+    const openDialog = (partId) => {
+        setSelectedPart(partId); // Set the selected part ID
+        setIsDialogOpen(true); // Open the dialog
+    };
+
+    const closeDialog = () => {
+        setSelectedPart(null); // Reset selected part
+        setIsDialogOpen(false); // Close the dialog
+    };
 
     const openModal = async (type) => {
         try {
@@ -65,17 +96,67 @@ export default function ViewProjectPartPage({
                             </Link>
                             <h2>Project Part - {projectParts.description}</h2>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <Link
-                                href={`/contract/${contract.id}/project/${project.id}/part/${projectParts.id}/edit`}
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <Edit/>
-                            </Link>
-                        </Button>
+                                <Link
+                                    href={`/contract/${contract.id}/project/${project.id}/part/${projectParts.id}/edit`}
+                                >
+                                    <Edit />
+                                </Link>
+                            </Button>
+                            <div>
+                                <AlertDialog open={isDialogOpen}>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent row click
+                                                openDialog(projectParts.id); // Open dialog with selected part ID
+                                            }}
+                                        >
+                                            <Trash />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Confirm Deletion
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Are you sure you want to delete
+                                                this project part? This action
+                                                cannot be undone.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <Button
+                                                variant="outline"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevent row click
+                                                    closeDialog(); // Close the dialog
+                                                }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevent row click
+                                                    handleDelete(selectedPart); // Delete the selected part
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
