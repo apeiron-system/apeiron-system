@@ -22,7 +22,7 @@ export default function ProjectPartTable({
                 <TableHeader>
                     <TableRow>
                         <TableHead>Description</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+
                     </TableRow>
                 </TableHeader>
 
