@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobOrderContractModel;
 use App\Models\JobOrderProjectModel;
+use App\Models\ProjectPartModel;
 use App\Models\JobOrderModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -85,18 +86,27 @@ class JobOrderController extends Controller
             // Fetch contract data, assuming the project has a contract
             $contract = JobOrderContractModel::findOrFail($project->contract_id);
 
+            // Fetch project parts by project ID, only selecting 'id' and 'description'
+            $projectParts = ProjectPartModel::where('project_id', $projectId)
+                ->whereNull('parent_id') // Only top-level parts
+                ->get(['id', 'description']);
+
+            // Pass data to Inertia view
             return Inertia::render('JobOrder/CreateJobOrderPage', [
                 'project' => $project,
                 'contract' => $contract,
+                'projectParts' => $projectParts,  // Add the project parts
             ]);
         } catch (\Exception $e) {
             Log::error('Error in JobOrderController@create: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
 
+            // In case of error, return empty data for project and contract
             return Inertia::render('JobOrder/CreateJobOrderPage', [
                 'project' => null,
                 'contract' => null,
+                'projectParts' => [],  // Add empty array for project parts in case of error
             ]);
         }
     }
