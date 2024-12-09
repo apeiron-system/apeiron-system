@@ -104,52 +104,77 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
     };
 
     const handleConfirmSubmit = () => {
-        console.log('Sending data:', formData);
-        
-        axios.post(route('store-job-order'), formData)
-            .then(response => {
+        // Add selected project parts to the formData
+        const updatedFormData = {
+            ...formData,
+            projectParts: selectedParts, // Include the selected parts
+        };
+
+        console.log("Sending data:", updatedFormData);
+
+        axios
+            .post(route("store-job-order"), updatedFormData)
+            .then((response) => {
                 if (response.data.success) {
-                    console.log('Job order created successfully:', response.data);
+                    console.log(
+                        "Job order created successfully:",
+                        response.data
+                    );
                     setIsSubmitModalOpen(false);
                     setIsSubmittedModalOpen(true);
                 } else {
-                    console.error('Failed to create job order:', response.data.message);
-                    alert(response.data.message || 'Failed to create job order');
+                    console.error(
+                        "Failed to create job order:",
+                        response.data.message
+                    );
+                    alert(
+                        response.data.message || "Failed to create job order"
+                    );
                 }
             })
-            .catch(error => {
-                console.error('Full error object:', error);
-    
+            .catch((error) => {
+                console.error("Full error object:", error);
+
                 // More comprehensive error handling
                 if (error.response) {
                     // Server responded with an error status
-                    console.error('Server error details:', error.response);
-    
+                    console.error("Server error details:", error.response);
+
                     // Safely handle different error scenarios
-                    const errorMessage = error.response.data?.message || 
-                                         error.response.data?.error || 
-                                         'An unexpected server error occurred';
-                    
+                    const errorMessage =
+                        error.response.data?.message ||
+                        error.response.data?.error ||
+                        "An unexpected server error occurred";
+
                     // Parse and display validation errors if they exist
                     if (error.response.data?.errors) {
-                        const errorMessages = Object.entries(error.response.data.errors)
-                            .map(([field, messages]) => 
-                                `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`
+                        const errorMessages = Object.entries(
+                            error.response.data.errors
+                        )
+                            .map(
+                                ([field, messages]) =>
+                                    `${field}: ${
+                                        Array.isArray(messages)
+                                            ? messages.join(", ")
+                                            : messages
+                                    }`
                             )
-                            .join('\n');
-                        
+                            .join("\n");
+
                         alert(`Validation Errors:\n${errorMessages}`);
                     } else {
                         alert(`Error: ${errorMessage}`);
                     }
                 } else if (error.request) {
                     // Request was made but no response received
-                    console.error('No response received:', error.request);
-                    alert('No response received from server. Please check your network connection.');
+                    console.error("No response received:", error.request);
+                    alert(
+                        "No response received from server. Please check your network connection."
+                    );
                 } else {
                     // Something happened in setting up the request
-                    console.error('Error setting up request:', error.message);
-                    alert('Error creating job order: ' + error.message);
+                    console.error("Error setting up request:", error.message);
+                    alert("Error creating job order: " + error.message);
                 }
             });
     };
