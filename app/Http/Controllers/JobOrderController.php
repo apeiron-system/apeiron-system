@@ -9,6 +9,7 @@ use App\Models\JobOrderModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class JobOrderController extends Controller
 {
@@ -125,16 +126,20 @@ class JobOrderController extends Controller
             'jobOrderName' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'supplier' => 'required|string|max:255',
-            'itemWorks' => 'required|string|max:255',
+            'itemWorks' => 'required|in:material,labor,equipment',
             'periodCovered' => 'required|string|max:255',
             'dateNeeded' => 'required|date',
             'preparedBy' => 'required|string|max:255',
             'checkedBy' => 'required|string|max:255',
             'approvedBy' => 'required|string|max:255',
             'status' => 'required|string|max:255',
+            'projectParts' => 'required|array', // Ensure projectParts is an array
+            'projectParts.*' => 'exists:project_part,id', // Validate each ID in projectParts
         ]);
 
         try {
+            DB::beginTransaction(); // Start transaction
+
             // Transform the validated data to match database column names
             $jobOrderData = [
                 'contract_id' => $validatedData['contractId'],
@@ -144,30 +149,46 @@ class JobOrderController extends Controller
                 'supplier' => $validatedData['supplier'],
                 'itemWorks' => $validatedData['itemWorks'],
                 'period_covered' => $validatedData['periodCovered'],
-                'dateNeeded' => $validatedData['dateNeeded'],
-                'preparedBy' => $validatedData['preparedBy'],
-                'checkedBy' => $validatedData['checkedBy'],
-                'approvedBy' => $validatedData['approvedBy'],
-                'status' =>  $validatedData['status'],
+                'date_needed' => $validatedData['dateNeeded'],
+                'prepared_by' => $validatedData['preparedBy'],
+                'checked_by' => $validatedData['checkedBy'],
+                'approved_by' => $validatedData['approvedBy'],
+                'status' => $validatedData['status'],
             ];
 
             // Create the job order
             $jobOrder = JobOrderModel::create($jobOrderData);
+
+            // Attach selected project parts to the job order
+            foreach ($validatedData['projectParts'] as $projectPartId) {
+                $projectPart = ProjectPartModel::find($projectPartId);
+
+                if ($projectPart) {
+                    $projectPart->jo_no = $jobOrder->id;
+                    $projectPart->save();
+                } else {
+                    throw new \Exception("ProjectPart with ID $projectPartId not found.");
+                }
+            }
+
+            DB::commit(); // Commit transaction
 
             return response()->json([
                 'success' => true,
                 'message' => 'Job Order created successfully!',
                 'job_order' => $jobOrder
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Error in JobOrderController@store: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            DB::rollBack(); // Rollback transaction on error
+
+            Log::error('Error in JobOrderController@store', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create job order.'
+                'message' => 'Failed to create job order. ' . $e->getMessage(),
             ], 500);
         }
     }

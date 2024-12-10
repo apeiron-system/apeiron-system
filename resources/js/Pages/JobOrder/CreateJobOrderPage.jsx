@@ -233,7 +233,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="jobOrderName"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Job Order Name
                                                     <span className="text-red-500"> *</span>
@@ -253,7 +253,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="location"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Location
                                                     <span className="text-red-500"> *</span>
@@ -273,7 +273,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="supplier"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Supplier
                                                     <span className="text-red-500"> *</span>
@@ -293,27 +293,32 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="itemWorks"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Item Works
                                                     <span className="text-red-500"> *</span>
                                                 </label>
-                                                <input
+                                                <select
                                                     id="itemWorks"
                                                     name="itemWorks"
-                                                    type="text"
                                                     required
                                                     value={formData.itemWorks}
                                                     onChange={handleChange}
                                                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                    placeholder="Enter Item Works"
-                                                />
+                                                >
+                                                    <option value="" disabled>
+                                                        Select Item Works
+                                                    </option>
+                                                    <option value="material" className="block text-sm">Material</option>
+                                                    <option value="labor">Labor</option>
+                                                    <option value="equipment">Equipment</option>
+                                                </select>
                                             </div>
 
                                             <div>
                                                 <label
                                                     htmlFor="periodCovered"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Period Covered
                                                     <span className="text-red-500"> *</span>
@@ -333,7 +338,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="dateNeeded"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Date Needed
                                                     <span className="text-red-500"> *</span>
@@ -352,7 +357,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="preparedBy"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Prepared By
                                                     <span className="text-red-500"> *</span>
@@ -372,7 +377,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="checkedBy"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Checked By
                                                     <span className="text-red-500"> *</span>
@@ -392,7 +397,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="approvedBy"
-                                                    className="block text-lg font-semibold text-gray-700"
+                                                    className="block text-sm font-semibold text-gray-700"
                                                 >
                                                     Approved By
                                                     <span className="text-red-500"> *</span>
@@ -417,7 +422,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
 
                         {/* Right Sidebar for Project Parts */}
                         <div className="col-span-1 bg-gray-100 overflow-hidden shadow-sm sm:rounded-lg px-4 py-2 mt-20">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                            <h3 className="text-sm font-semibold text-gray-800 mb-4">
                                 Select Project Parts <span className="text-red-500">*</span>
                             </h3>
 
