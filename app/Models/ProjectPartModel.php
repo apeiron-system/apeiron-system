@@ -33,4 +33,15 @@ class ProjectPartModel extends Model
         return $this->hasMany(ProjectPartItemModel::class, 'project_part_id');
     }
 
+    public function children()
+    {
+        return $this->hasMany(ProjectPartModel::class, 'parent_id');
+    }
+
+    // Job Order relationship
+    public function jobOrder()
+    {
+        return $this->belongsTo(JobOrderModel::class, 'jo_no');
+    }
+
 }

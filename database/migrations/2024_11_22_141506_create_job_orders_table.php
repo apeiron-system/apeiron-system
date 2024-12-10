@@ -29,10 +29,10 @@ class CreateJobOrdersTable extends Migration
             $table->string('supplier');
             $table->enum('itemWorks', ['material', 'labor', 'equipment']);
             $table->string('period_covered');
-            $table->date('dateNeeded');
-            $table->string('preparedBy');
-            $table->string('checkedBy');
-            $table->string('approvedBy');
+            $table->date('dateNeeded')->nullable();
+            $table->string('preparedBy')->nullable();
+            $table->string('checkedBy')->nullable();
+            $table->string('approvedBy')->nullable();
             $table->enum("status", ["pending", "ongoing", "canceled", "completed"])->default("pending");
             
             $table->timestamps(); // Timestamp columns: created_at, updated_at
