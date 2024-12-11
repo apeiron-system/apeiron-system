@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { ChevronLeft } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/Components/ui/card";
 import { useState } from "react";
 
 export default function JobOrderProjectsPage({ auth, projects, contractName }) {

@@ -8,7 +8,7 @@ import {
     CardTitle,
     CardContent,
     CardFooter,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 
 export default function JobOrderPage({
     auth,

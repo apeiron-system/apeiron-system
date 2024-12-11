@@ -4,12 +4,12 @@ import {
     Card,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
+} from "@/Components/ui/card";
 import { useState } from "react";
 
 export default function JobOrderContractsPage({ auth, activeContracts, pastContracts }) {
     const [searchTermActive, setSearchTermActive] = useState("");
-    const [searchTermPast, setSearchTermPast] = useState(""); 
+    const [searchTermPast, setSearchTermPast] = useState("");
 
     // Filter active contracts based on the search term
     const filteredActiveContracts = activeContracts.filter((contract) =>
@@ -41,7 +41,7 @@ export default function JobOrderContractsPage({ auth, activeContracts, pastContr
             <p className="text-sm text-gray-600 mb-4">
                 Select a contract below to view its associated projects.
             </p>
-            
+
             {/* Search Bar Section for Active Contracts*/}
             <div className="flex items-center mb-6">
                 <input
