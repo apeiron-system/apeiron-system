@@ -1,6 +1,3 @@
-import ContractForm from "@/Components/contract/ContractForm";
-import ContractTabNavigation from "@/Components/contract/ContractTabNavigation";
-import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import ProjectForm from "../../../Components/contract/project/ProjectForm";

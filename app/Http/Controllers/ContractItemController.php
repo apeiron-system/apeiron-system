@@ -9,6 +9,7 @@ use App\Models\Bid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 
 class ContractItemController extends Controller
@@ -38,19 +39,48 @@ class ContractItemController extends Controller
     }
     
 
-     // Show the bid page for a specific item
-     public function showBidPage($contractId, $itemId)
-     {
-         $contract = ContractModel::findOrFail($contractId);
-         $item = ItemModel::with('bids')->findOrFail($itemId);
- 
-         return Inertia::render('Contract/ContractItem/BidPage', [
-            'contractId' => $contractId,
-            'item' => $item,
-            'bids' => $item->bids,
-        ]);
-        
-     }
+    public function showBidPage(Request $request, $contractId, $itemId)
+{
+    $contract = ContractModel::findOrFail($contractId);
+    $item = ItemModel::with('bids')->findOrFail($itemId);
+
+    $query = Bid::where('item_id', $itemId);
+
+    // Apply date range filter
+    if ($request->filled('dateRange')) {
+        switch ($request->input('dateRange')) {
+            case 'today':
+                $query->whereDate('created_at', Carbon::today());
+                break;
+            case 'this_week':
+                $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                break;
+            case 'this_month':
+                $query->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+                break;
+        }
+    }
+
+    // Apply sorting
+    $sortField = $request->input('sortField', 'created_at'); // Default to created_at
+    $sortOrder = $request->input('sort', 'desc'); // Default to descending
+
+    if (in_array($sortField, ['created_at', 'bid_amount'])) {
+        $query->orderBy($sortField, $sortOrder);
+    }
+
+    $bids = $query->get();
+
+    return Inertia::render('Contract/ContractItem/BidPage', [
+        'contractId' => $contractId,
+        'item' => $item,
+        'bids' => $bids,
+        'filters' => $request->only(['dateRange', 'sortField', 'sort']), // Pass filters to front-end
+    ]);
+}
+
+
+     
  
      //method for putting a bid on an item
      public function storeBid(Request $request, $contractId, $itemId)
@@ -67,7 +97,7 @@ class ContractItemController extends Controller
          ]);
      
          // Redirect to the contract's items page with a success message
-         return redirect()->route('contract.item.bid', ['contractId' => $contractId, 'itemId' => $itemId])
+         return redirect()->route('contract.items', ['contractId' => $contractId, 'itemId' => $itemId])
          ->with('success', 'Bid placed successfully.');
      }
      

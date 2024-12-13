@@ -38,8 +38,8 @@ const schema = z.object({
     duration_in_days: z.coerce.number(),
     num_of_units: z.coerce.number(),
     abc_value: z.coerce.number(),
-    submitted_by_employee_id: z.coerce.number(),
-    signing_authority_employee_id: z.coerce.number(),
+    submitted_by_employee_id: z.number(),
+    signing_authority_employee_id: z.number(),
     contract_id: z.coerce.number(),
 });
 
@@ -110,7 +110,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -119,12 +118,7 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Status
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Status</FormLabel>
                             <FormControl>
                                 <select
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -136,7 +130,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     <option value="completed">Completed</option>
                                 </select>
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -158,7 +151,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -180,7 +172,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -202,7 +193,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -224,7 +214,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -246,7 +235,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -268,7 +256,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -277,12 +264,7 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="duration_in_days"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Duration in Days
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Duration in Days</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -291,7 +273,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -300,12 +281,7 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="num_of_units"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Number of Units
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Number of Units</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -314,7 +290,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -323,12 +298,7 @@ export default function ProjectForm({ project, employees, contract_id }) {
                     name="abc_value"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                ABC Value (PHP)
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>ABC Value (PHP)</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -337,7 +307,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -368,7 +337,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     }}
                                 />
                             </div>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -399,7 +367,6 @@ export default function ProjectForm({ project, employees, contract_id }) {
                                     }}
                                 />
                             </div>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
