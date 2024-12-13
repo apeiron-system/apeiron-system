@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JobOrderBoqModel;
 use Inertia\Inertia;
+use App\Models\ProjectPartItemModel;
 use App\Models\JobOrderContractModel;
 use App\Models\JobOrderProjectModel;
 use App\Models\JobOrderModel;
-use App\Models\JobOrderBoqPartModel;
+use App\Models\ProjectPartModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -23,49 +23,54 @@ class JobOrderDetailsController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            // Get project ID from the request (URL parameters)
-            $jo_no = $request->query('jo_no');
-            
-            // Fetch the job order by jo_no
-            $jobOrder = JobOrderModel::where('jo_no', $jo_no)->firstOrFail();
-            
-            // Retrieve the associated project name
-            $projectName = JobOrderProjectModel::where('id', $jobOrder->project_id)->value('project_name');
-            
-            // Retrieve the associated contract name
-            $contractName = JobOrderContractModel::where('id', $jobOrder->contract_id)->value('contract_name');
+        // Get job order number from the request
+        $jo_no = $request->query('jo_no');
 
-            // Fetch the BOQ table based on jo_no
-            $boq = JobOrderBoqModel::where('jo_no', $jo_no)->first();
-            
-            // Fetch BOQ parts linked to the BOQ
-            $boqParts = $boq ? JobOrderBoqPartModel::where('boq_id', $boq->boq_id)->get() : collect();
-            
-            // Structure the response for the frontend
-            return Inertia::render('JobOrder/JobOrderDetailsPage', [
-                'jobOrder' => $jobOrder,
-                'projectName' => $projectName,
-                'contractName' => $contractName,
-                'boqParts' => $boqParts,
-            ]);
+        // Fetch the job order by jo_no
+        $jobOrder = JobOrderModel::where('jo_no', $jo_no)->firstOrFail();
 
-        } catch (\Exception $e) {
-            // Log errors
-            Log::error('Error in JobOrderDetailsController@index: ' . $e->getMessage(), [
-                'jo_no' => $jo_no,
-                'trace' => $e->getTraceAsString(),
-            ]);
+        // Retrieve the associated project name
+        $projectName = JobOrderProjectModel::where('id', $jobOrder->project_id)->value('project_name');
 
-            // Return an error response
-            return Inertia::render('JobOrder/JobOrderDetailsPage', [
-                'jobOrder' => null,
-                'projectName' => null,
-                'contractName' => null,
-                'boqParts' => [],
-                'error' => 'Unable to load job order details. Please try again later.',
-            ]);
-        }
+        // Retrieve the associated contract name
+        $contractName = JobOrderContractModel::where('id', $jobOrder->contract_id)->value('contract_name');
+
+        // Fetch project parts linked to the job order
+        $projectParts = ProjectPartModel::where('jo_no', $jo_no)->get();
+        // dd($projectParts);
+        // Map project parts with their items
+        $projectPartsWithItems = $projectParts->map(function ($projectPart) {
+            // Fetch all items associated with the project part, including unit_cost from item_prices
+            $items = ProjectPartItemModel::where('project_part_id', $projectPart->id)
+                ->join('items', 'project_part_items.item_id', '=', 'items.id')
+                ->join('item_prices', 'items.id', '=', 'item_prices.item_id')  // Join with item_prices to get unit_cost
+                ->select(
+                    'items.id as itemNo',
+                    'items.description as description',
+                    'items.unit as unit',
+                    'project_part_items.quantity as quantity',
+                    'item_prices.unit_cost as unit_cost',  // Get unit_cost from item_prices
+                )
+                ->get();
+
+            // Add the project part's description to each project part item data
+            return [
+                'projectPart' => [
+                    'id' => $projectPart->id,
+                    'description' => $projectPart->description,  // Get the project part description
+                ],
+                'items' => $items
+            ];
+        });
+
+        // dd($projectPartsWithItems->pluck('items')->flatten()->pluck('amount'));
+        // Structure the response for the frontend
+        return Inertia::render('JobOrder/JobOrderDetailsPage', [
+            'jobOrder' => $jobOrder,
+            'projectName' => $projectName,
+            'contractName' => $contractName,
+            'projectParts' => $projectPartsWithItems,
+        ]);
     }
 
     public function destroy(Request $request)

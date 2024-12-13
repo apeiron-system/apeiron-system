@@ -48,9 +48,9 @@ class JobOrderModel extends Model
         return $this->belongsTo(JobOrderProjectModel::class, 'project_id');
     }
 
-    // Has Many Billing of Quantities (BOQs)
-    public function billingOfQuantities(): HasMany
+    // Has Many Project Parts
+    public function projectPart(): HasMany
     {
-        return $this->hasMany(JobOrderBoqModel::class, 'jo_no');
+        return $this->hasMany(ProjectPartModel::class, 'jo_no');
     }
 }

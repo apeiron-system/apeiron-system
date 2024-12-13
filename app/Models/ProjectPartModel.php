@@ -11,7 +11,7 @@ class ProjectPartModel extends Model
 
     protected $table = 'project_part';
 
-
+    
     // $table->foreignId("project_id");
     // $table->foreignId("parent_id")->nullable();
 

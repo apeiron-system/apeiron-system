@@ -22,9 +22,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import * as XLSX from 'xlsx';
 
-export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, boqParts }) {
+export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, projectParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     
     const [formData, setFormData] = useState({
@@ -40,33 +39,25 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         status: jobOrder.status || "",
     });
 
-    // Convert boqParts array to grouped object based on part_name
-    const groupedBoqParts = boqParts.reduce((acc, item) => {
-        const partName = item.part_name || "Uncategorized";
-        if (!acc[partName]) {
-            acc[partName] = [];
-        }
-        acc[partName].push({
-            itemNo: item.item_no,
-            description: item.description,
-            unit: item.unit,
-            quantity: parseFloat(item.quantity),
-            unitCost: parseFloat(item.unit_cost),
-            amount: parseFloat(item.amount),
-        });
-        return acc;
-    }, {});
-
-    const [currentBoqParts, setCurrentBoqParts] = useState(groupedBoqParts);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
+    const calculateAmount = (quantity, unit_cost) => {
+        return quantity * unit_cost;
+    };
+
     const calculateGrandTotal = () => {
-        return Object.values(currentBoqParts).reduce((total, part) => {
-            return total + part.reduce((subtotal, item) => subtotal + item.amount, 0);
+        return projectParts.reduce((total, part) => {
+            // Calculate the subtotal for each project part by summing up the amounts for each item
+            const partTotal = part.items.reduce((sum, item) => {
+                // Ensure calculateAmount correctly calculates the amount for the item
+                return sum + calculateAmount(item.quantity, item.unit_cost);
+            }, 0);
+    
+            // Add the partTotal to the grand total
+            return total + partTotal;
         }, 0);
     };
 
@@ -74,23 +65,6 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         if (!date) return "";
         const newDate = new Date(date);
         return newDate.toLocaleDateString("en-CA");
-    };
-
-    const addDummyPayItem = (part) => {
-        setCurrentBoqParts((prevBoqParts) => ({
-            ...prevBoqParts,
-            [part]: [
-                ...prevBoqParts[part],
-                {
-                    itemNo: `${prevBoqParts[part].length + 1}`.padStart(3, '0'),
-                    description: "New Item",
-                    unit: "unit",
-                    quantity: 0,
-                    unitCost: 0,
-                    amount: 1000,
-                },
-            ],
-        }));
     };
 
     // Handle form submission
@@ -178,6 +152,26 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
         }
     };    
 
+    // State to track the visibility of items for each project part
+    const [visibleRows, setVisibleRows] = useState(
+        projectParts.map(() => 5) // Initially, only the first 5 rows are visible for each part
+    );
+
+    const handleToggleRows = (idx) => {
+        setVisibleRows((prevState) => {
+            const newState = [...prevState];
+            const currentVisibleRows = newState[idx];
+
+            // Toggle between showing all rows and showing only the first 5
+            if (currentVisibleRows < projectParts[idx].items.length) {
+                newState[idx] = projectParts[idx].items.length; // Show all
+            } else {
+                newState[idx] = 5; // Show only the first 5 rows
+            }
+            return newState;
+        });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -201,71 +195,56 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 <div className="w-full flex flex-col">
                     <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
                     <h3 className="text-left text-gray-700 mb-1">
-                        Total Job Order Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
+                        Total Estimated Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
                     </h3>
-                    <div className="w-full h-[calc(100vh-15rem)] lg:w-7/10 bg-white rounded-md py-4 pr-4 overflow-y-auto">
-                        {Object.keys(currentBoqParts).map((part, idx) => {
-                            const subtotal = currentBoqParts[part].reduce((sum, item) => sum + item.amount, 0);
 
-                            return (
-                                <div key={idx} className="mb-8">
-                                    <h4 className="font-semibold text-lg">{part}</h4>
+                    <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
+                    {projectParts.map((part, idx) => {
+                        const partTotal = part.items.reduce((sum, item) => sum + calculateAmount(item.quantity, item.unit_cost), 0);
+                        const visibleItemCount = visibleRows[idx];
 
-                                    <div className="text-left text-gray-700 text-sm mb-1">
-                                        Subtotal: <span className="text-yellow-500 font-semibold">₱{subtotal.toLocaleString()}</span>
-                                    </div>
+                        return (
+                            <div key={idx}>
+                                <h4 className="text-lg">{part.projectPart.description}</h4>
+                                <p className="text-gray-700 text-sm mb-2">
+                                    Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
+                                </p>
 
-                                    <div className="bg-white shadow rounded overflow-hidden">
-                                        <Table className="min-w-full divide-y divide-gray-200">
-                                            <TableHeader>
-                                                <TableRow>
-                                                    {[
-                                                        "Item No.",
-                                                        "Description",
-                                                        "Unit",
-                                                        "Quantity",
-                                                        "Unit Cost",
-                                                        "Amount",
-                                                    ].map((header, idx) => (
-                                                        <TableHead key={idx}>{header}</TableHead>
-                                                    ))}
+                                <div className="bg-white shadow rounded overflow-hidden">
+                                    <Table className="min-w-full divide-y divide-gray-200">
+                                        <TableHeader>
+                                            <TableRow>
+                                                {["Item No.", "Description", "Unit", "Quantity", "Unit Cost", "Amount"].map((header, idx) => (
+                                                    <TableHead key={idx}>{header}</TableHead>
+                                                ))}
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {part.items.slice(0, visibleItemCount).map((item, idx) => (
+                                                <TableRow key={idx} className="hover:bg-gray-200">
+                                                    <TableCell>{item.itemNo}</TableCell>
+                                                    <TableCell>{item.description}</TableCell>
+                                                    <TableCell>{item.unit}</TableCell>
+                                                    <TableCell>{item.quantity}</TableCell>
+                                                    <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
+                                                    <TableCell>₱{calculateAmount(item.quantity, item.unit_cost).toLocaleString()}</TableCell>
                                                 </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {currentBoqParts[part].length > 0 ? (
-                                                    currentBoqParts[part].map((item, idx) => (
-                                                        <TableRow key={idx} className="hover:bg-gray-200">
-                                                            <TableCell>{item.itemNo}</TableCell>
-                                                            <TableCell>{item.description}</TableCell>
-                                                            <TableCell>{item.unit}</TableCell>
-                                                            <TableCell>{item.quantity}</TableCell>
-                                                            <TableCell>{item.unitCost}</TableCell>
-                                                            <TableCell>{item.amount}</TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                ) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={7} className="px-4 py-4 text-center text-gray-500">
-                                                            No items found.
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-
-                                    <div className="col-span-2 flex justify-end mt-4">
-                                        <button
-                                            onClick={() => addDummyPayItem(part)}
-                                            className="py-2 px-3 bg-gray-500 text-white font-weight-bolder hover:bg-gray-800 rounded-lg"
-                                        >
-                                            Add Pay Item
-                                        </button>
-                                    </div>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
                                 </div>
-                            );
-                        })}
-                    </div>
+
+                                <div className="mt-2 flex justify-end">
+                                    <button
+                                        onClick={() => handleToggleRows(idx)}
+                                        className="text-blue-500 hover:underline"
+                                    >
+                                        {visibleItemCount < part.items.length ? "Show All" : "Show Less"}
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">

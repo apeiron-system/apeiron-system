@@ -23,6 +23,17 @@ class ProjectPartSeeder extends Seeder
             return;
         }
 
+        // Fetch job orders for clarity
+        $jobOrders = DB::table('job_orders')
+            ->select('jo_no')
+            ->get()
+            ->keyBy('jo_no');
+
+        if ($jobOrders->isEmpty()) {
+            $this->command->info('No job orders found in the "job_orders" table. Please run the JobOrderSeeder first.');
+            return;
+        }
+
         // Insert project parts for each project
         $data = [
             // Project parts for "Residential Tower - Phase 1"
@@ -30,6 +41,7 @@ class ProjectPartSeeder extends Seeder
                 'description' => 'Foundation Work',
                 'project_id' => $projects['Residential Tower - Phase 1']->id,
                 'parent_id' => null, // Root
+                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order (replace with actual logic if needed)
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -37,64 +49,19 @@ class ProjectPartSeeder extends Seeder
                 'description' => 'Structural Work',
                 'project_id' => $projects['Residential Tower - Phase 1']->id,
                 'parent_id' => null, // Root
+                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'description' => 'Electrical Installation',
                 'project_id' => $projects['Residential Tower - Phase 1']->id,
-                'parent_id' => 2, // Child of Structural Work
+                'parent_id' => null,
+                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
 
-            // Project parts for "Residential Building Amenities"
-            [
-                'description' => 'Swimming Pool Construction',
-                'project_id' => $projects['Residential Building Amenities']->id,
-                'parent_id' => null, // Root
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'description' => 'Playground Setup',
-                'project_id' => $projects['Residential Building Amenities']->id,
-                'parent_id' => null, // Root
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            // Project parts for "Office Renovation - Lobby"
-            [
-                'description' => 'Demolition Work',
-                'project_id' => $projects['Office Renovation - Lobby']->id,
-                'parent_id' => null, // Root
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'description' => 'Interior Design',
-                'project_id' => $projects['Office Renovation - Lobby']->id,
-                'parent_id' => 6, // Child of Demolition Work
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            // Project parts for "Bridge Foundation"
-            [
-                'description' => 'Pile Installation',
-                'project_id' => $projects['Bridge Foundation']->id,
-                'parent_id' => null, // Root
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'description' => 'Concrete Pouring',
-                'project_id' => $projects['Bridge Foundation']->id,
-                'parent_id' => 8, // Child of Pile Installation
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ];
 
         DB::table('project_part')->insert($data);
