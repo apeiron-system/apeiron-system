@@ -193,10 +193,20 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
 
             <div className="flex flex-row-reverse gap-6">
                 <div className="w-full flex flex-col">
-                    <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
-                    <h3 className="text-left text-gray-700 mb-1">
-                        Total Estimated Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
-                    </h3>
+                    <div className="flex justify-between items-end space-x-4">
+                        <div>
+                            <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
+                            <h3 className="text-left text-gray-700 mb-1">
+                                Total Estimated Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
+                            </h3>
+                        </div>
+                        <Button
+                            onClick={() => alert("Manage Billing Progress Clicked")}
+                            className="bg-slate-700 text-white px-4 py-2 rounded-md hover:bg-slate-800"
+                        >
+                            Manage Billing Progress
+                        </Button>
+                    </div>
 
                     <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
                     {projectParts.map((part, idx) => {
@@ -237,7 +247,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                 <div className="mt-2 flex justify-end">
                                     <button
                                         onClick={() => handleToggleRows(idx)}
-                                        className="text-blue-500 hover:underline"
+                                        className="text-sm text-slate-500 hover:underline"
                                     >
                                         {visibleItemCount < part.items.length ? "Show All" : "Show Less"}
                                     </button>
@@ -247,7 +257,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     })}
                 </div>
 
-                <div className="w-full lg:w-1/3 bg-white shadow rounded-md p-4 sticky top-4 self-start">
+                <div className="w-full lg:w-2/4 bg-white shadow rounded-md p-4 sticky top-4 self-start">
                     <div className="text-gray-900">
                         <div className="pb-4">
                             <div className="text-2xl font-semibold">{formData.jo_name}</div>

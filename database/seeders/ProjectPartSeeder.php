@@ -12,58 +12,78 @@ class ProjectPartSeeder extends Seeder
      */
     public function run(): void
     {
-        // Fetch projects by their names for clarity
+        // Fetch projects by their IDs (only Project 1 and Project 2)
         $projects = DB::table('project')
             ->select('id', 'project_name')
+            ->whereIn('id', [1, 2]) // Include only the first two projects
             ->get()
-            ->keyBy('project_name');
+            ->keyBy('id');
 
         if ($projects->isEmpty()) {
-            $this->command->info('No projects found in the "project" table. Please run the ProjectSeeder first.');
+            $this->command->info('No matching projects found in the "project" table. Please check the ProjectSeeder.');
             return;
         }
 
-        // Fetch job orders for clarity
+        // Fetch all job orders
         $jobOrders = DB::table('job_orders')
             ->select('jo_no')
             ->get()
-            ->keyBy('jo_no');
+            ->pluck('jo_no'); // Extract `jo_no` as a flat collection
 
-        if ($jobOrders->isEmpty()) {
-            $this->command->info('No job orders found in the "job_orders" table. Please run the JobOrderSeeder first.');
+        if ($jobOrders->isEmpty() || $jobOrders->count() < 2) {
+            $this->command->info('Not enough job orders found. Please ensure JobOrderSeeder is properly populated.');
             return;
         }
 
-        // Insert project parts for each project
-        $data = [
-            // Project parts for "Residential Tower - Phase 1"
-            [
-                'description' => 'Foundation Work',
-                'project_id' => $projects['Residential Tower - Phase 1']->id,
-                'parent_id' => null, // Root
-                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order (replace with actual logic if needed)
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'description' => 'Structural Work',
-                'project_id' => $projects['Residential Tower - Phase 1']->id,
-                'parent_id' => null, // Root
-                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'description' => 'Electrical Installation',
-                'project_id' => $projects['Residential Tower - Phase 1']->id,
-                'parent_id' => null,
-                'jo_no' => $jobOrders->keys()->first(), // Assign the first job order
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        // Access the second job order (`jo_no`)
+        $secondJobOrder = $jobOrders->slice(1, 1)->first(); // Get the second element
 
+        // Define unique project parts for each project
+        $projectPartsData = [
+            1 => [ // Project 1 parts
+                [
+                    'description' => 'Foundation Work - Tower 1',
+                    'parent_id' => null,
+                    'jo_no' => $jobOrders->first(), // Assign the first job order
+                ],
+                [
+                    'description' => 'Electrical Installation - Tower 1',
+                    'parent_id' => null,
+                    'jo_no' => $jobOrders->first(),
+                ],
+            ],
+            2 => [ // Project 2 parts
+                [
+                    'description' => 'Structural Work - Building A',
+                    'parent_id' => null,
+                    'jo_no' => $secondJobOrder, // Assign the second job order
+                ],
+                [
+                    'description' => 'Plumbing Work - Building A',
+                    'parent_id' => null,
+                    'jo_no' => $secondJobOrder,
+                ],
+            ],
         ];
 
+        // Prepare data for insertion
+        $data = [];
+        foreach ($projectPartsData as $projectId => $parts) {
+            foreach ($parts as $part) {
+                $data[] = [
+                    'description' => $part['description'],
+                    'project_id' => $projectId,
+                    'parent_id' => $part['parent_id'],
+                    'jo_no' => $part['jo_no'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        // Insert data into project_part table
         DB::table('project_part')->insert($data);
+
+        $this->command->info('Project parts for Project 1 and Project 2 have been populated successfully.');
     }
 }
