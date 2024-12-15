@@ -12,7 +12,7 @@ use App\Http\Controllers\JobOrderContractController;
 use App\Http\Controllers\JobOrderProjectController;
 use App\Http\Controllers\JobOrderController;
 use App\Http\Controllers\JobOrderDetailsController;
-use App\Http\Controllers\JobOrderProjectPartController;
+use App\Http\Controllers\JobOrderProgressBillingController;
 
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ContractItemController;
@@ -98,10 +98,6 @@ Route::group(
     Route::get('/create-job-order', [JobOrderController::class, 'create'])
         ->name('create-job-order');
 
-    // // Get Job Order Project Parts
-    // Route::get('/create-job-order', [JobOrderProjectPartController::class, 'fetchProjectParts'])
-    //     ->name('get-project-parts');
-
     // Job Order Details Page
     Route::get('/job-order-details', [JobOrderDetailsController::class, 'index'])
         ->name('job-order-details');
@@ -117,6 +113,11 @@ Route::group(
     // Update Job Order Page
     Route::put('/job-order-details', [JobOrderDetailsController::class, 'update'])
         ->name('job-order-update');
+
+    // Job Order Progress Billing Page
+    Route::get('/job-order-progress-billing', function () {
+        return Inertia::render('JobOrder/JobOrderProgressBillingPage');
+    })->name('job-order-progress-billing');
 
     }
 );

@@ -16,11 +16,9 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class,
             ItemSeeder::class,
             ProjectSeeder::class,
+            JobOrderSeeder::class,
             ProjectPartSeeder::class,
             ProjectPartItemSeeder::class,
-            JobOrderSeeder::class,
-            JobOrderBoqSeeder::class,
-            JobOrderBoqPartSeeder::class,
         ]);
     }
 }

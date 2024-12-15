@@ -11,8 +11,6 @@ class JobOrderModel extends Model
 
     protected $primaryKey = 'jo_no';
 
-    public $incrementing = false;
-
     // Define the fillable fields for mass assignment
     protected $fillable = [
         'contract_id',
@@ -48,9 +46,9 @@ class JobOrderModel extends Model
         return $this->belongsTo(JobOrderProjectModel::class, 'project_id');
     }
 
-    // Has Many Billing of Quantities (BOQs)
-    public function billingOfQuantities(): HasMany
+    // Has Many Project Parts
+    public function projectPart(): HasMany
     {
-        return $this->hasMany(JobOrderBoqModel::class, 'jo_no');
+        return $this->hasMany(ProjectPartModel::class, 'jo_no');
     }
 }
