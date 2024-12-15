@@ -125,11 +125,6 @@ export default function AddProjectPartItemModal({
                                 items.map((item) => (
                                     <TableRow
                                         key={item.id}
-                                        className={
-                                            invalidQuantities.includes(item.id)
-                                                ? "bg-red-100"
-                                                : ""
-                                        }
                                     >
                                         <TableCell>
                                             <input

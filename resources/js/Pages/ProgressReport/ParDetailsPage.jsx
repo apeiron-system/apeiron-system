@@ -1,9 +1,8 @@
-import ProjectsTable from "@/Components/contract/project/ProjectsTable";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import { useState } from "react";
 import _ from "lodash";
+import { useState } from "react";
 
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);

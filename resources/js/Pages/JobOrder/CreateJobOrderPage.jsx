@@ -6,7 +6,7 @@ import ExitJobOrderModal from "@/Components/ExitJobOrderModal";
 import SubmitJobOrderModal from "@/Components/SubmitJobOrderModal";
 import JobOrderSubmittedModal from "@/Components/JobOrderSubmittedModal";
 import { ChevronLeft } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/Components/ui/checkbox";
 
 export default function CreateJobOrderPage({ auth, project, contract, projectParts }) {
     const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [isSubmittedModalOpen, setIsSubmittedModalOpen] = useState(false);
     const [selectedParts, setSelectedParts] = useState([]);
-    
+
     // Handle select/deselect all
     const handleSelectAll = () => {
         if (Array.isArray(projectParts) && projectParts.length > 0) {
@@ -40,7 +40,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
             }
         }
     };
-    
+
     // Handle selecting/deselecting a single part
     const handleSelectPart = (partId) => {
         if (Array.isArray(projectParts) && projectParts.length > 0) {
@@ -87,10 +87,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
             jobOrderName: "",
             location: "",
             supplier: "",
-            itemWorks: "", 
+            itemWorks: "",
             periodCovered: "",
             dateNeeded: "",
-            preparedBy: "", 
+            preparedBy: "",
             checkedBy: "",
             approvedBy: "",
             status: "pending",
@@ -334,7 +334,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                                     placeholder="Enter Period Covered"
                                                 />
                                             </div>
-                                            
+
                                             <div>
                                                 <label
                                                     htmlFor="dateNeeded"

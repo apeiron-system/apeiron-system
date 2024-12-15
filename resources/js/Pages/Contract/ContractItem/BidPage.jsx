@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/Components/ui/button";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 import { ChevronLeft, Trash2 } from "lucide-react";
-import { Input } from "@/Components/ui/input";
-import { Label } from "@/Components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
 import {
     Table,
     TableBody,
@@ -24,24 +30,23 @@ import {
 } from "@/Components/ui/alert-dialog";
 
 export default function BidPage({ auth, item, contractId, bids }) {
-    const [formData, setFormData] = useState({
-        bid_amount: "",
-    });
+    const [selectedDateRange, setSelectedDateRange] = useState("all");
+    const [sortOrder, setSortOrder] = useState("desc");
     const [selectedBids, setSelectedBids] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        router.post(
-            route("item.contract.bid.store", [contractId, item.id]),
-            formData
+    // Automatically apply filters whenever filter or sort order changes
+    useEffect(() => {
+        // Avoid re-triggering the effect unnecessarily
+        router.get(
+            route("contract.item.bid", [contractId, item.id]),
+            {
+                dateRange: selectedDateRange,
+                sort: sortOrder,
+            },
+            { preserveState: true, replace: true } // Prevent URL changes from triggering re-renders
         );
-    };
+    }, [selectedDateRange, sortOrder, contractId, item.id]);
 
     const handleCheckboxChange = (bidId) => {
         setSelectedBids((prevSelected) =>
@@ -81,38 +86,67 @@ export default function BidPage({ auth, item, contractId, bids }) {
                         </button>
                     </Link>
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                        Place Bid - {item.description}
+                        Bid History - {item.description}
                     </h2>
                 </div>
             }
         >
-            <Head title={`Place Bid on ${item.description}`} />
-
             <section className="py-4 w-full max-w-[600px]">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <Label>Bid Amount</Label>
-                        <Input
-                            type="number"
-                            name="bid_amount"
-                            value={formData.bid_amount}
-                            onChange={handleChange}
-                            required
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
+                <div className="flex justify-end gap-4 items-center">
+                    {/* Date Filter */}
+                    <div className="flex justify-center items-center gap-4">
+                        <div className="flex items-center gap-4">
+                            {/* Date Filter */}
+                            <Select
+                                value={selectedDateRange}
+                                onValueChange={(value) =>
+                                    setSelectedDateRange(value)
+                                }
+                                defaultValue="all"
+                            >
+                                <SelectTrigger className="w-[140px]">
+                                    <SelectValue placeholder="Filter by Date" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="all">
+                                            All Time
+                                        </SelectItem>
+                                        <SelectItem value="today">
+                                            Today
+                                        </SelectItem>
+                                        <SelectItem value="this_week">
+                                            This Week
+                                        </SelectItem>
+                                        <SelectItem value="this_month">
+                                            This Month
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
 
-                    <div className="flex justify-end">
-                        <Button type="submit" className="bg-primary text-white">
-                            Submit Bid
-                        </Button>
+                            {/* Sorting */}
+                            <Select
+                                value={sortOrder}
+                                onValueChange={(value) => setSortOrder(value)}
+                                defaultValue="desc"
+                            >
+                                <SelectTrigger className="w-[140px]">
+                                    <SelectValue placeholder="Sort Order" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="asc">
+                                            Ascending
+                                        </SelectItem>
+                                        <SelectItem value="desc">
+                                            Descending
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
-                </form>
-
-                <div className="flex justify-between pt-6">
-                    <h3 className="mt-8 text-lg font-semibold">
-                        Previous Bids
-                    </h3>
 
                     <AlertDialog open={isDialogOpen}>
                         <AlertDialogTrigger asChild>
@@ -151,6 +185,9 @@ export default function BidPage({ auth, item, contractId, bids }) {
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
+
+                <h3 className="mt-8 text-lg font-semibold">Previous Bids</h3>
+
                 {bids.length > 0 ? (
                     <Table>
                         <TableHeader>
@@ -169,37 +206,29 @@ export default function BidPage({ auth, item, contractId, bids }) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {bids
-                                .sort(
-                                    (a, b) =>
-                                        new Date(b.created_at) -
-                                        new Date(a.created_at)
-                                )
-                                .map((bid) => (
-                                    <TableRow key={bid.id}>
-                                        <TableCell>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedBids.includes(
-                                                    bid.id
-                                                )}
-                                                onChange={() =>
-                                                    handleCheckboxChange(bid.id)
-                                                }
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            {parseFloat(bid.bid_amount).toFixed(
-                                                2
+                            {bids.map((bid) => (
+                                <TableRow key={bid.id}>
+                                    <TableCell>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedBids.includes(
+                                                bid.id
                                             )}
-                                        </TableCell>
-                                        <TableCell>
-                                            {new Date(
-                                                bid.created_at
-                                            ).toLocaleDateString()}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                            onChange={() =>
+                                                handleCheckboxChange(bid.id)
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {parseFloat(bid.bid_amount).toFixed(2)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            bid.created_at
+                                        ).toLocaleDateString()}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 ) : (

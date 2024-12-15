@@ -90,7 +90,13 @@ export default function ContractForm({ contract, employees }) {
                     name="contract_name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
+                            <FormLabel
+                                className={`${
+                                    form.formState.errors.contract_name
+                                        ? "text-red-500"
+                                        : ""
+                                }`}
+                            >
                                 Contract Name{" "}
                                 <div className="text-stone-500 text-xs">
                                     (required)
@@ -103,7 +109,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -112,12 +117,7 @@ export default function ContractForm({ contract, employees }) {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Status
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Status</FormLabel>
                             <FormControl>
                                 <select
                                     className="input w-full border border-gray-300 rounded-md p-2"
@@ -129,7 +129,6 @@ export default function ContractForm({ contract, employees }) {
                                     <option value="completed">Completed</option>
                                 </select>
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -138,11 +137,14 @@ export default function ContractForm({ contract, employees }) {
                     name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
+                            <FormLabel
+                                className={`${
+                                    form.formState.errors.description
+                                        ? "text-red-500"
+                                        : ""
+                                }`}
+                            >
                                 Description
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
                             </FormLabel>
                             <FormControl>
                                 <textarea
@@ -151,7 +153,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -173,7 +174,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -195,7 +195,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -204,12 +203,7 @@ export default function ContractForm({ contract, employees }) {
                     name="duration_in_days"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Duration in Days
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Duration in Days</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -218,7 +212,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -227,12 +220,7 @@ export default function ContractForm({ contract, employees }) {
                     name="amount"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>
-                                Amount (PHP)
-                                <div className="text-stone-500 text-xs">
-                                    (required)
-                                </div>
-                            </FormLabel>
+                            <FormLabel>Amount (PHP)</FormLabel>
                             <FormControl>
                                 <input
                                     type="number"
@@ -241,7 +229,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -258,7 +245,6 @@ export default function ContractForm({ contract, employees }) {
                                     {...field}
                                 />
                             </FormControl>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -289,7 +275,6 @@ export default function ContractForm({ contract, employees }) {
                                     }}
                                 />
                             </div>
-                            <FormMessage />
                         </FormItem>
                     )}
                 />

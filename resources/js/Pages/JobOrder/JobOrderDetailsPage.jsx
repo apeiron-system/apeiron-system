@@ -21,11 +21,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+
+} from "@/Components/ui/table";
+import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, projectParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     const [formData, setFormData] = useState({
         jo_name: jobOrder.jo_name || "",
         location: jobOrder.location || "",
@@ -70,19 +72,19 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     // Handle form submission
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             // Update form data with new status
             const updatedFormData = {
                 ...formData,
             };
-    
+
             // Send a PUT request to update the job order details with status
             const response = await axios.put(`/job-order-details?jo_no=${jobOrder.jo_no}`, updatedFormData);
-    
+
             if (response.data.success) {
                 console.log('Job order updated successfully');
-                
+
                 // Close the modal and refresh or redirect as necessary
                 setIsModalOpen(false);
                 window.location.href = `/job-order-details?jo_no=${jobOrder.jo_no}`;
@@ -95,7 +97,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             alert('Failed to update job order');
         }
     };
-    
+
     const handleCancelEditing = () => {
         setIsModalOpen(false);
         window.location.href = `/job-order-details?jo_no=${jobOrder.jo_no}`;
@@ -104,17 +106,17 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     const handleDelete = async (jobOrderId) => {
         // Log the jobOrderId we're about to delete
         console.log('Deleting job order with ID:', jobOrderId);
-    
+
         // Ask for confirmation before proceeding with deletion
         if (confirm("Are you sure you want to delete this job order?")) {
             try {
                 // Send DELETE request to the server to delete the job order
                 const response = await axios.delete(`/job-order-details?jo_no=${jobOrderId}`);
-                
+
                 // If the delete operation is successful
                 if (response.data.success) {
                     console.log('Job order deleted successfully:', response.data);
-    
+
                     // If the delete operation is successful
                     if (response.status === 200 || response.status === 204) {
                         console.log('Job order deleted successfully:', response.data);
@@ -126,7 +128,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                         console.error('Failed to delete job order:', response.data.message || response.statusText);
                         alert('Failed to delete job order: ' + (response.data.message || response.statusText));
                     }
-    
+
                     // If you want to show a success modal or message, you can trigger that here as well
                 } else {
                     // Handle failure in the delete operation (e.g., if there are business logic issues)
@@ -150,7 +152,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                 }
             }
         }
-    };    
+    };
 
     // State to track the visibility of items for each project part
     const [visibleRows, setVisibleRows] = useState(
@@ -319,6 +321,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
                                     <button className="block w-full mt-1 p-2 border border-gray-300 rounded-sm shadow-sm 
+
                                         focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                         {formData.status}
                                     </button>
