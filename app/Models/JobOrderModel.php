@@ -11,8 +11,6 @@ class JobOrderModel extends Model
 
     protected $primaryKey = 'jo_no';
 
-    public $incrementing = false;
-
     // Define the fillable fields for mass assignment
     protected $fillable = [
         'contract_id',

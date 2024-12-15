@@ -78,40 +78,40 @@ class JobOrderController extends Controller
      * @return \Inertia\Response
      */
     public function create(Request $request)
-{
-    try {
-        // Fetch project data to pass to the frontend
-        $projectId = $request->query('project_id');
-        $project = JobOrderProjectModel::findOrFail($projectId);
+    {
+        try {
+            // Fetch project data to pass to the frontend
+            $projectId = $request->query('project_id');
+            $project = JobOrderProjectModel::findOrFail($projectId);
 
-        // Fetch contract data, assuming the project has a contract
-        $contract = JobOrderContractModel::findOrFail($project->contract_id);
+            // Fetch contract data, assuming the project has a contract
+            $contract = JobOrderContractModel::findOrFail($project->contract_id);
 
-        // Fetch project parts by project ID, excluding those already assigned to a job order
-        $projectParts = ProjectPartModel::where('project_id', $projectId)
-            ->whereNull('parent_id') // Only top-level parts
-            ->whereNull('jo_no')     // Exclude parts already assigned to a job order
-            ->get(['id', 'description']);
+            // Fetch project parts by project ID, excluding those already assigned to a job order
+            $projectParts = ProjectPartModel::where('project_id', $projectId)
+                ->whereNull('parent_id') // Only top-level parts
+                ->whereNull('jo_no')     // Exclude parts already assigned to a job order
+                ->get(['id', 'description']);
 
-        // Pass data to Inertia view
-        return Inertia::render('JobOrder/CreateJobOrderPage', [
-            'project' => $project,
-            'contract' => $contract,
-            'projectParts' => $projectParts, // Filtered project parts
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Error in JobOrderController@create: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
-        ]);
+            // Pass data to Inertia view
+            return Inertia::render('JobOrder/CreateJobOrderPage', [
+                'project' => $project,
+                'contract' => $contract,
+                'projectParts' => $projectParts, // Filtered project parts
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in JobOrderController@create: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
 
-        // In case of error, return empty data for project and contract
-        return Inertia::render('JobOrder/CreateJobOrderPage', [
-            'project' => null,
-            'contract' => null,
-            'projectParts' => [], // Add empty array for project parts in case of error
-        ]);
+            // In case of error, return empty data for project and contract
+            return Inertia::render('JobOrder/CreateJobOrderPage', [
+                'project' => null,
+                'contract' => null,
+                'projectParts' => [], // Add empty array for project parts in case of error
+            ]);
+        }
     }
-}
 
     /**
      * Store a newly created job order in storage.
@@ -165,7 +165,7 @@ class JobOrderController extends Controller
                 $projectPart = ProjectPartModel::find($projectPartId);
 
                 if ($projectPart) {
-                    $projectPart->jo_no = $jobOrder->id;
+                    $projectPart->jo_no = $jobOrder->jo_no;
                     $projectPart->save();
                 } else {
                     throw new \Exception("ProjectPart with ID $projectPartId not found.");
