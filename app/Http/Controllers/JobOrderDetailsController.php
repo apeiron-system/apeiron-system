@@ -75,19 +75,26 @@ class JobOrderDetailsController extends Controller
 
     public function destroy(Request $request)
     {
-            $jobOrderId = $request->query('jo_no');
+        $jobOrderId = $request->query('jo_no');
 
-            // If the job order does not exist
-            if (!$jobOrderId) {
-                return response()->json(['success' => false, 'message' => 'Job order ID not found.'], 404);
-            }
+        // If the job order does not exist
+        if (!$jobOrderId) {
+            return response()->json(['success' => false, 'message' => 'Job order ID not found.'], 404);
+        }
 
+        try {
             // Find the job order by its ID
             $jobOrder = JobOrderModel::where('jo_no', $jobOrderId)->firstOrFail();
 
+            // Option 1: Nullify the foreign key in project_parts table
+            ProjectPartModel::where('jo_no', $jobOrder->jo_no)->update(['jo_no' => null]);
+
+            // Option 2: Delete related project parts (if you prefer deleting them instead of nullifying)
+            // ProjectPartModel::where('jo_no', $jobOrder->jo_no)->delete();
+
             // Delete the job order
             $jobOrder->delete();
-            
+
             // Optionally, log the successful deletion
             Log::info('Job order deleted successfully', [
                 'jo_no' => $jobOrderId,
@@ -96,9 +103,20 @@ class JobOrderDetailsController extends Controller
             // Return a success response
             return response()->json([
                 'success' => true,
-                'message' => 'Job order deleted successfully!'
+                'message' => 'Job order and related project parts deleted successfully!'
             ], 200);
-
+        } catch (\Exception $e) {
+            // Handle any errors that may occur during the deletion
+            Log::error('Error deleting job order', [
+                'jo_no' => $jobOrderId,
+                'error_message' => $e->getMessage(),
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting job order: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request)
