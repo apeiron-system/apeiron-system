@@ -190,7 +190,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
             }
         >
             <Head title="Job Order Details" />
-
+    
             <div className="flex flex-row-reverse gap-6">
                 <div className="w-full flex flex-col">
                     <div className="flex justify-between items-end space-x-4">
@@ -201,49 +201,55 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             </h3>
                         </div>
                         <Button
-                            onClick={() => alert("Manage Billing Progress Clicked")}
-                            className="bg-slate-700 text-white px-4 py-2 rounded-md hover:bg-slate-800"
+                            onClick={() => window.location.href = `/job-order-progress-billing`}
+                            className="bg-slate-700 text-white px-4 py-2 rounded-sm hover:bg-slate-800"
                         >
                             Manage Billing Progress
                         </Button>
                     </div>
-
+    
                     <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
                     {projectParts.map((part, idx) => {
                         const partTotal = part.items.reduce((sum, item) => sum + calculateAmount(item.quantity, item.unit_cost), 0);
                         const visibleItemCount = visibleRows[idx];
-
+    
                         return (
                             <div key={idx}>
                                 <h4 className="text-lg">{part.projectPart.description}</h4>
                                 <p className="text-gray-700 text-sm mb-2">
                                     Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
                                 </p>
-
+    
                                 <div className="bg-white shadow rounded overflow-hidden">
                                     <Table className="min-w-full divide-y divide-gray-200">
                                         <TableHeader>
                                             <TableRow>
-                                                {["Item No.", "Description", "Unit", "Quantity", "Unit Cost", "Amount"].map((header, idx) => (
+                                                {["Item No.", "Description", "Unit", "Quantity", "Unit Cost", "Amount", "Weight %"].map((header, idx) => (
                                                     <TableHead key={idx}>{header}</TableHead>
                                                 ))}
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {part.items.slice(0, visibleItemCount).map((item, idx) => (
-                                                <TableRow key={idx} className="hover:bg-gray-200">
-                                                    <TableCell>{item.itemNo}</TableCell>
-                                                    <TableCell>{item.description}</TableCell>
-                                                    <TableCell>{item.unit}</TableCell>
-                                                    <TableCell>{item.quantity}</TableCell>
-                                                    <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
-                                                    <TableCell>₱{calculateAmount(item.quantity, item.unit_cost).toLocaleString()}</TableCell>
-                                                </TableRow>
-                                            ))}
+                                            {part.items.slice(0, visibleItemCount).map((item, itemIdx) => {
+                                                const amount = calculateAmount(item.quantity, item.unit_cost);
+                                                const weightPercentage = (amount / partTotal) * 100;
+    
+                                                return (
+                                                    <TableRow key={itemIdx} className="hover:bg-gray-200">
+                                                        <TableCell>{item.itemNo}</TableCell>
+                                                        <TableCell>{item.description}</TableCell>
+                                                        <TableCell>{item.unit}</TableCell>
+                                                        <TableCell>{item.quantity}</TableCell>
+                                                        <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
+                                                        <TableCell>₱{amount.toLocaleString()}</TableCell>
+                                                        <TableCell>{weightPercentage.toFixed(2)}%</TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
                                         </TableBody>
                                     </Table>
                                 </div>
-
+    
                                 <div className="mt-2 flex justify-end">
                                     <button
                                         onClick={() => handleToggleRows(idx)}
@@ -257,7 +263,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     })}
                 </div>
 
-                <div className="w-full lg:w-2/4 bg-white shadow rounded-md p-4 sticky top-4 self-start">
+                <div className="w-full lg:w-2/5 bg-white shadow rounded-md p-4 sticky top-4 self-start">
                     <div className="text-gray-900">
                         <div className="pb-4">
                             <div className="text-2xl font-semibold">{formData.jo_name}</div>
@@ -288,14 +294,14 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     <div className="flex gap-4">
                     <Button
                         onClick={() => handleDelete(jobOrder.jo_no)}
-                        className="bg-red-500 text-white"
+                        className="bg-red-500 text-white rounded-sm"
                     >
                         Delete
                     </Button>
 
                         <Button
                             onClick={() => setIsModalOpen(true)}
-                            className="bg-gray-500 text-white"
+                            className="bg-gray-500 text-white rounded-sm"
                         >
                             Edit
                         </Button>
@@ -312,7 +318,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <InputLabel htmlFor="status">Status:</InputLabel>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
-                                    <button className="block w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm 
+                                    <button className="block w-full mt-1 p-2 border border-gray-300 rounded-sm shadow-sm 
                                         focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                         {formData.status}
                                     </button>
