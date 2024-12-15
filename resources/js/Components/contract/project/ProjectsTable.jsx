@@ -53,6 +53,7 @@ export default function ProjectsTable({ projects, contract }) {
                 <TableBody>
                     {projects.map((project) => (
                         <TableRow
+                            className="cursor-pointer hover:bg-gray-100"
                             key={"project-" + project.id}
                             onClick={() => {
                                 window.location.href = `/contract/${contract.id}/project/${project.id}`;
