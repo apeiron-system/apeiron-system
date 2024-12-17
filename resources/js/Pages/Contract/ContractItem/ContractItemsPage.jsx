@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, Link } from "@inertiajs/react";
-import ContractItemHeader from "@/Componentss/contract/contractitem/ContractItemHeader";
+import ContractItemHeader from "@/Components/contract/contractitem/ContractItemHeader";
 import ProjectTabNavigation from "@/Components/contract/project/ProjectTabNavigation";
 import {
     Table,
@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from "@/Components/ui/select";
 import { Button } from "@/Components/ui/button"; // Assuming you have a Button component
-import { SlidersHorizontalIcon } from "lucide-react";
+import { SlidersHorizontalIcon, History } from "lucide-react";
 
 export default function Index({
     auth,
@@ -33,6 +33,25 @@ export default function Index({
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("date_desc");
     const [selectedItems, setSelectedItems] = useState([]);
+
+    const [bids, setBids] = useState({}); // Store bid amounts for each item
+
+    const handleInputChange = (e, itemId) => {
+        setBids({
+            ...bids,
+            [itemId]: e.target.value, // Update bid amount for the specific item
+        });
+    };
+
+    const handleSubmitBid = (itemId) => {
+        const bidAmount = bids[itemId];
+        if (bidAmount) {
+            // Send the bid to the server
+            router.post(`/contracts/${contract.id}/items/${itemId}/bid`, {
+                bid_amount: bidAmount,
+            });
+        }
+    };
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -122,15 +141,27 @@ export default function Index({
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Description</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Unit</TableHead>
-                                <TableHead>Latest Price</TableHead>
-                                <TableHead>Bid Price</TableHead>
-                                <TableHead>Action   </TableHead>
+                                <TableHead className="text-center">
+                                    Description
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Type
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Unit
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Latest Price
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Bid Price
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Action{" "}
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody className="text-center">
                             {items.data.map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell>{item.description}</TableCell>
@@ -156,15 +187,38 @@ export default function Index({
                                                   .bid_amount
                                             : "No Bids"}
                                     </TableCell>
-                                    {/* Bid Button */}
+
                                     <TableCell>
-                                        <Link
-                                            href={`/contracts/${contract.id}/items/${item.id}/bid`}
-                                        >
-                                            <Button variant="outline">
-                                                Bid
+                                        <div className="flex items-center justify-center gap-2">
+                                            <Input
+                                                type="number"
+                                                placeholder="Enter bid"
+                                                value={bids[item.id] || ""}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        e,
+                                                        item.id
+                                                    )
+                                                }
+                                                className="w-28"
+                                            />
+                                            <Button
+                                                variant="default"
+                                                onClick={() =>
+                                                    handleSubmitBid(item.id)
+                                                }
+                                            >
+                                                Submit
                                             </Button>
-                                        </Link>
+                                            {/* History */}
+                                            <Link
+                                                href={`/contracts/${contract.id}/items/${item.id}/bid`}
+                                            >
+                                                <Button variant="outline">
+                                                    <History></History>
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

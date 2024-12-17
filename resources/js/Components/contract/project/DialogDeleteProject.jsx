@@ -1,39 +1,46 @@
 import { Button } from "@/Components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/Components/ui/dialog";
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/Components/ui/alert-dialog";
 import { Trash } from "lucide-react";
 
 export default function DialogDeleteProject({ project, onDelete }) {
     return (
-        <Dialog>
-            <DialogTrigger asChild>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
                 <Button variant="danger">
                     <Trash />
                 </Button>
-            </DialogTrigger>
+            </AlertDialogTrigger>
             {project && (
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Delete Project</DialogTitle>
-                        <DialogDescription>
+                <AlertDialogContent className="sm:max-w-[425px]">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                        <AlertDialogDescription>
                             Are you sure you want to delete{" "}
                             {project.project_name}?
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button onClick={onDelete} variant="danger">
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel asChild>
+                            <Button variant="secondary">Cancel</Button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <Button onClick={onDelete} className="bg-red-500 hover:bg-red-600 text-white">
+                                Delete
+                            </Button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
             )}
-        </Dialog>
+        </AlertDialog>
     );
 }

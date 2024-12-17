@@ -1,4 +1,3 @@
-import { useState } from "react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import NavLink from "@/Components/NavLink";
 import {
@@ -20,9 +19,27 @@ import {
     User,
     Users,
 } from "lucide-react";
+import { useState } from "react";
+
+// Permissions Enum
+const PermissionsEnum = {
+    CONTRACT_MANAGEMENT: "contract_management",
+    EMPLOYEE_MANAGEMENT: "employee_management",
+    JOB_ORDER_MANAGEMENT: "job_order_management",
+    ITEM_MANAGEMENT: "item_management",
+    PROGRESS_REPORT_MANAGEMENT: "progress_report_management",
+};
+
+// Helper function to check if the user has a specific permission
+function hasPermission(user, permission) {
+    return (
+        user?.permissions?.includes(permission) || user.roles.includes("admin")
+    );
+}
 
 export default function Authenticated({ user, header, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
 
     // Safely handle the current route with optional chaining and a fallback
     const currentRoute = route && route().current ? route().current() : null;
@@ -45,32 +62,107 @@ export default function Authenticated({ user, header, children }) {
                             <LayoutDashboard className="mr-2" /> Dashboard
                         </NavLink>
                         <NavLink
-                            href={route("contract")}
+                            href={
+                                hasPermission(
+                                    user,
+                                    PermissionsEnum.CONTRACT_MANAGEMENT
+                                )
+                                    ? route("contract")
+                                    : "#"
+                            }
                             active={currentRoute?.startsWith("contract")}
+                            className={
+                                !hasPermission(
+                                    user,
+                                    PermissionsEnum.CONTRACT_MANAGEMENT
+                                )
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
                             <ScrollText className="mr-2" /> Contract
                         </NavLink>
                         <NavLink
-                            href={route("job-order")}
-                            active={currentRoute === "job-order"}
+                            href={
+                                hasPermission(
+                                    user,
+                                    PermissionsEnum.JOB_ORDER_MANAGEMENT
+                                )
+                                    ? route("job-order-contracts")
+                                    : "#"
+                            }
+                            active={currentRoute === "job-order-contracts"}
+                            className={
+                                !hasPermission(
+                                    user,
+                                    PermissionsEnum.JOB_ORDER_MANAGEMENT
+                                )
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
                             <NotebookPen className="mr-2" /> Job Order
                         </NavLink>
                         <NavLink
-                            href={route("item")}
+                            href={
+                                hasPermission(
+                                    user,
+                                    PermissionsEnum.ITEM_MANAGEMENT
+                                )
+                                    ? route("item")
+                                    : "#"
+                            }
                             active={currentRoute?.startsWith("item")}
+                            className={
+                                !hasPermission(
+                                    user,
+                                    PermissionsEnum.ITEM_MANAGEMENT
+                                )
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
-                            <ShoppingBasket className="mr-2" /> Item
+                            <ShoppingBasket className="mr-2" /> Item Management
                         </NavLink>
                         <NavLink
-                            href={route("progress-report")}
+                            href={
+                                hasPermission(
+                                    user,
+                                    PermissionsEnum.PROGRESS_REPORT_MANAGEMENT
+                                )
+                                    ? route("progress-report")
+                                    : "#"
+                            }
                             active={currentRoute === "progress-report"}
+                            className={
+                                !hasPermission(
+                                    user,
+                                    PermissionsEnum.PROGRESS_REPORT_MANAGEMENT
+                                )
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
                             <LineChart className="mr-2" /> Progress Report
                         </NavLink>
                         <NavLink
-                            href={route("employees")}
+                            href={
+                                hasPermission(
+                                    user,
+                                    PermissionsEnum.EMPLOYEE_MANAGEMENT
+                                )
+                                    ? route("employees")
+                                    : "#"
+                            }
                             active={currentRoute?.startsWith("employee")}
+                            className={
+                                !hasPermission(
+                                    user,
+                                    PermissionsEnum.EMPLOYEE_MANAGEMENT
+                                )
+                                    ? "pointer-events-none opacity-50"
+                                    : ""
+                            }
                         >
                             <Users className="mr-2" /> Employees
                         </NavLink>
