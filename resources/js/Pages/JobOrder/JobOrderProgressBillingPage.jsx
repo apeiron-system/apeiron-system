@@ -81,13 +81,13 @@ export default function JobOrderProgressBillingPage({ auth }) {
         partData.reduce((total, part) => {
             const partTotal = part.items.reduce((sum, item) => sum + calculateAmount(item.quantity, item.unit_cost), 0);
             return total + partTotal;
-        }, 0);
+    }, 0);
 
     const calculateTotalActualCost = () =>
         partData.reduce((total, part) => {
             const partTotal = part.items.reduce((sum, item) => sum + parseFloat(item.actual_cost || 0), 0);
             return total + partTotal;
-        }, 0);
+    }, 0);
 
     const calculateProgressPercentage = () => {
         const totalEstimatedCost = calculateGrandTotal();
@@ -125,8 +125,8 @@ export default function JobOrderProgressBillingPage({ auth }) {
         return newDate.toLocaleDateString("en-CA");
     };
 
-    const grandTotal = calculateGrandTotal();
-    const totalActualCost = calculateTotalActualCost();
+    const estimatedCostGrandTotal = calculateGrandTotal();
+    const actualCostGrandTotal = calculateTotalActualCost();
     const progressPercentage = calculateProgressPercentage();
 
     const toggleExpand = (partIdx) => {
@@ -155,7 +155,7 @@ export default function JobOrderProgressBillingPage({ auth }) {
                             <ChevronLeft size={20} />
                         </button>
                     </Link>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Progress Billing</h2>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">Job Order Progress Billing</h2>
                 </div>
             }
         >
@@ -163,19 +163,22 @@ export default function JobOrderProgressBillingPage({ auth }) {
 
             <div className="flex">
                 {/* Sidebar */}
-                <div className="w-2/5 bg-gray-50 p-6 shadow-lg sticky top-0 h-full mt-6">
+                <div className="w-2/6 bg-gray-50 p-6 shadow-lg sticky top-0 h-full mt-6">
                     <div className="mb-6 flex justify-between items-center">
-                        <div>
-                            <h3 className="text-2xl font-semibold text-gray-800">Progress Billing 1</h3>
-                            <p className="text-lg text-gray-500">JO 1</p>
-                        </div>
-                        <Button
-                            onClick={() => setIsModalOpen(true)}
-                            className="w-12 h-12 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
-                        >
-                            <span className="text-2xl">+</span>
-                        </Button>
+                    <div>
+                        <h3 className="text-2xl font-semibold text-gray-800">Progress Billing 1</h3>
+                        <p className="text-lg text-gray-500">JO 1</p>
+                        <p className="text-md text-gray-600">Location: <span className="font-semibold">[Location]</span></p>
+                        <p className="text-md text-gray-600">Start Date: <span className="font-semibold">[Start Date]</span></p>
+                        <p className="text-md text-gray-600">End Date: <span className="font-semibold">[End Date]</span></p>
                     </div>
+                    <Button
+                        onClick={() => setIsModalOpen(true)}
+                        className="w-12 h-12 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
+                    >
+                    <span className="text-2xl">+</span>
+                    </Button>
+                </div>
                     <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
                         {progressBillings.map((billing) => (
                             <Link
@@ -193,15 +196,15 @@ export default function JobOrderProgressBillingPage({ auth }) {
                 <div className="flex flex-col space-y-6 mt-6 mx-6">
                     {/* Main Content */}
                     <div className="flex space-x-6">
-                        <div className="w-1/3 bg-gray-50 p-4 shadow rounded-lg">
+                        <div className="w-2/4 bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Estimated Cost Grand Total</h3>
-                            <span className="text-yellow-500 font-semibold">₱{grandTotal.toLocaleString()}</span>
+                            <span className="text-yellow-500 font-semibold">₱{estimatedCostGrandTotal.toLocaleString()}</span>
                         </div>
-                        <div className="w-1/3 bg-gray-50 p-4 shadow rounded-lg">
+                        <div className="w-2/5 bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Actual Cost Grand Total</h3>
-                            <span className="text-yellow-500 font-semibold">₱{totalActualCost.toLocaleString()}</span>
+                            <span className="text-yellow-500 font-semibold">₱{actualCostGrandTotal.toLocaleString()}</span>
                         </div>
-                        <div className="w-1/3 bg-gray-50 p-4 shadow rounded-lg">
+                        <div className="w-2/5 bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Progress</h3>
                             <div className="h-2 bg-gray-200 rounded-full">
                                 <div
@@ -214,9 +217,10 @@ export default function JobOrderProgressBillingPage({ auth }) {
                     </div>
 
                     <div className="flex flex-row-reverse gap-6">
-                        <div className="w-full flex flex-col mx-6">
+                        <div className="w-full flex flex-col">
                             <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
                             {partData.map((part, partIdx) => {
+                                
                                 const partTotal = part.items.reduce(
                                     (sum, item) => sum + calculateAmount(item.quantity, item.unit_cost),
                                     0
@@ -251,8 +255,8 @@ export default function JobOrderProgressBillingPage({ auth }) {
                                                             "Quantity",
                                                             "Unit Cost",
                                                             "Estimated Cost",
-                                                            "Weight %",
                                                             "Actual Cost",
+                                                            "Weight %",
                                                         ].map((header, idx) => (
                                                             <TableHead key={idx}>{header}</TableHead>
                                                         ))}
@@ -261,7 +265,7 @@ export default function JobOrderProgressBillingPage({ auth }) {
                                                 <TableBody>
                                                     {visibleItems.map((item, itemIdx) => {
                                                         const amount = calculateAmount(item.quantity, item.unit_cost);
-                                                        const weightPercentage = (amount / partTotal) * 100;
+                                                        const weightPercentage = (item.actual_cost / actualCostGrandTotal) * 100;
 
                                                         return (
                                                             <TableRow key={itemIdx}>
@@ -271,7 +275,6 @@ export default function JobOrderProgressBillingPage({ auth }) {
                                                                 <TableCell>{item.quantity}</TableCell>
                                                                 <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
                                                                 <TableCell>₱{amount.toLocaleString()}</TableCell>
-                                                                <TableCell>{weightPercentage.toFixed(2)}%</TableCell>
                                                                 <TableCell>
                                                                     <TextInput
                                                                         type="number"
@@ -281,6 +284,7 @@ export default function JobOrderProgressBillingPage({ auth }) {
                                                                         }
                                                                     />
                                                                 </TableCell>
+                                                                <TableCell className="w-full">{weightPercentage.toFixed(2)}%</TableCell>
                                                             </TableRow>
                                                         );
                                                     })}
@@ -291,7 +295,7 @@ export default function JobOrderProgressBillingPage({ auth }) {
                                             <div className="mt-2 flex justify-end">
                                                 <button
                                                     onClick={() => toggleExpand(partIdx)}
-                                                    className="text-sm text-slate-500 hover:underline"
+                                                    className="text-sm font-semibold text-slate-500 hover:underline"
                                                 >
                                                     {expandedParts[partIdx] ? "Show Less" : "Show All"}
                                                 </button>

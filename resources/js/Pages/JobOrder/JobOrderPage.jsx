@@ -39,12 +39,6 @@ export default function JobOrderPage({
         setStatusFilter("all");
     };
 
-    const getProgressBarColor = (progress) => {
-        if (progress >= 100) return "bg-green-500";
-        if (progress >= 50) return "bg-yellow-500";
-        return "bg-red-500";
-    };
-
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -157,20 +151,6 @@ export default function JobOrderPage({
                                     <CardTitle className="text-xl font-semibold text-gray-800">
                                         {jobOrder.jo_name}
                                     </CardTitle>
-
-                                    <div className="w-full flex justify-between items-center mt-2">
-                                        <div className="w-full bg-gray-200 h-3 rounded-lg mr-4">
-                                            <div
-                                                className={`h-full rounded-full ${getProgressBarColor(
-                                                    jobOrder.progress
-                                                )}`}
-                                                style={{
-                                                    width: `${jobOrder.progress || 0}%`,
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-sm ml-2">{jobOrder.progress}%</span>
-                                    </div>
                                 </CardHeader>
 
                                 <CardContent className="text-sm text-gray-600">
