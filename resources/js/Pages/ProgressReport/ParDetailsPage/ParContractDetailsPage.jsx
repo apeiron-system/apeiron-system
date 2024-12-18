@@ -1,6 +1,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from "@inertiajs/react";
 import { useEffect, useMemo, useState } from "react";
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/Components/ui/table";
 
 export default function ParContractDetails({
     auth,
@@ -221,36 +230,36 @@ export default function ParContractDetails({
                     {/* Bill of Quantities Tab */}
                     {activeTab === "boq" && (
                         <div className="mt-4">
-                            <table className="table-auto w-full text-sm border border-gray-300">
-                                <thead>
-                                    <tr>
-                                        <th className="px-4 py-2 border">
+                            <Table className="table-auto w-full text-sm border border-gray-300">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Item
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Description
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Type
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Unit
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Quantity
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Unit Cost (Php)
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Amount (Php)
-                                        </th>
-                                        <th className="px-4 py-2 border">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             Weight %
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {items.map((item, index) => {
                                         const unitCost = getLatestBid(
                                             item.id,
@@ -267,109 +276,122 @@ export default function ParContractDetails({
                                             );
 
                                         return (
-                                            <tr
+                                            <TableRow
                                                 key={index}
                                                 className="hover:bg-gray-100"
                                             >
-                                                <td className="px-4 py-2 border">
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {item.id}
-                                                </td>
-                                                <td className="px-4 py-2 border">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {item.description}
-                                                </td>
-                                                <td className="px-4 py-2 border">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {item.type}
-                                                </td>
-                                                <td className="px-4 py-2 border">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {item.unit}
-                                                </td>
-                                                <td className="px-4 py-2 border">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {item.quantity}
-                                                </td>
-                                                <td className="px-4 py-2 border text-right">
-                                                    {unitCost}
-                                                </td>
-                                                <td className="px-4 py-2 border text-right">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
+                                                    {unitCost.toFixed(2)}
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {amount.toFixed(2)}
-                                                </td>
-                                                <td className="px-4 py-2 border text-right">
+                                                </TableCell>
+                                                <TableCell className="px-4 py-2 text-center">
                                                     {weightPercentage} %
-                                                </td>
-                                            </tr>
+                                                </TableCell>
+                                            </TableRow>
                                         );
                                     })}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
                     )}
 
                     {/* Accomplishment Tab */}
                     {activeTab === "accom" && (
                         <div className="mt-4">
-                            <table className="w-full table-auto border-collapse border border-gray-300 text-sm">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                            <Table className="w-full table-auto border-collapse border border-gray-300 text-sm">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="px-4 py-2 text-center">
                                             ITEM
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             QUANTITY THIS PERIOD
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             AMOUNT THIS PERIOD
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             TO DATE WEIGHT %
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             BALANCE WEIGHT %
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
                                             REMARKS
-                                        </th>
-                                        <th className="border border-gray-300 px-4 py-2 text-center">
-                                            EDIT
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                        </TableHead>
+                                        <TableHead className="px-4 py-2 text-center">
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {mergedItems.map((item, index) => (
-                                        <tr key={index}>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                        <TableRow key={index}>
+                                            <TableCell className="px-4 py-2 text-center">
                                                 {item.description}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
                                                 {item.quantity_this_period ||
                                                     ""}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
                                                 {item.amount_this_period || ""}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
-                                                {item.to_date_weight_percent ? item.to_date_weight_percent + "%" :
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
+                                                {item.to_date_weight_percent ||
                                                     ""}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
-                                                {item.balance_weight_percent ? item.balance_weight_percent + "%" :
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
+                                                {item.balance_weight_percent ||
                                                     ""}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
                                                 {item.remarks || ""}
-                                            </td>
-                                            <td className="border border-gray-300 px-4 py-2 text-center">
+                                            </TableCell>
+                                            <TableCell className="px-4 py-2 text-center">
                                                 <button
                                                     onClick={() =>
                                                         handleEdit(item)
                                                     }
-                                                    className="px-2 py-1 bg-blue-600 text-white rounded"
+                                                    className="text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 p-2 rounded-full hover:bg-gray-200"
                                                 >
-                                                    Edit
+                                                     <svg
+                                                        class="feather feather-edit"
+                                                        fill="none"
+                                                        height="16"
+                                                        stroke="currentColor"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        viewBox="0 0 24 24"
+                                                        width="16"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                    </svg>
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </div>
                     )}
                 </div>
@@ -458,13 +480,13 @@ export default function ParContractDetails({
                                     <button
                                         type="button"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 border border-gray-500 text-gray-500 rounded"
+                                        className="mr-2 px-4 py-2 border border-black text-black rounded hover:bg-gray-300 transition duration-150"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                                        className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition duration-150"
                                     >
                                         Save
                                     </button>

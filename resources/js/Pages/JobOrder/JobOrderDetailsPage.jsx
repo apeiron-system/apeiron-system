@@ -23,7 +23,6 @@ import {
     TableRow,
 
 } from "@/Components/ui/table";
-import * as XLSX from 'xlsx';
 
 export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contractName, projectParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
