@@ -18,7 +18,7 @@ import {
 export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLocation, projectParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [expandedParts, setExpandedParts] = useState(
         projectParts.map(() => false) // All parts are initially collapsed
     );
@@ -27,7 +27,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     useEffect(() => {
         const today = new Date();
         const formattedDate = today.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
-        setStartDate(formattedDate);
+        setEndDate(formattedDate);
     }, []);
 
     const calculateAmount = (quantity, unit_cost) => quantity * unit_cost;
@@ -91,6 +91,14 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     // Format date for display
     const formatDate = (date) => {
         if (!date) return "";
+        
+        // Check if the date string contains "from" and "to"
+        const match = date.match(/\d{4}-\d{2}-\d{2}/);
+        if (match) {
+            return match[0]; // Return the first date match (start date)
+        }
+        
+        // If it's a valid date, return the formatted date
         const newDate = new Date(date);
         return newDate.toLocaleDateString("en-CA");
     };
@@ -125,8 +133,8 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                 <h3 className="text-2xl font-semibold text-gray-800">{jobOrder.jo_name}</h3>
                                 <p className="text-lg text-gray-500">JO {jobOrder.jo_no}</p>
                                 <p className="text-sm text-gray-600">Location: <span className="font-semibold">{projectLocation}</span></p>
-                                <p className="text-sm text-gray-600">Start Date: <span className="font-semibold">{startDate}</span></p>
-                                <p className="text-sm text-gray-600">End Date: <span className="font-semibold">[End Date]</span></p>
+                                <p className="text-sm text-gray-600">Start Date: <span className="font-semibold">{formatDate(jobOrder.period_covered)}</span></p>
+                                <p className="text-sm text-gray-600">End Date: <span className="font-semibold">{endDate}</span></p>
                             </div>
                         )}
                         <div className="flex items-center space-x-2">
@@ -181,7 +189,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                     <div className="space-y-4">
                         <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
                         {projectParts.map((part, partIdx) => {
-                            
+
                             const partTotal = part.items.reduce(
                                 (sum, item) => sum + calculateAmount(item.quantity, item.unit_cost),
                                 0
