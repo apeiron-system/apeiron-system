@@ -200,11 +200,11 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
                             <div className="w-full bg-gray-50 p-3 shadow rounded-lg">
                                 <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Estimated Cost Grand Total</h3>
-                            <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
-                        </div>
+                                <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
+                            </div>
                         </div>
                         <Button
-                            onClick={() => window.location.href = `/job-order-progress-billing`}
+                            onClick={() => window.location.href = `/job-order-progress-billing?jo_no=${jobOrder.jo_no}`}
                             className="bg-slate-700 text-white px-4 py-2 rounded-sm hover:bg-slate-800"
                         >
                             Manage Billing Progress

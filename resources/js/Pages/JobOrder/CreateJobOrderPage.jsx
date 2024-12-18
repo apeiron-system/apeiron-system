@@ -233,10 +233,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="jobOrderName"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Job Order Name
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="jobOrderName"
@@ -253,10 +253,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="location"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Location
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="location"
@@ -273,10 +273,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="supplier"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Supplier
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="supplier"
@@ -293,10 +293,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="itemWorks"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Item Works
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <select
                                                     id="itemWorks"
@@ -318,30 +318,50 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="periodCovered"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Period Covered
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
+                                                <div className="flex gap-2">
+                                                <p className="flex items-center text-sm"> from </p>
+                                                    <input
+                                                        id="startDate"
+                                                        name="startDate"
+                                                        type="date"
+                                                        required
+                                                        value={formData.startDate}
+                                                        onChange={handleChange}
+                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                        placeholder="Start Date"
+                                                    /> 
+                                                    <p className="flex items-center text-sm"> to </p>
+                                                    <input
+                                                        id="endDate"
+                                                        name="endDate"
+                                                        type="date"
+                                                        required
+                                                        value={formData.endDate}
+                                                        onChange={handleChange}
+                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                        placeholder="End Date"
+                                                    />
+                                                </div>
                                                 <input
+                                                    type="hidden"
                                                     id="periodCovered"
                                                     name="periodCovered"
-                                                    type="text"
-                                                    required
-                                                    value={formData.periodCovered}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                    placeholder="Enter Period Covered"
+                                                    value={`from ${formData.startDate || ""} to ${formData.endDate || ""}`}
                                                 />
                                             </div>
 
                                             <div>
                                                 <label
                                                     htmlFor="dateNeeded"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Date Needed
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="dateNeeded"
@@ -357,10 +377,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="preparedBy"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Prepared By
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="preparedBy"
@@ -377,10 +397,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="checkedBy"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Checked By
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="checkedBy"
@@ -397,10 +417,10 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                             <div>
                                                 <label
                                                     htmlFor="approvedBy"
-                                                    className="block text-sm font-semibold text-gray-700"
+                                                    className="block text-lg font-semibold text-gray-700"
                                                 >
                                                     Approved By
-                                                    <span className="text-red-500"> *</span>
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
                                                 </label>
                                                 <input
                                                     id="approvedBy"
@@ -422,8 +442,8 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
 
                         {/* Right Sidebar for Project Parts */}
                         <div className="col-span-1 bg-gray-100 overflow-hidden shadow-sm sm:rounded-lg px-4 py-2 mt-20">
-                            <h3 className="text-sm font-semibold text-gray-800 mb-4">
-                                Select Project Parts <span className="text-red-500">*</span>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                Select Project Parts <span className="text-gray-500 text-sm"> (required)</span>
                             </h3>
 
                             {/* Select All Checkbox */}

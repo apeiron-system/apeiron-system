@@ -115,9 +115,8 @@ Route::group(
         ->name('job-order-update');
 
     // Job Order Progress Billing Page
-    Route::get('/job-order-progress-billing', function () {
-        return Inertia::render('JobOrder/JobOrderProgressBillingPage');
-    })->name('job-order-progress-billing');
+    Route::get('/job-order-progress-billing', [JobOrderProgressBillingController::class, 'show'])
+        ->name('job-order-progress-billing');
 
     }
 );

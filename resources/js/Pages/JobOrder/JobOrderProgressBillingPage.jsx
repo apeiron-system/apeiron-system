@@ -3,88 +3,43 @@ import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import Modal from "@/Components/Modal";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu";
 import { ChevronLeft } from "lucide-react";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
 
-export default function JobOrderProgressBillingPage({ auth }) {
+export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLocation, projectParts }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [startDate, setStartDate] = useState("");
+    const [expandedParts, setExpandedParts] = useState(
+        projectParts.map(() => false) // All parts are initially collapsed
+    );
 
-    // Hardcoded dummy data
-    const jobOrder = {
-        jo_name: "Electrical Works",
-        location: "Building A",
-        itemWorks: "Wiring and lighting installation",
-        period_covered: "Jan 2024 - Mar 2024",
-        supplier: "ABC Electrical Supplies",
-        dateNeeded: "2024-03-15",
-        preparedBy: "John Doe",
-        checkedBy: "Jane Doe",
-        approvedBy: "Jack Smith",
-        status: "on-going",
-        jo_no: 1,
-        project_id: 1,
-    };
-
-    const progressBillings = [
-        { id: 1, name: "Progress Billing 1" },
-        { id: 2, name: "Progress Billing 2" },
-        { id: 3, name: "Progress Billing 3" },
-    ];
-
-    const projectName = "Project 1";
-    const contractName = "Contract 1";
-    const projectParts = [
-        {
-            projectPart: { description: "Electrical Wiring" },
-            items: [
-                { itemNo: 1, description: "Wire 1", unit: "meter", quantity: 100, unit_cost: 50, actual_cost: 0 },
-                { itemNo: 2, description: "Wire 2", unit: "meter", quantity: 200, unit_cost: 40, actual_cost: 0 },
-                { itemNo: 3, description: "Wire 3", unit: "meter", quantity: 300, unit_cost: 60, actual_cost: 0 },
-            ],
-        },
-        {
-            projectPart: { description: "Lighting Fixtures" },
-            items: [
-                { itemNo: 1, description: "LED Lights", unit: "unit", quantity: 20, unit_cost: 500, actual_cost: 0 },
-                { itemNo: 2, description: "Bulbs", unit: "unit", quantity: 50, unit_cost: 100, actual_cost: 0 },
-                { itemNo: 3, description: "Chandeliers", unit: "unit", quantity: 10, unit_cost: 1500, actual_cost: 0 },
-                { itemNo: 4, description: "Ceiling Fans", unit: "unit", quantity: 15, unit_cost: 800, actual_cost: 0 },
-                { itemNo: 5, description: "Downlights", unit: "unit", quantity: 30, unit_cost: 250, actual_cost: 0 },
-                { itemNo: 6, description: "Spotlights", unit: "unit", quantity: 40, unit_cost: 350, actual_cost: 0 },
-            ],
-        },
-    ];
-
-    const [partData, setPartData] = useState(projectParts);
-    const [expandedParts, setExpandedParts] = useState(new Array(projectParts.length).fill(false));
+    // Set the start date automatically when the component is mounted
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+        setStartDate(formattedDate);
+    }, []);
 
     const calculateAmount = (quantity, unit_cost) => quantity * unit_cost;
 
     const calculateGrandTotal = () =>
-        partData.reduce((total, part) => {
+        projectParts.reduce((total, part) => {
             const partTotal = part.items.reduce((sum, item) => sum + calculateAmount(item.quantity, item.unit_cost), 0);
             return total + partTotal;
     }, 0);
 
     const calculateTotalActualCost = () =>
-        partData.reduce((total, part) => {
+        projectParts.reduce((total, part) => {
             const partTotal = part.items.reduce((sum, item) => sum + parseFloat(item.actual_cost || 0), 0);
             return total + partTotal;
     }, 0);
@@ -94,6 +49,8 @@ export default function JobOrderProgressBillingPage({ auth }) {
         const totalActualCost = calculateTotalActualCost();
         return totalEstimatedCost === 0 ? 0 : (totalActualCost / totalEstimatedCost) * 100;
     };
+
+    const [partData, setPartData] = useState(projectParts);
 
     const handleInputChange = (partIdx, itemIdx, value) => {
         const updatedPartData = [...partData];
@@ -119,6 +76,19 @@ export default function JobOrderProgressBillingPage({ auth }) {
         setPartData(cleanedPartData);
     }, [partData]);
 
+    // Toggle the expansion state for a project part
+    const toggleExpand = (partIdx) => {
+        const updatedExpandedParts = [...expandedParts];
+        updatedExpandedParts[partIdx] = !updatedExpandedParts[partIdx];
+        setExpandedParts(updatedExpandedParts);
+    };
+
+    // Get the visible items for each project part
+    const getVisibleItems = (partIdx) => {
+        return expandedParts[partIdx] ? projectParts[partIdx].items : projectParts[partIdx].items.slice(0, 5);
+    };
+
+    // Format date for display
     const formatDate = (date) => {
         if (!date) return "";
         const newDate = new Date(date);
@@ -128,21 +98,6 @@ export default function JobOrderProgressBillingPage({ auth }) {
     const estimatedCostGrandTotal = calculateGrandTotal();
     const actualCostGrandTotal = calculateTotalActualCost();
     const progressPercentage = calculateProgressPercentage();
-
-    const toggleExpand = (partIdx) => {
-        setExpandedParts(prev => {
-            const newState = [...prev];
-            newState[partIdx] = !newState[partIdx];
-            return newState;
-        });
-    };
-
-    const getVisibleItems = (items, partIdx) => {
-        if (expandedParts[partIdx]) {
-            return items;
-        }
-        return items.slice(0, 5);
-    };
 
     return (
         <AuthenticatedLayout
@@ -163,48 +118,54 @@ export default function JobOrderProgressBillingPage({ auth }) {
 
             <div className="flex">
                 {/* Sidebar */}
-                <div className="w-2/6 bg-gray-50 p-6 shadow-lg sticky top-0 h-full mt-6">
-                    <div className="mb-6 flex justify-between items-center">
-                    <div>
-                        <h3 className="text-2xl font-semibold text-gray-800">Progress Billing 1</h3>
-                        <p className="text-lg text-gray-500">JO 1</p>
-                        <p className="text-md text-gray-600">Location: <span className="font-semibold">[Location]</span></p>
-                        <p className="text-md text-gray-600">Start Date: <span className="font-semibold">[Start Date]</span></p>
-                        <p className="text-md text-gray-600">End Date: <span className="font-semibold">[End Date]</span></p>
-                    </div>
-                    <Button
-                        onClick={() => setIsModalOpen(true)}
-                        className="w-12 h-12 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
-                    >
-                    <span className="text-2xl">+</span>
-                    </Button>
-                </div>
-                    <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
-                        {progressBillings.map((billing) => (
-                            <Link
-                                href={route("job-order-progress-billing", { id: billing.id })}
-                                key={billing.id}
+                <div className={`sticky top-0 h-full mt-6 ${isCollapsed ? "w-2/9" : "w-3/6"} p-3 pl-6 transition-all duration-1500`}>
+                    <div className="mb-6 flex justify-between items-start">
+                        {!isCollapsed && (
+                            <div>
+                                <h3 className="text-2xl font-semibold text-gray-800">{jobOrder.jo_name}</h3>
+                                <p className="text-lg text-gray-500">JO {jobOrder.jo_no}</p>
+                                <p className="text-sm text-gray-600">Location: <span className="font-semibold">{projectLocation}</span></p>
+                                <p className="text-sm text-gray-600">Start Date: <span className="font-semibold">{startDate}</span></p>
+                                <p className="text-sm text-gray-600">End Date: <span className="font-semibold">[End Date]</span></p>
+                            </div>
+                        )}
+                        <div className="flex items-center space-x-2">
+                            {!isCollapsed && (
+                                <Button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="w-12 h-12 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
+                                >
+                                    <span className="text-2xl">+</span>
+                                </Button>
+                            )}
+                            <Button
+                                onClick={() => setIsCollapsed(!isCollapsed)}
+                                className="w-12 h-12 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
                             >
-                                <div className="bg-gray-50 shadow hover:shadow-md transition-all duration-300 transform cursor-pointer rounded-lg">
-                                    <p className="py-2 text-slate-600 hover:text-blue-700 hover:bg-gray-200 rounded-sm font-semibold bg-gray-50">{billing.name}</p>
-                                </div>
-                            </Link>
-                        ))}
+                                <span className="text-2xl">{isCollapsed ? "→" : "←"}</span>
+                            </Button>
+                        </div>
                     </div>
+
+                    {!isCollapsed && (
+                        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+                            {/* Display dynamic progress billings if needed */}
+                        </div>
+                    )}
                 </div>
 
-                <div className="flex flex-col space-y-6 mt-6 mx-6">
+                <div className="flex flex-col space-y-6 mt-6 mx-6 w-full">
                     {/* Main Content */}
-                    <div className="flex space-x-6">
-                        <div className="w-2/4 bg-gray-50 p-4 shadow rounded-lg">
+                    <div className="flex space-x-6 sticky">
+                        <div className="w-full bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Estimated Cost Grand Total</h3>
                             <span className="text-yellow-500 font-semibold">₱{estimatedCostGrandTotal.toLocaleString()}</span>
                         </div>
-                        <div className="w-2/5 bg-gray-50 p-4 shadow rounded-lg">
+                        <div className="w-full bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Actual Cost Grand Total</h3>
                             <span className="text-yellow-500 font-semibold">₱{actualCostGrandTotal.toLocaleString()}</span>
                         </div>
-                        <div className="w-2/5 bg-gray-50 p-4 shadow rounded-lg">
+                        <div className="w-full bg-gray-50 p-4 shadow rounded-lg">
                             <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Progress</h3>
                             <div className="h-2 bg-gray-200 rounded-full">
                                 <div
@@ -216,105 +177,89 @@ export default function JobOrderProgressBillingPage({ auth }) {
                         </div>
                     </div>
 
-                    <div className="flex flex-row-reverse gap-6">
-                        <div className="w-full flex flex-col">
-                            <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
-                            {partData.map((part, partIdx) => {
-                                
-                                const partTotal = part.items.reduce(
-                                    (sum, item) => sum + calculateAmount(item.quantity, item.unit_cost),
-                                    0
-                                );
+                    {/* Display project parts and items dynamically */}
+                    <div className="space-y-4">
+                        <h3 className="mt-8 mb-2 text-2xl font-semibold">Project Parts</h3>
+                        {projectParts.map((part, partIdx) => {
+                            
+                            const partTotal = part.items.reduce(
+                                (sum, item) => sum + calculateAmount(item.quantity, item.unit_cost),
+                                0
+                            );
 
-                                const partActualCostTotal = part.items.reduce(
-                                    (sum, item) => sum + parseFloat(item.actual_cost || 0),
-                                    0
-                                );
+                            const partActualCostTotal = part.items.reduce(
+                                (sum, item) => sum + parseFloat(item.actual_cost || 0),
+                                0
+                            );
 
-                                const visibleItems = getVisibleItems(part.items, partIdx);
-                                const showToggleButton = part.items.length > 5;
+                            return (
 
-                                return (
-                                    <div key={partIdx} className="mb-4 mt-4">
-                                        <h4 className="text-lg font-semibold">{part.projectPart.description}</h4>
-                                        <p className="text-gray-700 text-sm mb-2">
-                                            Estimated Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
-                                        </p>
-                                        <p className="text-gray-700 text-sm mb-2">
-                                            Actual Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partActualCostTotal.toLocaleString()}</span>
-                                        </p>
+                                <div key={part.projectPart.id} className="bg-white p-4 shadow rounded-lg">
+                                    <h4 className="text-lg font-semibold">{part.projectPart.description}</h4>
+                                    <p className="text-gray-700 text-sm mb-2">
+                                        Estimated Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
+                                    </p>
+                                    <p className="text-gray-700 text-sm mb-2">
+                                        Actual Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partActualCostTotal.toLocaleString()}</span>
+                                    </p>
 
-                                        <div className="bg-white shadow rounded overflow-hidden">
-                                            <Table className="min-w-full divide-y divide-gray-200">
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        {[
-                                                            "Item No.",
-                                                            "Description",
-                                                            "Unit",
-                                                            "Quantity",
-                                                            "Unit Cost",
-                                                            "Estimated Cost",
-                                                            "Actual Cost",
-                                                            "Weight %",
-                                                        ].map((header, idx) => (
-                                                            <TableHead key={idx}>{header}</TableHead>
-                                                        ))}
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Item No.</TableHead>
+                                                <TableHead>Description</TableHead>
+                                                <TableHead>Unit</TableHead>
+                                                <TableHead>Quantity</TableHead>
+                                                <TableHead>Unit Cost</TableHead>
+                                                <TableHead>Estimated Cost"</TableHead>
+                                                <TableHead>Actual Cost</TableHead>
+                                                <TableHead>Weight %</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {getVisibleItems(partIdx).map((item, itemIdx) => {
+                                                const amount = calculateAmount(item.quantity, item.unit_cost);
+                                                const weightPercentage = (item.actual_cost / actualCostGrandTotal) * 100 || 0;
+
+                                                return (
+                                                    <TableRow key={item.itemNo}>
+                                                        <TableCell>{item.itemNo}</TableCell>
+                                                        <TableCell>{item.description}</TableCell>
+                                                        <TableCell>{item.unit}</TableCell>
+                                                        <TableCell>{item.quantity}</TableCell>
+                                                        <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
+                                                        <TableCell>₱{amount.toLocaleString()}</TableCell>
+                                                        <TableCell>
+                                                            <TextInput
+                                                                    type="number"
+                                                                    value={item.actual_cost}
+                                                                    onChange={(e) => handleInputChange(partIdx, itemIdx, e.target.value)
+                                                                }
+                                                            />
+                                                            </TableCell>
+                                                        <TableCell>{weightPercentage.toFixed(2)}%</TableCell>
                                                     </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {visibleItems.map((item, itemIdx) => {
-                                                        const amount = calculateAmount(item.quantity, item.unit_cost);
-                                                        const weightPercentage = (item.actual_cost / actualCostGrandTotal) * 100;
-
-                                                        return (
-                                                            <TableRow key={itemIdx}>
-                                                                <TableCell>{item.itemNo}</TableCell>
-                                                                <TableCell>{item.description}</TableCell>
-                                                                <TableCell>{item.unit}</TableCell>
-                                                                <TableCell>{item.quantity}</TableCell>
-                                                                <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
-                                                                <TableCell>₱{amount.toLocaleString()}</TableCell>
-                                                                <TableCell>
-                                                                    <TextInput
-                                                                        type="number"
-                                                                        value={item.actual_cost}
-                                                                        onChange={(e) =>
-                                                                            handleInputChange(partIdx, itemIdx, e.target.value)
-                                                                        }
-                                                                    />
-                                                                </TableCell>
-                                                                <TableCell className="w-full">{weightPercentage.toFixed(2)}%</TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    })}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                        {showToggleButton && (
-                                            <div className="mt-2 flex justify-end">
-                                                <button
-                                                    onClick={() => toggleExpand(partIdx)}
-                                                    className="text-sm font-semibold text-slate-500 hover:underline"
-                                                >
-                                                    {expandedParts[partIdx] ? "Show Less" : "Show All"}
-                                                </button>
-                                            </div>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                    {/* Show All / Show Less Button */}
+                                    <div className="mt-2 flex justify-end">
+                                        {part.items.length > 5 && (
+                                            <button
+                                                onClick={() => toggleExpand(partIdx)}
+                                                className="text-sm font-semibold text-slate-500 hover:underline"
+                                            >
+                                                {expandedParts[partIdx] ? "Show Less" : "Show All"}
+                                            </button>
                                         )}
                                     </div>
-                                );
-                            })}
-                        </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
-
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <div className="flex flex-col">
-                    <InputLabel htmlFor="progress_billing_name">Progress Billing Name</InputLabel>
-                    <TextInput id="progress_billing_name" name="progress_billing_name" />
-                </div>
-            </Modal>
         </AuthenticatedLayout>
     );
 }
