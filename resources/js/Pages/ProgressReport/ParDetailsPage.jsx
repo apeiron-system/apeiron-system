@@ -85,12 +85,12 @@ export default function ParDetailsPage({ auth, contract, projects }) {
                             </h1>
                             <h3>Contract ID (ID: {contract.id})</h3>
                         </div>
-                        <Link
+                        {/* <Link
                             href={`/progress-report/contracts/${contract.id}/job-order`}
                             className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             View Job Order
-                        </Link>
+                        </Link> */}
                     </div>
 
                     <div className="mb-6">
