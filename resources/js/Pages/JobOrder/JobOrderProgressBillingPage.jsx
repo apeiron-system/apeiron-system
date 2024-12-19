@@ -177,12 +177,6 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
         return actualCostsByPart;
     }
 
-    const estimatedCostGrandTotal = calculateGrandTotal();
-    const actualCostGrandTotal = calculateTotalActualCost();
-    const progressPercentage = calculateProgressPercentage();
-
-    const allActualCosts = getAllActualCosts(projectParts);
-    // console.log("All Actual Costs:", allActualCosts);
     useEffect(() => {
         const allActualCosts = getAllActualCosts(projectParts);
         setProgressBillingData((prevProgressBillingData) => ({
@@ -190,6 +184,10 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
             actual_costs: allActualCosts,
         }));
     }, [projectParts]);
+
+    const estimatedCostGrandTotal = calculateGrandTotal();
+    const actualCostGrandTotal = calculateTotalActualCost();
+    const progressPercentage = calculateProgressPercentage();
 
     return (
         <AuthenticatedLayout
