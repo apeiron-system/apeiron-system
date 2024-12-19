@@ -18,7 +18,6 @@ import {
 export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLocation, projectParts }) {
     const [PBNameCounter, setPBNameCounter] = useState(1);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [endDate, setEndDate] = useState("");
     const [expandedParts, setExpandedParts] = useState(
         projectParts.map(() => false) // All parts are initially collapsed
     );
@@ -41,10 +40,38 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     const [progressBillingData, setProgressBillingData] = useState({
             pb_name: `Progress Billing ${PBNameCounter}`,
             start_date: formatDate(jobOrder.period_covered),
-            end_date: endDate,
+            end_date: "",
             actual_costs: [],
     });
 
+    // Set the start date automatically when the component is mounted
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+        setProgressBillingData((prevProgressBillingData) => ({
+            ...prevProgressBillingData,
+            end_date: formattedDate,
+        }));
+    }, []);
+
+    function getAllActualCosts(projectParts) {
+        // Map over project parts to extract and parse the actual costs of each part's items
+        const actualCostsByPart = projectParts.map(part => 
+            part.items.map(item => parseFloat(item.actual_cost) || 0)
+        );
+        
+        return actualCostsByPart;
+    }
+
+    useEffect(() => {
+        const allActualCosts = getAllActualCosts(projectParts);
+        setProgressBillingData((prevProgressBillingData) => ({
+            ...prevProgressBillingData,
+            actual_costs: allActualCosts,
+        }));
+    }, [projectParts]);
+
+    console.log(progressBillingData);
     const handleRecordProgressBilling = () => {
         const updatedProgressBillingData = {
             ...progressBillingData,
@@ -120,13 +147,6 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     };
     
 
-    // Set the start date automatically when the component is mounted
-    useEffect(() => {
-        const today = new Date();
-        const formattedDate = today.toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
-        setEndDate(formattedDate);
-    }, []);
-
     const calculateAmount = (quantity, unit_cost) => quantity * unit_cost;
 
     const calculateGrandTotal = () =>
@@ -167,23 +187,6 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     const getVisibleItems = (partIdx) => {
         return expandedParts[partIdx] ? projectParts[partIdx].items : projectParts[partIdx].items.slice(0, 5);
     };
-
-    function getAllActualCosts(projectParts) {
-        // Map over project parts to extract and parse the actual costs of each part's items
-        const actualCostsByPart = projectParts.map(part => 
-            part.items.map(item => parseFloat(item.actual_cost) || 0)
-        );
-        
-        return actualCostsByPart;
-    }
-
-    useEffect(() => {
-        const allActualCosts = getAllActualCosts(projectParts);
-        setProgressBillingData((prevProgressBillingData) => ({
-            ...prevProgressBillingData,
-            actual_costs: allActualCosts,
-        }));
-    }, [projectParts]);
 
     const estimatedCostGrandTotal = calculateGrandTotal();
     const actualCostGrandTotal = calculateTotalActualCost();
@@ -243,7 +246,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                 <p className="text-sm text-gray-600">
                                     End Date:{" "}
                                     <span className="font-semibold">
-                                        {endDate}
+                                        {progressBillingData.end_date}
                                     </span>
                                 </p>
                             </div>
@@ -295,7 +298,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                 >
                                     <div className="bg-gray-50 shadow hover:shadow-md transition-all duration-300 transform cursor-pointer rounded-lg">
                                         <p className="py-2 text-slate-600 hover:text-blue-700 hover:bg-gray-200 rounded-sm font-semibold bg-gray-50">
-                                            Progress Billing 1
+                                            No progress billing records found.
                                         </p>
                                     </div>
                                 </Link>
