@@ -70,4 +70,43 @@ class JobOrderProgressBillingController extends Controller
             'projectParts' => $projectPartsWithItems,
         ]);
     }
-}
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'actual_cost' => 'required|integer|max:255',
+        ]);
+
+            DB::beginTransaction(); // Start transaction
+
+            // Transform the validated data to match database column names
+            $progressBilling = [
+                'actual_cost' => $validatedData ['actual_cost'],
+            ];
+
+            // Create the job order
+            $jobOrder = JobOrderModel::create($progressBilling);
+
+            // Attach selected project parts to the job order
+            foreach ($validatedData['projectParts'] as $projectPartId) {
+                $projectPart = ProjectPartModel::find($projectPartId);
+
+                if ($projectPart) {
+                    $projectPart->jo_no = $jobOrder->jo_no;
+                    $projectPart->save();
+                } else {
+                    throw new \Exception("ProjectPart with ID $projectPartId not found.");
+                }
+            }
+
+            DB::commit(); // Commit transaction
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Job Order created successfully!',
+                'progress_billing' => $progressBilling
+            ]);
+        
+        }
+    }
+

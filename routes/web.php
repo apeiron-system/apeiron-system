@@ -118,7 +118,12 @@ Route::group(
     Route::get('/job-order-progress-billing', [JobOrderProgressBillingController::class, 'show'])
         ->name('job-order-progress-billing');
 
+    // Add Job Order Progress Billing
+    Route::post('/store-progress-billing', [JobOrderProgressBillingController::class, 'store'])
+        ->name('store-progress-billing');
+
     }
+    
 );
 
 

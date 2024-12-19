@@ -23,7 +23,7 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
         approvedBy: "",
         status: "pending",
     });
-    console.log(projectParts);
+    
     // State for handling modals
     const [isExitModalOpen, setIsExitModalOpen] = useState(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
