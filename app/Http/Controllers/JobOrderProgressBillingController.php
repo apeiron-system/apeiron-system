@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobOrderModel;
-use App\Models\JobOrderProjectModel;
 use App\Models\ProjectPartModel;
 use App\Models\ProjectPartItemModel;
 use Illuminate\Http\Request;

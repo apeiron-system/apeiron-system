@@ -24,7 +24,6 @@ class ItemModel extends Model
         'description',
         'type',
         'unit',
-        'actual_cost',
     ];
 
     public function contract()
