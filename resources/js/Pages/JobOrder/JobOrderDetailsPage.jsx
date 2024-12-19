@@ -197,12 +197,13 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     <div className="flex justify-between items-end space-x-4">
                         <div>
                             <h3 className="mt-4 text-2xl font-semibold">Bill of Quantities</h3>
-                            <h3 className="text-left text-gray-700 mb-1">
-                                Total Estimated Cost: <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
-                            </h3>
+                            <div className="w-full bg-gray-50 p-3 shadow rounded-lg">
+                                <h3 className="text-left text-gray-700 text-xl font-semibold mb-1">Estimated Cost Grand Total</h3>
+                                <span className="text-yellow-500 font-semibold">₱{calculateGrandTotal().toLocaleString()}</span>
+                            </div>
                         </div>
                         <Button
-                            onClick={() => window.location.href = `/job-order-progress-billing`}
+                            onClick={() => window.location.href = `/job-order-progress-billing?jo_no=${jobOrder.jo_no}`}
                             className="bg-slate-700 text-white px-4 py-2 rounded-sm hover:bg-slate-800"
                         >
                             Manage Billing Progress
@@ -218,7 +219,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                             <div key={idx}>
                                 <h4 className="text-lg">{part.projectPart.description}</h4>
                                 <p className="text-gray-700 text-sm mb-2">
-                                    Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
+                                Estimated Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
                                 </p>
     
                                 <div className="bg-white shadow rounded overflow-hidden">
@@ -264,7 +265,7 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                     })}
                 </div>
 
-                <div className="w-full lg:w-2/5 bg-white shadow rounded-md p-4 sticky top-4 self-start">
+                <div className="lg:w-2/5 bg-white shadow rounded-md p-3 sticky top-2 self-start">
                     <div className="text-gray-900">
                         <div className="pb-4">
                             <div className="text-2xl font-semibold">{formData.jo_name}</div>

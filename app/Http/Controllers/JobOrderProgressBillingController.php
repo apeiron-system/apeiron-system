@@ -13,109 +13,99 @@ class JobOrderProgressBillingController extends Controller
 {
     public function show(Request $request)
     {
-        $joNo = $request->query('jo_no');
+        // Get job order number from the request
+        $jo_no = $request->query('jo_no');
         
-        $jobOrder = JobOrderModel::with(['project'])->where('jo_no', $joNo)->firstOrFail();
+        // Fetch the job order by jo_no
+        $jobOrder = JobOrderModel::where('jo_no', $jo_no)->firstOrFail();
         
-        $projectParts = ProjectPartModel::with(['items' => function($query) use ($joNo) {
-            $query->where('jo_no', $joNo);
-        }])
-        ->where('project_id', $jobOrder->project_id)
-        ->get()
-        ->map(function ($part) {
+        // Retrieve the associated project location by concatenating the address fields
+        $projectLocation = JobOrderModel::where('jo_no', $jobOrder->jo_no)
+        ->join('project', 'job_orders.project_id', '=', 'project.id') // Join with the project table
+        ->selectRaw("
+            CONCAT(
+                project.street_address, ', ',
+                project.barangay, ', ',
+                project.city, ', ',
+                project.province, ', ',
+                project.zip_code, ', ',
+                project.country
+            ) as location
+        ")
+        ->value('location'); // Fetch the concatenated location
+
+        // Fetch project parts linked to the job order
+        $projectParts = ProjectPartModel::where('jo_no', $jo_no)->get();
+        
+        // Map project parts with their items
+        $projectPartsWithItems = $projectParts->map(function ($projectPart) {
+            // Fetch all items associated with the project part, including unit_cost from item_prices
+            $items = ProjectPartItemModel::where('project_part_id', $projectPart->id)
+                ->join('items', 'project_part_items.item_id', '=', 'items.id')
+                ->join('item_prices', 'items.id', '=', 'item_prices.item_id') // Join with item_prices to get unit_cost
+                ->select(
+                    'items.id as itemNo',
+                    'items.description as description',
+                    'items.unit as unit',
+                    'project_part_items.quantity as quantity',
+                    'item_prices.unit_cost as unit_cost' // Get unit_cost from item_prices
+                )
+                ->get();
+
+            // Add the project part's description to each project part item data
             return [
-                'projectPart' => $part,
-                'items' => $part->items->map(function ($item) {
-                    return [
-                        'itemNo' => $item->item_no,
-                        'description' => $item->description,
-                        'unit' => $item->unit,
-                        'quantity' => $item->quantity,
-                        'unit_cost' => $item->unit_cost,
-                    ];
-                }),
+                'projectPart' => [
+                    'id' => $projectPart->id,
+                    'description' => $projectPart->description, // Get the project part description
+                ],
+                'items' => $items
             ];
         });
 
+        // Structure the response for the frontend
         return Inertia::render('JobOrder/JobOrderProgressBillingPage', [
             'jobOrder' => $jobOrder,
-            'projectParts' => $projectParts,
+            'projectLocation' => $projectLocation,
+            'projectParts' => $projectPartsWithItems,
         ]);
     }
 
-    public function update(Request $request)
+    public function store(Request $request)
     {
-        $request->validate([
-            'jo_name' => 'required|string',
-            'location' => 'required|string',
-            'itemWorks' => 'required|string',
-            'periodCovered' => 'required|string',
-            'supplier' => 'required|string',
-            'dateNeeded' => 'required|date',
-            'preparedBy' => 'required|string',
-            'checkedBy' => 'required|string',
-            'approvedBy' => 'required|string',
-            'status' => 'required|string',
+        $validatedData = $request->validate([
+            'actual_cost' => 'required|integer|max:255',
         ]);
 
-        try {
-            DB::beginTransaction();
+            DB::beginTransaction(); // Start transaction
 
-            $jobOrder = JobOrderModel::where('jo_no', $request->query('jo_no'))->firstOrFail();
-            
-            $jobOrder->update([
-                'jo_name' => $request->jo_name,
-                'location' => $request->location,
-                'item_works' => $request->itemWorks,
-                'period_covered' => $request->periodCovered,
-                'supplier' => $request->supplier,
-                'date_needed' => $request->dateNeeded,
-                'prepared_by' => $request->preparedBy,
-                'checked_by' => $request->checkedBy,
-                'approved_by' => $request->approvedBy,
-                'status' => $request->status,
-            ]);
+            // Transform the validated data to match database column names
+            $progressBilling = [
+                'actual_cost' => $validatedData ['actual_cost'],
+            ];
 
-            DB::commit();
+            // Create the job order
+            $jobOrder = JobOrderModel::create($progressBilling);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Job order updated successfully',
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update job order: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
+            // Attach selected project parts to the job order
+            foreach ($validatedData['projectParts'] as $projectPartId) {
+                $projectPart = ProjectPartModel::find($projectPartId);
 
-    public function destroy(Request $request)
-    {
-        try {
-            DB::beginTransaction();
+                if ($projectPart) {
+                    $projectPart->jo_no = $jobOrder->jo_no;
+                    $projectPart->save();
+                } else {
+                    throw new \Exception("ProjectPart with ID $projectPartId not found.");
+                }
+            }
 
-            $jobOrder = JobOrderModel::where('jo_no', $request->query('jo_no'))->firstOrFail();
-            $projectId = $jobOrder->project_id;
-            
-            $jobOrder->delete();
-
-            DB::commit();
+            DB::commit(); // Commit transaction
 
             return response()->json([
                 'success' => true,
-                'message' => 'Job order deleted successfully',
-                'project_id' => $projectId,
+                'message' => 'Job Order created successfully!',
+                'progress_billing' => $progressBilling
             ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete job order: ' . $e->getMessage(),
-            ], 500);
+        
         }
     }
-}
+
