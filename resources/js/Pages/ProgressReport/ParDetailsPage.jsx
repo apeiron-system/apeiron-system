@@ -85,12 +85,12 @@ export default function ParDetailsPage({ auth, contract, projects }) {
                             </h1>
                             <h3>Contract ID (ID: {contract.id})</h3>
                         </div>
-                        <Link
+                        {/* <Link
                             href={`/progress-report/contracts/${contract.id}/job-order`}
                             className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-6 py-2 bg-gray-200 text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             View Job Order
-                        </Link>
+                        </Link> */}
                     </div>
 
                     <div className="mb-6">
@@ -152,26 +152,26 @@ export default function ParDetailsPage({ auth, contract, projects }) {
                                             window.location.href = `/progress-report/contracts/${contract.id}/project/${projects.id}`;
                                         }}
                                     >
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.project_name}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.street_address},{" "}
                                             {projects.barangay}, {projects.city},{" "}
                                             {projects.province},{" "}
                                             {projects.zip_code},{" "}
                                             {projects.country}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.duration_in_days}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.num_of_units}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {projects.abc_value}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="px-4 py-2">
                                             {_.capitalize(projects.status)}
                                         </TableCell>
                                     </TableRow>
