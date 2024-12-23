@@ -217,56 +217,101 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
     
                         return (
                             <div key={idx}>
-                                <h4 className="text-lg">{part.projectPart.description}</h4>
+                                <h4 className="text-lg">
+                                    {part.projectPart.description}
+                                </h4>
                                 <p className="text-gray-700 text-sm mb-2">
-                                Estimated Cost Subtotal: <span className="text-yellow-500 font-semibold">₱{partTotal.toLocaleString()}</span>
+                                    Estimated Cost Subtotal:{" "}
+                                    <span className="text-yellow-500 font-semibold">
+                                        ₱{partTotal.toLocaleString()}
+                                    </span>
                                 </p>
-    
+
                                 <div className="bg-white shadow rounded overflow-hidden">
                                     <Table className="min-w-full divide-y divide-gray-200">
                                         <TableHeader>
                                             <TableRow>
                                                 {[
-                                                    "Item No.", 
-                                                    "Description", 
-                                                    "Unit", 
-                                                    "Quantity", 
-                                                    "Unit Cost", 
-                                                    "Amount", 
-                                                    "Weight %"
+                                                    "Item No.",
+                                                    "Description",
+                                                    "Unit",
+                                                    "Quantity",
+                                                    "Unit Cost",
+                                                    "Amount",
+                                                    "Weight %",
                                                 ].map((header, idx) => (
-                                                    <TableHead key={idx}>{header}</TableHead>
+                                                    <TableHead key={idx}>
+                                                        {header}
+                                                    </TableHead>
                                                 ))}
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {part.items.slice(0, visibleItemCount).map((item, itemIdx) => {
-                                                const amount = calculateAmount(item.quantity, item.unit_cost);
-                                                const weightPercentage = (amount / partTotal) * 100;
-    
-                                                return (
-                                                    <TableRow key={itemIdx} className="hover:bg-gray-200">
-                                                        <TableCell>{item.itemNo}</TableCell>
-                                                        <TableCell>{item.description}</TableCell>
-                                                        <TableCell>{item.unit}</TableCell>
-                                                        <TableCell>{item.quantity}</TableCell>
-                                                        <TableCell>₱{item.unit_cost.toLocaleString()}</TableCell>
-                                                        <TableCell>₱{amount.toLocaleString()}</TableCell>
-                                                        <TableCell>{weightPercentage.toFixed(2)}%</TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
+                                            {part.items
+                                                .slice(0, visibleItemCount)
+                                                .map((item, itemIdx) => {
+                                                    const amount =
+                                                        calculateAmount(
+                                                            item.quantity,
+                                                            item.unit_cost
+                                                        );
+                                                    const weightPercentage =
+                                                        (amount / partTotal) *
+                                                        100;
+
+                                                    return (
+                                                        <TableRow
+                                                            key={itemIdx}
+                                                            className="hover:bg-gray-200"
+                                                        >
+                                                            <TableCell>
+                                                                {item.itemNo}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {
+                                                                    item.description
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item.unit}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item.quantity}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                ₱
+                                                                {item.unit_cost.toLocaleString()}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                ₱
+                                                                {amount.toLocaleString()}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {weightPercentage.toFixed(
+                                                                    2
+                                                                )}
+                                                                %
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })}
                                         </TableBody>
                                     </Table>
                                 </div>
-    
+                                {/* Show All / Show Less Button */}
                                 <div className="mt-2 flex justify-end">
-                                    <button
-                                        onClick={() => handleToggleRows(idx)}
-                                        className="text-sm text-slate-500 hover:underline"
-                                    >
-                                        {visibleItemCount < part.items.length ? "Show All" : "Show Less"}
-                                    </button>
+                                    {part.items.length > 5 && (
+                                        <button
+                                            onClick={() =>
+                                                handleToggleRows(partIdx)
+                                            }
+                                            className="text-sm font-semibold text-slate-500 hover:underline"
+                                        >
+                                            {expandedParts[partIdx]
+                                                ? "Show Less"
+                                                : "Show All"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         );
