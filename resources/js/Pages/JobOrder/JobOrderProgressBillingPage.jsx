@@ -36,11 +36,22 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
     };
     
     const [progressBillingData, setProgressBillingData] = useState({
+            jo_no: jobOrder.jo_no,
+            project_id: jobOrder.project_id,
             pb_name: `Progress Billing ${PBNameCounter}`,
             start_date: formatDate(jobOrder.period_covered),
             end_date: "",
             actual_costs: [],
     });
+
+    const [partData, setPartData] = useState(projectParts);
+
+    const handleInputChange = (partIdx, itemIdx, value) => {
+        const updatedPartData = [...partData];
+        updatedPartData[partIdx].items[itemIdx].actual_cost = value;
+        setPartData(updatedPartData);
+        console.log(updatedPartData);
+    };
 
     // Set the start date automatically when the component is mounted
     useEffect(() => {
@@ -52,22 +63,38 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
         }));
     }, []);
 
-    function getAllActualCosts(projectParts) {
-        // Map over project parts to extract and parse the actual costs of each part's items
-        const actualCostsByPart = projectParts.map(part => 
-            part.items.map(item => parseFloat(item.actual_cost) || 0)
-        );
-        
-        return actualCostsByPart;
+    function getAllActualCosts(partData) {
+        // Map over partData to create the required structure
+        const actualCosts = partData.map((partDataItem) => {
+            // Map over the items in partDataItem to extract actual_cost for each item
+            return partDataItem.items.map((item) => {
+                // Extract actual_cost, making sure it is a valid number
+                const actualCost = item.actual_cost && !isNaN(parseFloat(item.actual_cost)) 
+                    ? parseFloat(item.actual_cost) 
+                    : 0; // Default to 0 if actual_cost is invalid
+    
+                return {
+                    project_part_id: partDataItem.projectPart.id,  // Access projectPart ID from partData
+                    item_id: item.itemNo,                          // Access item ID from itemNo in partData
+                    actual_cost: actualCost                        // Extract actual_cost from partData
+                };
+            });
+        });
+    
+        // Flatten the array since the structure requires a flat array of actual_costs
+        return actualCosts.flat();
     }
-
+    
     useEffect(() => {
-        const allActualCosts = getAllActualCosts(projectParts);
+        const allActualCosts = getAllActualCosts(partData);
         setProgressBillingData((prevProgressBillingData) => ({
             ...prevProgressBillingData,
-            actual_costs: allActualCosts,
+                actual_costs: allActualCosts,
         }));
+
     }, [projectParts]);
+
+    console.log(progressBillingData);
 
     const handleRecordProgressBilling = () => {
         const updatedProgressBillingData = {
@@ -75,6 +102,13 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
         };
     
         console.log("Sending data:", updatedProgressBillingData);
+
+        const pbId = updatedProgressBillingData.pb_name.split(" ")[2];
+
+        const url = `https://apeiron-system.test/job-order-progress-billing?jo_no=${jobOrder.jo_no}/pb_id=${pbId}`;
+
+        // Redirect to the constructed URL
+        window.location.href = url;
 
         setPBNameCounter(PBNameCounter + 1);
     
@@ -162,15 +196,6 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
         const totalEstimatedCost = calculateGrandTotal();
         const totalActualCost = calculateTotalActualCost();
         return totalEstimatedCost === 0 ? 0 : (totalActualCost / totalEstimatedCost) * 100;
-    };
-
-    const [partData, setPartData] = useState(projectParts);
-
-    const handleInputChange = (partIdx, itemIdx, value) => {
-        const updatedPartData = [...partData];
-        updatedPartData[partIdx].items[itemIdx].actual_cost = value;
-        setPartData(updatedPartData);
-        
     };
 
     // Toggle the expansion state for a project part
