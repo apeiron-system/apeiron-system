@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
-import Modal from "@/Components/Modal";
 import { ChevronLeft } from "lucide-react";
-import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import {
     Table,
@@ -71,7 +69,6 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
         }));
     }, [projectParts]);
 
-    console.log(progressBillingData);
     const handleRecordProgressBilling = () => {
         const updatedProgressBillingData = {
             ...progressBillingData,
@@ -254,19 +251,63 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                         <div className="flex items-center space-x-2">
                             {!isCollapsed && (
                                 <Button
-                                    onClick={handleRecordProgressBilling}
-                                    className="w-10 h-10 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
+                                onClick={handleRecordProgressBilling}
+                                className="w-10 h-10 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none flex items-center justify-center"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="lucide lucide-save"
                                 >
-                                    <span className="text-2xl">+</span>
-                                </Button>
+                                    <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                                </svg>
+                            </Button>
                             )}
+                            
                             <Button
                                 onClick={() => setIsCollapsed(!isCollapsed)}
-                                className="w-w-10 h-10 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none"
+                                className="w-10 h-10 rounded-full bg-slate-600 text-white hover:bg-blue-700 focus:outline-none flex items-center justify-center"
                             >
-                                <span className="text-2xl">
-                                    {isCollapsed ? "→" : "←"}
-                                </span>
+                                {isCollapsed ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="lucide lucide-chevron-right"
+                                    >
+                                        <path d="m9 18 6-6-6-6" />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="lucide lucide-chevron-left"
+                                    >
+                                        <path d="m15 18-6-6 6-6" />
+                                    </svg>
+                                )}
                             </Button>
                         </div>
                     </div>
@@ -375,7 +416,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                 return (
                                     <div
                                         key={part.projectPart.id}
-                                        className="bg-white px-4 shadow rounded-lg"
+                                        className="bg-white rounded-lg mb-4"
                                     >
                                         <h4 className="text-lg font-semibold">
                                             {part.projectPart.description}

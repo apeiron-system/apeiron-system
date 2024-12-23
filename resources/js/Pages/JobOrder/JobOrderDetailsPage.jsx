@@ -226,7 +226,15 @@ export default function JobOrderDetailsPage({ auth, jobOrder, projectName, contr
                                     <Table className="min-w-full divide-y divide-gray-200">
                                         <TableHeader>
                                             <TableRow>
-                                                {["Item No.", "Description", "Unit", "Quantity", "Unit Cost", "Amount", "Weight %"].map((header, idx) => (
+                                                {[
+                                                    "Item No.", 
+                                                    "Description", 
+                                                    "Unit", 
+                                                    "Quantity", 
+                                                    "Unit Cost", 
+                                                    "Amount", 
+                                                    "Weight %"
+                                                ].map((header, idx) => (
                                                     <TableHead key={idx}>{header}</TableHead>
                                                 ))}
                                             </TableRow>

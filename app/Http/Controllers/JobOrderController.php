@@ -128,14 +128,15 @@ class JobOrderController extends Controller
             'location' => 'required|string|max:255',
             'supplier' => 'required|string|max:255',
             'itemWorks' => 'required|in:material,labor,equipment',
-            'periodCovered' => 'required|string|max:255',
+            'startDate' => 'required|date',
+            'endDate' => 'required|date',
             'dateNeeded' => 'required|date',
             'preparedBy' => 'required|string|max:255',
             'checkedBy' => 'required|string|max:255',
             'approvedBy' => 'required|string|max:255',
             'status' => 'required|string|max:255',
-            'projectParts' => 'required|array', // Ensure projectParts is an array
-            'projectParts.*' => 'exists:project_part,id', // Validate each ID in projectParts
+            'projectParts' => 'required|array',
+            'projectParts.*' => 'exists:project_part,id',
         ]);
 
         try {
@@ -149,11 +150,11 @@ class JobOrderController extends Controller
                 'location' => $validatedData['location'],
                 'supplier' => $validatedData['supplier'],
                 'itemWorks' => $validatedData['itemWorks'],
-                'period_covered' => $validatedData['periodCovered'],
-                'date_needed' => $validatedData['dateNeeded'],
-                'prepared_by' => $validatedData['preparedBy'],
-                'checked_by' => $validatedData['checkedBy'],
-                'approved_by' => $validatedData['approvedBy'],
+                'period_covered' => 'from ' . $validatedData['startDate'] . ' to ' . $validatedData['endDate'],
+                'dateNeeded' => $validatedData['dateNeeded'],
+                'preparedBy' => $validatedData['preparedBy'],
+                'checkedBy' => $validatedData['checkedBy'],
+                'approvedBy' => $validatedData['approvedBy'],
                 'status' => $validatedData['status'],
             ];
 

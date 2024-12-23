@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProgressBillingActualCostModel extends Model
+class ProgressBillingProjectPartItemModel extends Model
 {
     use HasFactory;
 
@@ -22,6 +22,7 @@ class ProgressBillingActualCostModel extends Model
      * @var array
      */
     protected $fillable = [
+        'project_part_id',
         'item_id',
         'actual_cost',
     ];
@@ -31,7 +32,12 @@ class ProgressBillingActualCostModel extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function projectPartItem()
+    public function projectPartId()
+    {
+        return $this->belongsTo(ProjectPartItemModel::class, 'project_part_id');
+    }
+
+    public function itemId()
     {
         return $this->belongsTo(ProjectPartItemModel::class, 'item_id');
     }

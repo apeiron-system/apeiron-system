@@ -16,7 +16,8 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
         location: "",
         supplier: "",
         itemWorks: "",
-        periodCovered: "",
+        startDate: "",
+        endDate: "",
         dateNeeded: "",
         preparedBy: "",
         checkedBy: "",
@@ -55,13 +56,16 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
     const isProjectPartSelected = selectedParts.length === 0;
 
     const isAnyFieldEmpty = Object.entries(formData)
-        .filter(([key]) => !["contractId", "projectId", "status"].includes(key))
-        .some(([_, value]) => value === "");
+        .filter(([key, value]) => {
+            // Check if the field is empty or is not one of the exceptions
+            return !["contractId", "projectId", "status", "startDate", "endDate", "dateNeeded", "preparedBy","checkedBy","approvedBy"].includes(key) && (!value || value.trim() === "");
+        })
+        .some(([key]) => key);  // Returns true if any key is empty
 
     const isSubmitDisabled = isAnyFieldEmpty || isProjectPartSelected;
 
     const areAllFieldsEmpty = Object.entries(formData)
-        .filter(([key]) => !["contractId", "projectId", "status"].includes(key))
+        .filter(([key]) => !["contractId", "projectId", "status", "startDate", "endDate", "dateNeeded", "preparedBy","checkedBy","approvedBy"].includes(key))
         .every(([_, value]) => value === "");
 
     const handleChange = (e) => {
@@ -88,7 +92,8 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
             location: "",
             supplier: "",
             itemWorks: "",
-            periodCovered: "",
+            startDate: "",
+            endDate: "",
             dateNeeded: "",
             preparedBy: "",
             checkedBy: "",
@@ -104,13 +109,12 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
     };
 
     const handleConfirmSubmit = () => {
-        // Add selected project parts to the formData
         const updatedFormData = {
             ...formData,
-            projectParts: selectedParts, // Include the selected parts
+            projectParts: selectedParts,
         };
 
-        console.log("Sending data:", updatedFormData);
+        console.log("Prepared form data for submission:", updatedFormData);
 
         axios
             .post(route("store-job-order"), updatedFormData)
@@ -317,46 +321,6 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
 
                                             <div>
                                                 <label
-                                                    htmlFor="periodCovered"
-                                                    className="block text-lg font-semibold text-gray-700"
-                                                >
-                                                    Period Covered
-                                                    <span className="text-gray-500 text-sm"> (required)</span>
-                                                </label>
-                                                <div className="flex gap-2">
-                                                <p className="flex items-center text-sm"> from </p>
-                                                    <input
-                                                        id="startDate"
-                                                        name="startDate"
-                                                        type="date"
-                                                        required
-                                                        value={formData.startDate}
-                                                        onChange={handleChange}
-                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                        placeholder="Start Date"
-                                                    /> 
-                                                    <p className="flex items-center text-sm"> to </p>
-                                                    <input
-                                                        id="endDate"
-                                                        name="endDate"
-                                                        type="date"
-                                                        required
-                                                        value={formData.endDate}
-                                                        onChange={handleChange}
-                                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
-                                                        placeholder="End Date"
-                                                    />
-                                                </div>
-                                                <input
-                                                    type="hidden"
-                                                    id="periodCovered"
-                                                    name="periodCovered"
-                                                    value={`from ${formData.startDate || ""} to ${formData.endDate || ""}`}
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label
                                                     htmlFor="dateNeeded"
                                                     className="block text-lg font-semibold text-gray-700"
                                                 >
@@ -432,6 +396,42 @@ export default function CreateJobOrderPage({ auth, project, contract, projectPar
                                                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
                                                     placeholder="Enter Name Here"
                                                 />
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    htmlFor="periodCovered"
+                                                    className="block text-lg font-semibold text-gray-700"
+                                                >
+                                                    Period Covered
+                                                    <span className="text-gray-500 text-sm"> (required)</span>
+                                                </label>
+                                                <div className="flex gap-2">
+                                                    <div className="flex flex-direction:row gap-3">
+                                                        <p className="flex items-center text-sm"> from </p>
+                                                        <input
+                                                            id="startDate"
+                                                            name="startDate"
+                                                            type="date"
+                                                            required
+                                                            value={formData.startDate}
+                                                            onChange={handleChange}
+                                                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                            placeholder="Start Date"
+                                                        /> 
+                                                        <p className="flex items-center text-sm"> to </p>
+                                                        <input
+                                                            id="endDate"
+                                                            name="endDate"
+                                                            type="date"
+                                                            required
+                                                            value={formData.endDate}
+                                                            onChange={handleChange}
+                                                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[rgb(47,60,78)] focus:border-[rgb(47,60,78)] sm:text-sm"
+                                                            placeholder="End Date"
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
