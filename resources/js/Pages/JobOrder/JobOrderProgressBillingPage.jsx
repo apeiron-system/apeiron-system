@@ -538,6 +538,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                                                         value={
                                                                             item.actual_cost
                                                                         }
+                                                                        placeholder="0"
                                                                         onChange={(
                                                                             e
                                                                         ) =>
