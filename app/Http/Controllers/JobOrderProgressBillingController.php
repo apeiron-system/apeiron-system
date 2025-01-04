@@ -23,18 +23,17 @@ class JobOrderProgressBillingController extends Controller
         
         // Retrieve the associated project location by concatenating the address fields
         $projectLocation = JobOrderModel::where('jo_no', $jobOrder->jo_no)
-        ->join('project', 'job_orders.project_id', '=', 'project.id') // Join with the project table
-        ->selectRaw("
-            CONCAT(
-                project.street_address, ', ',
-                project.barangay, ', ',
-                project.city, ', ',
-                project.province, ', ',
-                project.zip_code, ', ',
-                project.country
-            ) as location
-        ")
-        ->value('location'); // Fetch the concatenated location
+            ->join('project', 'job_orders.project_id', '=', 'project.id')
+            ->select('project.street_address', 'project.barangay', 'project.city', 
+                    'project.province', 'project.zip_code', 'project.country')
+            ->first();
+
+        $projectLocation = $projectLocation->street_address . ', ' .
+                        $projectLocation->barangay . ', ' .
+                        $projectLocation->city . ', ' .
+                        $projectLocation->province . ', ' .
+                        $projectLocation->zip_code . ', ' .
+                        $projectLocation->country;
 
         // Fetch project parts linked to the job order
         $projectParts = ProjectPartModel::where('jo_no', $jo_no)->get();
