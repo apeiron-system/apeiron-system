@@ -418,7 +418,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                         <h3 className="mb-2 text-2xl font-semibold">
                             Project Parts
                         </h3>
-                        <div className="overflow-y-auto max-h-[400px]">
+                        <div className="overflow-y-auto max-h-[1000px]">
                             {" "}
                             {/* Added this div with scroll */}
                             {projectParts.map((part, partIdx) => {
@@ -441,7 +441,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                                 return (
                                     <div
                                         key={part.projectPart.id}
-                                        className="bg-white rounded-lg mb-4"
+                                        className="bg-white rounded-lg mb-4 "
                                     >
                                         <h4 className="text-lg font-semibold">
                                             {part.projectPart.description}
