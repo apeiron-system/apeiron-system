@@ -418,7 +418,7 @@ export default function JobOrderProgressBillingPage({ auth, jobOrder, projectLoc
                         <h3 className="mb-2 text-2xl font-semibold">
                             Project Parts
                         </h3>
-                        <div className="overflow-y-auto max-h-[1000px]">
+                        <div className="overflow-y-auto">
                             {" "}
                             {/* Added this div with scroll */}
                             {projectParts.map((part, partIdx) => {
